@@ -44,6 +44,7 @@ public class CategorizeLicenses {
             return ;
         }
         Path root = Paths.get(args[0]);
+        int[] recognizedCount = new int[1];
         Map<String, List<String>> licenses = new HashMap<>();
         Map<String, List<String>> paragraphs = new HashMap<>();
         Set<String> noCDDL = new HashSet<>();
@@ -55,14 +56,12 @@ public class CategorizeLicenses {
                     String code = new String(Files.readAllBytes(p));
 
                     if (code.contains("CDDL")) {
-                        String lic = snipLicense(code, p);
+                        Description lic = snipUnifiedLicenseOrNull(code, p);
 
-                        if (lic != null && lic.contains("CDDL")) {
-                            lic = YEARS_PATTERN.matcher(lic).replaceAll(Matcher.quoteReplacement("<YEARS>"));
-                            lic = lic.replaceAll("([^\n])\n([^\n])", "$1 $2");
-                            lic = lic.replaceAll("[ \t]+", " ");
-                            licenses.computeIfAbsent(lic, l -> new ArrayList<>()).add(path);
-                            for (String par : lic.split("\n")) {
+                        if (lic != null) {
+                            recognizedCount[0]++;
+                            licenses.computeIfAbsent(lic.header, l -> new ArrayList<>()).add(path);
+                            for (String par : lic.header.split("\n")) {
                                 paragraphs.computeIfAbsent(par, l -> new ArrayList<>()).add(path);
                             }
                             return ;
@@ -90,6 +89,7 @@ public class CategorizeLicenses {
                 }
             }
         }
+        System.err.println("files with recognized license headers: " + recognizedCount[0]);
         System.err.println("licenses count: " + licenses.size());
         System.err.println("paragraphs count: " + paragraphs.size());
         
@@ -121,7 +121,8 @@ public class CategorizeLicenses {
             }
         }
     }
-    private static String snipLicense(String code, Path file) {
+    
+    public static Description snipUnifiedLicenseOrNull(String code, Path file) {
         String fn = file.getFileName().toString();
         switch (fn.substring(fn.lastIndexOf('.') + 1)) {
             case "javx": case "c": case "h": case "cpp":
@@ -129,7 +130,7 @@ public class CategorizeLicenses {
             case "html": case "xsd": case "xsl": case "dtd":
             case "settings": case "wstcgrp": case "wstcref":
             case "wsgrp": 
-            case "xml": return snipLicense(code, "<!--+", "-+->", "^[ \t]*");
+            case "xml": return snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?");
             case "sh": return snipLicenseBundle(code, "#!.*");
             case "properties": return snipLicenseBundle(code, null);
         }
@@ -137,7 +138,7 @@ public class CategorizeLicenses {
         return null;
     }
 
-    private static String snipLicense(String code, String commentStart, String commentEnd, String normalizeLines) {
+    private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines) {
         Matcher startM = Pattern.compile(commentStart).matcher(code);
         if (!startM.find())
             return null;
@@ -150,25 +151,65 @@ public class CategorizeLicenses {
                         .map(l -> l.replaceAll(normalizeLines, ""))
                         .collect(Collectors.joining("\n"));
         }
-        return lic;
+        return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic);
     }
     
-    private static String snipLicenseBundle(String code, String firstLinePattern) {
+    private static Description snipLicenseBundle(String code, String firstLinePattern) {
         StringBuilder res = new StringBuilder();
         boolean firstLine = true;
-        for (String line : code.split("\n")) {
+        int start = -1;
+        int pos;
+        int next = 0;
+        String[] lines = code.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+            pos = next;
+            next += line.length() + ((i + 1) < lines.length ? 1 : 0);
             line = line.trim();
             if (firstLine && firstLinePattern != null && Pattern.compile(firstLinePattern).matcher(line).matches())
                 continue;
+            if (firstLine) {
+                start = pos;
+            }
             firstLine = false;
             if (line.startsWith("#")) {
                 res.append(line.substring(1).trim());
                 res.append("\n");
             } else {
-                return res.toString();
+                return createUnifiedDescriptionOrNull(start, next, res.toString());
             }
         }
-        return res.toString();
+        return createUnifiedDescriptionOrNull(start, next, res.toString());
     }
-    
+
+    private static Description createUnifiedDescriptionOrNull(int start, int end, String lic) {
+        if (lic != null && lic.contains("CDDL")) {
+            if (start == (-1)) {
+                System.err.println("!!!");
+            }
+            lic = YEARS_PATTERN.matcher(lic).replaceAll(Matcher.quoteReplacement("<YEARS>"));
+            lic = lic.replaceAll("\\Q<p/>\\E", "\n"); //normalize <p/> to newlines
+            lic = lic.replaceAll("([^\n])\n([^\n])", "$1 $2");
+            lic = lic.replaceAll("[ \t]+", " ");
+            lic = lic.replaceAll("\n+", "\n");
+            lic = lic.replaceAll("^\n+", "");
+            lic = lic.replaceAll("\n+$", "");
+            return new Description(start, end, lic);
+        }
+        
+        return null;
+    }
+
+    public static class Description {
+        public final int start;
+        public final int end;
+        public final String header;
+
+        public Description(int start, int end, String header) {
+            this.start = start;
+            this.end = end;
+            this.header = header;
+        }
+        
+    }    
 }
