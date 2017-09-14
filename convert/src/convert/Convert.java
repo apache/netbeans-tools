@@ -173,17 +173,11 @@ public class Convert {
     }
     
     private static void fixHeader(Path file, String code, Description desc) {
-        String fn = file.getFileName().toString();
         String outputLicense;
-        switch (fn.substring(fn.lastIndexOf('.') + 1)) {
-            case "javx": case "c": case "h": case "cpp":
-            case "java": outputLicense = JAVA_OUTPUT; break;
-            case "html": case "xsd": case "xsl": case "dtd":
-            case "settings": case "wstcgrp": case "wstcref":
-            case "wsgrp": 
-            case "xml": outputLicense = XML_OUTPUT; break;
-            case "sh":
-            case "properties": outputLicense = BUNDLE_OUTPUT; break;
+        switch (desc.commentType) {
+            case JAVA: outputLicense = JAVA_OUTPUT; break;
+            case XML: outputLicense = XML_OUTPUT; break;
+            case PROPERTIES: outputLicense = BUNDLE_OUTPUT; break;
             default:
                 System.err.println("cannot rewrite: " + file);
                 return ;

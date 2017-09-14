@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -122,23 +123,44 @@ public class CategorizeLicenses {
         }
     }
     
+    private static final Map<String, Function<String, Description>> extension2Convertor = new HashMap<>();
+    
+    static {
+        enterExtensions(code -> snipLicense(code, "/\\*+", "\\*+/", "^[ \t]*\\**[ \t]*", CommentType.JAVA),
+                        "javx", "c", "h", "cpp", "pass", "hint", "css", "java");
+        enterExtensions(code -> snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?", CommentType.XML),
+                        "html", "xsd", "xsl", "dtd", "settings", "wstcgrp", "wstcref",
+                        "wsgrp", "xml");
+        enterExtensions(code -> snipLicenseBundle(code, "#!.*"), "sh");
+        enterExtensions(code -> snipLicenseBundle(code, null), "properties");
+    }
+    
+    private static void enterExtensions(Function<String, Description> convertor, String... extensions) {
+        for (String ext : extensions) {
+            extension2Convertor.put(ext, convertor);
+        }
+    }
+
     public static Description snipUnifiedLicenseOrNull(String code, Path file) {
         String fn = file.getFileName().toString();
-        switch (fn.substring(fn.lastIndexOf('.') + 1)) {
-            case "javx": case "c": case "h": case "cpp":
-            case "java": return snipLicense(code, "/\\*+", "\\*+/", "^[ \t]*\\**[ \t]*");
-            case "html": case "xsd": case "xsl": case "dtd":
-            case "settings": case "wstcgrp": case "wstcref":
-            case "wsgrp": 
-            case "xml": return snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?");
-            case "sh": return snipLicenseBundle(code, "#!.*");
-            case "properties": return snipLicenseBundle(code, null);
+        String ext = fn.substring(fn.lastIndexOf('.') + 1);
+        Function<String, Description> preferredConvertor = extension2Convertor.get(ext);
+        Description desc = preferredConvertor != null ? preferredConvertor.apply(ext) : null;
+        
+        if (desc == null) {
+            for (Function<String, Description> convertor : extension2Convertor.values()) {
+                desc = convertor.apply(code);
+                
+                if (desc != null) {
+                    return desc;
+                }
+            }
         }
         
         return null;
     }
 
-    private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines) {
+    private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
         Matcher startM = Pattern.compile(commentStart).matcher(code);
         if (!startM.find())
             return null;
@@ -151,7 +173,7 @@ public class CategorizeLicenses {
                         .map(l -> l.replaceAll(normalizeLines, ""))
                         .collect(Collectors.joining("\n"));
         }
-        return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic);
+        return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic, commentType);
     }
     
     private static Description snipLicenseBundle(String code, String firstLinePattern) {
@@ -168,6 +190,8 @@ public class CategorizeLicenses {
             line = line.trim();
             if (firstLine && firstLinePattern != null && Pattern.compile(firstLinePattern).matcher(line).matches())
                 continue;
+            if (firstLine && line.trim().isEmpty())
+                continue;
             if (firstLine) {
                 start = pos;
             }
@@ -176,13 +200,13 @@ public class CategorizeLicenses {
                 res.append(line.substring(1).trim());
                 res.append("\n");
             } else {
-                return createUnifiedDescriptionOrNull(start, next, res.toString());
+                return createUnifiedDescriptionOrNull(start, next, res.toString(), CommentType.PROPERTIES);
             }
         }
-        return createUnifiedDescriptionOrNull(start, next, res.toString());
+        return createUnifiedDescriptionOrNull(start, next, res.toString(), CommentType.PROPERTIES);
     }
 
-    private static Description createUnifiedDescriptionOrNull(int start, int end, String lic) {
+    private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {
         if (lic != null && lic.contains("CDDL")) {
             if (start == (-1)) {
                 System.err.println("!!!");
@@ -194,7 +218,7 @@ public class CategorizeLicenses {
             lic = lic.replaceAll("\n+", "\n");
             lic = lic.replaceAll("^\n+", "");
             lic = lic.replaceAll("\n+$", "");
-            return new Description(start, end, lic);
+            return new Description(start, end, lic, commentType);
         }
         
         return null;
@@ -204,12 +228,20 @@ public class CategorizeLicenses {
         public final int start;
         public final int end;
         public final String header;
+        public final CommentType commentType;
 
-        public Description(int start, int end, String header) {
+        public Description(int start, int end, String header, CommentType commentType) {
             this.start = start;
             this.end = end;
             this.header = header;
+            this.commentType = commentType;
         }
         
-    }    
+    }
+    
+    public enum CommentType {
+        JAVA,
+        XML,
+        PROPERTIES;
+    }
 }
