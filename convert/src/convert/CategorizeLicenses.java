@@ -127,10 +127,10 @@ public class CategorizeLicenses {
     
     static {
         enterExtensions(code -> snipLicense(code, "/\\*+", "\\*+/", "^[ \t]*\\**[ \t]*", CommentType.JAVA),
-                        "javx", "c", "h", "cpp", "pass", "hint", "css", "java");
+                        "javx", "c", "h", "cpp", "pass", "hint", "css", "java", "js", "jj");
         enterExtensions(code -> snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?", CommentType.XML),
                         "html", "xsd", "xsl", "dtd", "settings", "wstcgrp", "wstcref",
-                        "wsgrp", "xml");
+                        "wsgrp", "xml", "xslt");
         enterExtensions(code -> snipLicenseBundle(code, "#!.*"), "sh");
         enterExtensions(code -> snipLicenseBundle(code, null), "properties");
     }
@@ -162,7 +162,7 @@ public class CategorizeLicenses {
 
     private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
         Matcher startM = Pattern.compile(commentStart).matcher(code);
-        if (!startM.find())
+        if (!startM.find() || startM.start() > 100) //only first 100 characters
             return null;
         Matcher endM = Pattern.compile(commentEnd).matcher(code);
         if (!endM.find(startM.end()))
