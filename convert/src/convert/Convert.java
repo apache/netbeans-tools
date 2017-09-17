@@ -138,6 +138,42 @@ public class Convert {
             "# specific language governing permissions and limitations\n" +
             "# under the License.\n";
 
+    private static final String BAT1_OUTPUT =
+            "rem Licensed to the Apache Software Foundation (ASF) under one\n" +
+            "rem or more contributor license agreements.  See the NOTICE file\n" +
+            "rem distributed with this work for additional information\n" +
+            "rem regarding copyright ownership.  The ASF licenses this file\n" +
+            "rem to you under the Apache License, Version 2.0 (the\n" +
+            "rem \"License\"); you may not use this file except in compliance\n" +
+            "rem with the License.  You may obtain a copy of the License at\n" +
+            "rem\n" +
+            "rem   http://www.apache.org/licenses/LICENSE-2.0\n" +
+            "rem\n" +
+            "rem Unless required by applicable law or agreed to in writing,\n" +
+            "rem software distributed under the License is distributed on an\n" +
+            "rem \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
+            "rem KIND, either express or implied.  See the License for the\n" +
+            "rem specific language governing permissions and limitations\n" +
+            "rem under the License.\n";
+
+    private static final String BAT2_OUTPUT =
+            "@rem Licensed to the Apache Software Foundation (ASF) under one\n" +
+            "@rem or more contributor license agreements.  See the NOTICE file\n" +
+            "@rem distributed with this work for additional information\n" +
+            "@rem regarding copyright ownership.  The ASF licenses this file\n" +
+            "@rem to you under the Apache License, Version 2.0 (the\n" +
+            "@rem \"License\"); you may not use this file except in compliance\n" +
+            "@rem with the License.  You may obtain a copy of the License at\n" +
+            "@rem\n" +
+            "@rem   http://www.apache.org/licenses/LICENSE-2.0\n" +
+            "@rem\n" +
+            "@rem Unless required by applicable law or agreed to in writing,\n" +
+            "@rem software distributed under the License is distributed on an\n" +
+            "@rem \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
+            "@rem KIND, either express or implied.  See the License for the\n" +
+            "@rem specific language governing permissions and limitations\n" +
+            "@rem under the License.\n";
+
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
             System.err.println("Use: Convert <source-directory>");
@@ -176,6 +212,8 @@ public class Convert {
             case JAVA: outputLicense = JAVA_OUTPUT; break;
             case XML: outputLicense = XML_OUTPUT; break;
             case PROPERTIES: outputLicense = BUNDLE_OUTPUT; break;
+            case BAT1: outputLicense = BAT1_OUTPUT; break;
+            case BAT2: outputLicense = BAT2_OUTPUT; break;
             default:
                 System.err.println("cannot rewrite: " + file);
                 return ;

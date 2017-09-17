@@ -41,7 +41,9 @@ public class CategorizeLicensesTest {
                             "\n";
         CategorizeLicenses.Description desc =
                 CategorizeLicenses.snipLicenseBundle(code,
-                                                     null);
+                                                     null,
+                                                     "#",
+                                                     CategorizeLicenses.CommentType.PROPERTIES);
         assertEquals("CDDL\nlic", desc.header);
         assertEquals("#CDDL\n#\n#lic\n", code.substring(desc.start, desc.end));
     }

@@ -36,6 +36,7 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CategorizeLicenses {
 
@@ -123,7 +124,7 @@ public class CategorizeLicenses {
         }
     }
     
-    private static final Map<String, Function<String, Description>> extension2Convertor = new HashMap<>();
+    private static final Map<String, Collection<Function<String, Description>>> extension2Convertor = new HashMap<>();
     
     static {
         enterExtensions(code -> snipLicense(code, "/\\*+", "\\*+/", "^[ \t]*\\**[ \t]*", CommentType.JAVA),
@@ -131,33 +132,30 @@ public class CategorizeLicenses {
         enterExtensions(code -> snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?", CommentType.XML),
                         "html", "xsd", "xsl", "dtd", "settings", "wstcgrp", "wstcref",
                         "wsgrp", "xml", "xslt");
-        enterExtensions(code -> snipLicenseBundle(code, "#!.*"), "sh");
-        enterExtensions(code -> snipLicenseBundle(code, null), "properties");
+        enterExtensions(code -> snipLicenseBundle(code, "#!.*", "#", CommentType.PROPERTIES), "sh");
+        enterExtensions(code -> snipLicenseBundle(code, null, "#", CommentType.PROPERTIES), "properties");
+        enterExtensions(code -> snipLicenseBundle(code, null, "rem", CommentType.BAT1), "bat");
+        enterExtensions(code -> snipLicenseBundle(code, null, "@rem", CommentType.BAT2), "bat");
     }
     
     private static void enterExtensions(Function<String, Description> convertor, String... extensions) {
         for (String ext : extensions) {
-            extension2Convertor.put(ext, convertor);
+            extension2Convertor.computeIfAbsent(ext, x -> new ArrayList<>()).add(convertor);
         }
     }
 
     public static Description snipUnifiedLicenseOrNull(String code, Path file) {
         String fn = file.getFileName().toString();
         String ext = fn.substring(fn.lastIndexOf('.') + 1);
-        Function<String, Description> preferredConvertor = extension2Convertor.get(ext);
-        Description desc = preferredConvertor != null ? preferredConvertor.apply(code) : null;
-        
-        if (desc == null) {
-            for (Function<String, Description> convertor : extension2Convertor.values()) {
-                desc = convertor.apply(code);
-                
-                if (desc != null) {
-                    return desc;
-                }
-            }
-        }
-        
-        return desc;
+        return Stream.concat(extension2Convertor.getOrDefault(ext, Collections.emptyList())
+                                                .stream(),
+                             extension2Convertor.values()
+                                                .stream()
+                                                .flatMap(c -> c.stream()))
+              .map(c -> c.apply(code))
+              .filter(desc -> desc != null)
+              .findFirst()
+              .orElse(null);
     }
 
     private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
@@ -176,7 +174,7 @@ public class CategorizeLicenses {
         return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic, commentType);
     }
     
-    public static Description snipLicenseBundle(String code, String firstLinePattern) {
+    public static Description snipLicenseBundle(String code, String firstLinePattern, String commentMarker, CommentType commentType) {
         StringBuilder res = new StringBuilder();
         boolean firstLine = true;
         int start = -1;
@@ -193,8 +191,8 @@ public class CategorizeLicenses {
                 continue;
             if (firstLine && line.trim().isEmpty())
                 continue;
-            if (line.startsWith("#")) {
-                String part = line.substring(1).trim();
+            if (line.startsWith(commentMarker)) {
+                String part = line.substring(commentMarker.length()).trim();
                 if (firstLine && part.isEmpty())
                     continue;
                 if (firstLine) {
@@ -207,10 +205,10 @@ public class CategorizeLicenses {
                     end = next;
                 }
             } else {
-                return createUnifiedDescriptionOrNull(start, end, res.toString(), CommentType.PROPERTIES);
+                return createUnifiedDescriptionOrNull(start, end, res.toString(), commentType);
             }
         }
-        return createUnifiedDescriptionOrNull(start, end, res.toString(), CommentType.PROPERTIES);
+        return createUnifiedDescriptionOrNull(start, end, res.toString(), commentType);
     }
 
     private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {
@@ -249,6 +247,8 @@ public class CategorizeLicenses {
     public enum CommentType {
         JAVA,
         XML,
-        PROPERTIES;
+        PROPERTIES,
+        BAT1,
+        BAT2;
     }
 }
