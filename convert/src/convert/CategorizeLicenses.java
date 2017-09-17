@@ -145,7 +145,7 @@ public class CategorizeLicenses {
         String fn = file.getFileName().toString();
         String ext = fn.substring(fn.lastIndexOf('.') + 1);
         Function<String, Description> preferredConvertor = extension2Convertor.get(ext);
-        Description desc = preferredConvertor != null ? preferredConvertor.apply(ext) : null;
+        Description desc = preferredConvertor != null ? preferredConvertor.apply(code) : null;
         
         if (desc == null) {
             for (Function<String, Description> convertor : extension2Convertor.values()) {
@@ -157,7 +157,7 @@ public class CategorizeLicenses {
             }
         }
         
-        return null;
+        return desc;
     }
 
     private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
