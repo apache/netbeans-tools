@@ -24,6 +24,8 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class Convert {
@@ -175,13 +177,16 @@ public class Convert {
             "@rem under the License.\n";
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 1) {
-            System.err.println("Use: Convert <source-directory>");
+        if (args.length != 1 && args.length != 2) {
+            System.err.println("Use: Convert <source-directory> [<statistics-file>]");
             return ;
         }
         Pattern headerPattern = Pattern.compile(LICENSE_INPUT_PATTERN1, Pattern.MULTILINE);
         Path root = Paths.get(args[0]);
         int[] count = new int[1];
+        Set<String> converted = new HashSet<>();
+        Set<String> cddlNoRewrite = new HashSet<>();
+        Set<String> noCDDL = new HashSet<>();
         Files.find(root, Integer.MAX_VALUE, (p, attr) -> attr.isRegularFile())
              .forEach(p -> {
                 try {
@@ -189,24 +194,62 @@ public class Convert {
                     String code = new String(Files.readAllBytes(p));
 
                     if (code.contains("CDDL")) {
+                        boolean success = false;
                         CategorizeLicenses.Description lic = CategorizeLicenses.snipUnifiedLicenseOrNull(code, p);
 
                         if (lic != null) {
                             if (headerPattern.matcher(lic.header).matches()) {
-                                fixHeader(p, code, lic);
+                                success = fixHeader(p, code, lic);
                                 count[0]++;
                             }
                         }
+
+                        if (success) {
+                            converted.add(path);
+                        } else {
+                            cddlNoRewrite.add(path);
+                        }
+                    } else {
+                        noCDDL.add(path);
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    throw new IllegalStateException(ex);
                 }
              });
         
-        System.err.println("convertible: " + count[0]);
+        System.err.println("converted: " + count[0]);
+
+        if (args.length == 2) {
+            Path statistics = Paths.get(args[1]);
+
+            try (Writer out = Files.newBufferedWriter(statistics)) {
+                out.write("Converted files (" + converted.size() + "):\n");
+                out.write("--------------------------------------------------\n");
+                dumpFiles(out, converted);
+                out.write("Files with CDDL, but not converted (" + cddlNoRewrite.size() + "):\n");
+                out.write("--------------------------------------------------\n");
+                dumpFiles(out, cddlNoRewrite);
+                out.write("Files without CDDL (" + noCDDL.size() + "):\n");
+                out.write("--------------------------------------------------\n");
+                dumpFiles(out, noCDDL);
+            }
+        }
+    }
+
+    private static void dumpFiles(Writer out, Set<String> paths) throws IOException {
+        paths.stream().sorted().forEach(p -> {
+            try {
+                out.write(p);
+                out.write("\n");
+            } catch (IOException ex) {
+                throw new IllegalStateException(ex);
+            }
+        });
+
+        out.write("\n");
     }
     
-    private static void fixHeader(Path file, String code, Description desc) {
+    private static boolean fixHeader(Path file, String code, Description desc) {
         String outputLicense;
         switch (desc.commentType) {
             case JAVA: outputLicense = JAVA_OUTPUT; break;
@@ -216,12 +259,13 @@ public class Convert {
             case BAT2: outputLicense = BAT2_OUTPUT; break;
             default:
                 System.err.println("cannot rewrite: " + file);
-                return ;
+                return false;
         }
         
         try (Writer out = Files.newBufferedWriter(file)) {
             String newCode = code.substring(0, desc.start) + outputLicense + code.substring(desc.end);
             out.write(newCode);
+            return true;
         } catch (IOException ex) {
             throw new IllegalStateException(ex);
         }
