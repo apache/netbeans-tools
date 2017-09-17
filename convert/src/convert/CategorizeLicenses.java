@@ -176,12 +176,13 @@ public class CategorizeLicenses {
         return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic, commentType);
     }
     
-    private static Description snipLicenseBundle(String code, String firstLinePattern) {
+    public static Description snipLicenseBundle(String code, String firstLinePattern) {
         StringBuilder res = new StringBuilder();
         boolean firstLine = true;
         int start = -1;
         int pos;
         int next = 0;
+        int end = 0;
         String[] lines = code.split("\n");
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
@@ -192,18 +193,24 @@ public class CategorizeLicenses {
                 continue;
             if (firstLine && line.trim().isEmpty())
                 continue;
-            if (firstLine) {
-                start = pos;
-            }
-            firstLine = false;
             if (line.startsWith("#")) {
-                res.append(line.substring(1).trim());
+                String part = line.substring(1).trim();
+                if (firstLine && part.isEmpty())
+                    continue;
+                if (firstLine) {
+                    start = pos;
+                }
+                firstLine = false;
+                res.append(part);
                 res.append("\n");
+                if (!part.isEmpty()) {
+                    end = next;
+                }
             } else {
-                return createUnifiedDescriptionOrNull(start, next, res.toString(), CommentType.PROPERTIES);
+                return createUnifiedDescriptionOrNull(start, end, res.toString(), CommentType.PROPERTIES);
             }
         }
-        return createUnifiedDescriptionOrNull(start, next, res.toString(), CommentType.PROPERTIES);
+        return createUnifiedDescriptionOrNull(start, end, res.toString(), CommentType.PROPERTIES);
     }
 
     private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {

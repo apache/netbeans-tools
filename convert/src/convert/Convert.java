@@ -121,7 +121,6 @@ public class Convert {
             "-->";
 
     private static final String BUNDLE_OUTPUT =
-            "#\n" +
             "# Licensed to the Apache Software Foundation (ASF) under one\n" +
             "# or more contributor license agreements.  See the NOTICE file\n" +
             "# distributed with this work for additional information\n" +
@@ -137,8 +136,7 @@ public class Convert {
             "# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n" +
             "# KIND, either express or implied.  See the License for the\n" +
             "# specific language governing permissions and limitations\n" +
-            "# under the License.\n" +
-            "#\n";
+            "# under the License.\n";
 
     public static void main(String[] args) throws IOException {
         if (args.length != 1) {
