@@ -131,7 +131,7 @@ public class CategorizeLicenses {
                         "javx", "c", "h", "cpp", "pass", "hint", "css", "java", "js", "jj");
         enterExtensions(code -> snipLicense(code, "<!--+", "-+->", "^[ \t]*(-[ \t]*)?", CommentType.XML),
                         "html", "xsd", "xsl", "dtd", "settings", "wstcgrp", "wstcref",
-                        "wsgrp", "xml", "xslt");
+                        "wsgrp", "xml", "xslt", "fxml", "wsdl", "sun-resource");
         enterExtensions(code -> snipLicenseBundle(code, "#!.*", "#", CommentType.PROPERTIES), "sh");
         enterExtensions(code -> snipLicenseBundle(code, null, "#", CommentType.PROPERTIES), "properties");
         enterExtensions(code -> snipLicenseBundle(code, null, "rem", CommentType.BAT1), "bat");
@@ -212,9 +212,9 @@ public class CategorizeLicenses {
     }
 
     private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {
-        if (lic != null && lic.contains("CDDL")) {
+        if (lic != null && (lic.contains("CDDL") || lic.contains("Redistribution"))) {
             if (start == (-1)) {
-                System.err.println("!!!");
+                throw new IllegalStateException();
             }
             lic = YEARS_PATTERN.matcher(lic).replaceAll(Matcher.quoteReplacement("<YEARS>"));
             lic = lic.replaceAll("\\Q<p/>\\E", "\n"); //normalize <p/> to newlines
