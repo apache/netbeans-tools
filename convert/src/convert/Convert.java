@@ -273,7 +273,7 @@ public class Convert {
         out.write("\n");
     }
     
-    private static boolean fixHeader(Path file, String code, Description desc) {
+    public static boolean fixHeader(Path file, String code, Description desc) {
         String outputLicense;
         switch (desc.commentType) {
             case JAVA: outputLicense = JAVA_OUTPUT; break;

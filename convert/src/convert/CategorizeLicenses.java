@@ -212,7 +212,7 @@ public class CategorizeLicenses {
     }
 
     private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {
-        if (lic != null && (lic.contains("CDDL") || lic.contains("Redistribution"))) {
+        if (lic != null && (lic.contains("CDDL") || lic.contains("Redistribution") || lic.contains("Apache License"))) {
             if (start == (-1)) {
                 throw new IllegalStateException();
             }
