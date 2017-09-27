@@ -72,6 +72,8 @@ public class Convert {
             "|" +
             "\\QThe Original Software is NetBeans. The Initial Developer of the Original Software is Sun Microsystems, Inc.\nPortions Copyrighted <YEARS> Sun Microsystems, Inc.\\E\\s*" +
             "|" +
+            "\\QThe Original Software is NetBeans. Portions Copyrighted <YEARS> Sun Microsystems, Inc.\\E\\s*" +
+            "|" +
             "\\QPortions Copyrighted <YEARS> Sun Microsystems, Inc.\\E\\s*" +
             "|" +
             "\\QPortions Copyrighted <YEARS> Oracle, Inc.\\E\\s*" +
