@@ -158,14 +158,23 @@ public class CategorizeLicenses {
               .orElse(null);
     }
 
-    private static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
+    public static Description snipLicense(String code, String commentStart, String commentEnd, String normalizeLines, CommentType commentType) {
         Matcher startM = Pattern.compile(commentStart).matcher(code);
-        if (!startM.find() || startM.start() > 100) //only first 100 characters
+        if (!startM.find() || startM.start() > LIMIT) //only first 150 characters
             return null;
         Matcher endM = Pattern.compile(commentEnd).matcher(code);
         if (!endM.find(startM.end()))
             return null;
         String lic = code.substring(startM.end(), endM.start());
+        if (!isLicenseText(lic)) {
+            startM = Pattern.compile(commentStart).matcher(code);
+            if (!startM.find(endM.end()) || startM.start() > LIMIT) //only first 150 characters
+                return null;
+            endM = Pattern.compile(commentEnd).matcher(code);
+            if (!endM.find(startM.end()))
+                return null;
+            lic = code.substring(startM.end(), endM.start());
+        }
         if (normalizeLines != null) {
             lic = Arrays.stream(lic.split("\n"))
                         .map(l -> l.replaceAll(normalizeLines, ""))
@@ -173,7 +182,9 @@ public class CategorizeLicenses {
         }
         return createUnifiedDescriptionOrNull(startM.start(), endM.end(), lic, commentType);
     }
-    
+
+    private static final int LIMIT = 300;
+
     public static Description snipLicenseBundle(String code, String firstLinePattern, String commentMarker, CommentType commentType) {
         StringBuilder res = new StringBuilder();
         boolean firstLine = true;
@@ -212,7 +223,7 @@ public class CategorizeLicenses {
     }
 
     private static Description createUnifiedDescriptionOrNull(int start, int end, String lic, CommentType commentType) {
-        if (lic != null && (lic.contains("CDDL") || lic.contains("Redistribution") || lic.contains("Apache License"))) {
+        if (lic != null && isLicenseText(lic)) {
             if (start == (-1)) {
                 throw new IllegalStateException();
             }
@@ -227,6 +238,10 @@ public class CategorizeLicenses {
         }
         
         return null;
+    }
+
+    private static boolean isLicenseText(String text) {
+        return text.contains("CDDL") || text.contains("Redistribution") || text.contains("Apache License");
     }
 
     public static class Description {

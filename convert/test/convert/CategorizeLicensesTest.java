@@ -48,4 +48,18 @@ public class CategorizeLicensesTest {
         assertEquals("#CDDL\n#\n#lic\n", code.substring(desc.start, desc.end));
     }
 
+    @Test
+    public void testSecondComment() {
+        final String code = "<!--first-->\n" +
+                            "<!--CDDL-->\n" +
+                            "\n";
+        CategorizeLicenses.Description desc =
+                CategorizeLicenses.snipLicense(code,
+                                               "<!--",
+                                               "-->",
+                                               null,
+                                               CategorizeLicenses.CommentType.XML);
+        assertEquals("CDDL", desc.header);
+    }
+
 }
