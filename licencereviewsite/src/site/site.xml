@@ -18,12 +18,15 @@ specific language governing permissions and limitations
 under the License.
 -->
 <project xmlns="http://maven.apache.org/DECORATION/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.1.0 http://maven.apache.org/xsd/decoration-1.1.0.xsd" name="LicenceStatus">
     <skin>    
         <groupId>org.apache.maven.skins</groupId>
         <artifactId>maven-fluido-skin</artifactId>
         <version>1.6</version>
     </skin>
+    <bannerLeft>
+        <name>Licence Status</name>
+    </bannerLeft>
     <body>
         <menu>
             <item name="RAT" href="reviewlicence.html"/>
