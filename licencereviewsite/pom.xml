@@ -93,7 +93,7 @@ under the License.
             <!-- any further custom report here -->
             <plugin>
                 <groupId>${project.groupId}</groupId>
-                <artifactId>generatestatus</artifactId>
+                <artifactId>generatereviewstatuspage</artifactId>
                 <version>${project.version}</version>
             </plugin>
         </plugins>
