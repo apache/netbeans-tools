@@ -1,0 +1,41 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===What uses Lookup?===
+
+There are a number of places [[DevFaqLookup| Lookup ]] is commonly found/used in NetBeans.  Generally, if you have found some class and you are wondering where on earth you get an actual instance of one of those, the answer is probably "from something-or-other's Lookup".
+
+Common cases:
+* <tt>Lookup.getDefault()()</tt> - you want to find some global singleton or all instances of a particular object [[DevFaqLookupDefault| registered in the system]]
+* <tt>Project.getLookup()</tt> - provides objects specific to a project.  The typical pattern is, you have used FileOwnerQuery to get the Project that owns some file, and now you want to find something like the classpath (from the Project's ClassPathProvider, which lives in its Lookup)
+* <tt>[[DevFaqWhatIsANode| Node.getLookup()]]</tt> - this is how you get things like syntax trees, open and save interfaces and other miscellaneous stuff from Nodes representing files or other things
+* <tt>[[DevFaqWindowsTopComponent| TopComponent.getLookup()]]</tt> - if you are writing a UI component, and want to affect the global selection, but your component doesn't display nodes and you don't have any use for Nodes, you probably want to provide your own Lookup here with whatever you want to include in it (things like [http://www.netbeans.org/download/dev/javadoc/org-openide-nodes/org/openide/cookies/OpenCookie.html OpenCookie], [http://www.netbeans.org/download/dev/javadoc/org-openide-nodes/org/openide/cookies/SaveCookie.html SaveCookie], objects your other UI code may want to track if you're doing a master-detail view, etc.)
+* <tt>[http://www.netbeans.org/download/dev/javadoc/org-openide-util/org/openide/util/Utilities.html#actionsGlobalContext() Utilities.actionsGlobalContext()]</tt> returns a <tt>Lookup</tt> which represents the global "selection context" in NetBeans.  It is a <tt>ProxyLookup</tt> which proxies the lookup of whichever <tt>[[DevFaqWindowsTopComponent| TopComponent]]</tt> currently has focus.  So if you listen for changes in the presence or absence of a particular type in this lookup, you will receive appropriate changes whenever the backing <tt>Lookup</tt> being proxied changes.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Admin 
+on 2009-11-06T15:52:48Z.
+

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project name="wiki-export" default="run" basedir=".">
+    <description>Builds, tests, and runs the project wiki-export.</description>
+    <import file="nbproject/build-impl.xml"/>
+    
+    
+    <!-- NOTE: This project automatically adds "ant.jar" from ${ant.home} to the build classpath -->
+
+    <!-- Set 'boolean.use.cache' to false to force downloading -->
+    <property name="boolean.use.cache" value="true" />
+    
+    <!-- The page index -->
+    <property name="wiki.index.page" value="NetBeansDeveloperFAQ" />
+    
+    <!-- The prefix of the pages to download -->
+    <property name="wiki.prefix" value="" />
+    
+    <!-- Downloads ${wiki.index.page} to wiki-content/index.wikitext -->
+    <target name="download-index" depends="jar" description="Downloads the Wiki index page">
+        <mkdir dir="wiki-content" />
+        <get 
+            src="http://wiki.netbeans.org/wiki/index.php?title=${wiki.index.page}&amp;action=raw"
+            skipexisting="${boolean.use.cache}" 
+            dest="wiki-content/index.wikitext" 
+            verbose="true" />
+    </target>
+ 
+    <!-- Scans wiki-content/index.wikitext for WikiNames into wiki-content/index.properties -->
+    <target name="scan-index" depends="download-index" description="Scans wiki-content/index.wikitext and returns a list of wiki pages">
+        <taskdef name="wiki-index-scanner" classname="wiki.export.WikiIndexScanner">
+            <classpath>
+                <pathelement location="dist/wiki-export.jar" />
+            </classpath>
+        </taskdef>
+        <wiki-index-scanner wikiIndexPage="wiki-content/index.wikitext" dest="wiki-content/index.properties" />
+    </target>
+           
+    <!-- Downloads all entries in wiki-content/index-properties into wiki-content/[entry].xml -->
+    <target name="download-entries" depends="scan-index" description="Downloads the entries of a previously scanned wiki index page">
+        <taskdef name="wiki-entries-downloader" classname="wiki.export.WikiEntriesDownloader">
+            <classpath>
+                <pathelement location="dist/wiki-export.jar" />
+            </classpath>
+        </taskdef>
+        <wiki-entries-downloader 
+            prefix="${wiki.prefix}"
+            indexProperties="wiki-content/index.properties"
+            destDir="wiki-content" />
+    </target> 
+
+    <!-- Converts wiki-content/*.xml to wiki-text/*.mediawiki adding some history -->
+    <target name="generate-mediawiki" depends="scan-index" description="Converts downloaded xml files to mediawiki format">
+        <taskdef name="wiki-to-mediawiki" classname="wiki.export.WikiEntries2MediaWiki">
+            <classpath>
+                <pathelement location="dist/wiki-export.jar" />
+            </classpath>
+        </taskdef>
+        <mkdir dir="wiki-wikimedia" />
+        <wiki-to-mediawiki
+            srcDir="wiki-content"
+            indexProperties="wiki-content/index.properties"
+            destDir="wiki-wikimedia" />
+        <copy todir="wiki-wikimedia">
+            <fileset dir="wiki-content">
+                <include name="**/**.png" />
+                <include name="**/**.jpg" />
+            </fileset>
+        </copy>
+    </target> 
+
+    <!-- Uses 'pandoc' to convert from wikimedia to asciidoc in wiki-asciidoc -->
+    <target name="generate-asciidoc" depends="generate-mediawiki" description="Converts wiki-wikimedia/*.mediawiki files to wiki-asciidoc/*.asciidoc using an external 'pandoc' executable">
+        <exec executable="/bin/sh">
+            <arg value="pandoc.sh" />
+        </exec>
+    </target>
+    
+    <target name="run" depends="download-entries">
+        <echo message="  ant generate-mediawiki: creates wiki-wikimedia/*.mediawiki files." />
+        <echo message="  ant generate-asciidoc : creates wiki-asciidoc/*.asciidoc files." />
+    </target>
+</project>

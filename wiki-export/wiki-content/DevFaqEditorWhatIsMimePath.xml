@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqEditorWhatIsMimePath</title>
+    <id>7257</id>
+    <revision>
+      <id>39299</id>
+      <timestamp>2010-06-16T14:03:23Z</timestamp>
+      <contributor>
+        <username>Vstejskal</username>
+        <id>363</id>
+      </contributor>
+      <comment>/* What is MimePath? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===What is MimePath?===
+
+Basically, &lt;tt&gt;MimePath&lt;/tt&gt; is an ordered list of mime types.
+
+The reason why we
+have come up with the concept of &lt;tt&gt;MimePath&lt;/tt&gt; is that we need to support embedded
+languages. In the simple world where code is written only in one language
+and stored in files dedicated for that language it is enough to know the
+mime type of a file in order to know its language and to load appropriate
+editor features. The world, however, is not simple anymore and the reality
+requires us to deal with situations when one file contains a mixture of
+several different languages. An example is a web applications development
+when people write JSP files that contain snippets of code in JSP, HTML, an expression
+language, Java, JavaScript and possibly some other languages. The whole JSP file
+can be broken up into sections containing code in different languages and
+user expects to get features like coloring and code completion that are
+appropriate for the mime type of each section. This is called language embedding.
+
+In order to be able to describe the exact 'type' of each embedded block of
+text Netbeans use an ordered list of mime types that describe languages along the way from the top level language (i.e. the mime type of the file itself) to the embedded block.
+So, for example a java scriplet in a JSP file can be identified
+by the list of two mime types &lt;tt&gt;text/x-jsp, text/x-java&lt;/tt&gt;. The list
+can be encoded in one &lt;tt&gt;String&lt;/tt&gt; using the forward slash character as
+a separator and that's what &lt;tt&gt;MimePath&lt;/tt&gt; is. In our example the
+&lt;tt&gt;MimePath&lt;/tt&gt; of java scriplet in a JSP file is &lt;tt&gt;text/x-jsp/text/x-java&lt;/tt&gt;.
+
+The embedding can go indefinitely deep and you can have &lt;tt&gt;MimePath&lt;/tt&gt; like
+&lt;tt&gt;text/x-jsp/text/html/text/el&lt;/tt&gt; for an expression language used in an
+HTML attribute inside a JSP file - &lt;tt&gt;&lt;a href="${myLink}"&gt;...&lt;/a&gt;&lt;/tt&gt;.
+
+Since &lt;tt&gt;MimePath&lt;/tt&gt; is required when you want
+[[DevFaqEditorWhatIsMimeLookup| MimeLookup]] and since &lt;tt&gt;MimeLookup&lt;/tt&gt; is the
+way for pluging-in language specific editor features it is possible to
+provide features tailored specifically for any type of language embedding.
+If you want to know more about the contents of &lt;tt&gt;MimeLookup&lt;/tt&gt; generally and
+for compound and embedded mime types, read more in [[DevFaqEditorHowIsMimeLookupComposed| How is MimeLookup
+composed?]].
+
+
+--------
+
+Applies to: NetBeans 5.x, 6.x
+
+Platforms: All
+
+See also:
+[[DevFaqEditorWhatIsMimeLookup| What is MimeLookup?]],
+[http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-mimelookup/org/netbeans/api/editor/mimelookup/MimePath.html MimePath Javadoc],
+[http://www.netbeans.org/download/dev/javadoc/org-netbeans-modules-editor-mimelookup/index.html MimeLookup API]</text>
+    </revision>
+  </page>
+</mediawiki>

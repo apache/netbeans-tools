@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqInstanceDataObject</title>
+    <id>7322</id>
+    <revision>
+      <id>50343</id>
+      <timestamp>2011-12-13T23:58:07Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* What are *.instance files? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===What are &lt;tt&gt;*.instance&lt;/tt&gt; files?===
+
+&lt;tt&gt;*.instance&lt;/tt&gt; files represent an "instance", i.e. arbitrary Java object.
+
+An instance file typically says what class it is an instance of via its class name - for example,
+&lt;tt&gt;com-foo-mymodule-MyObject.instance&lt;/tt&gt;.
+A &lt;tt&gt;*.instance&lt;/tt&gt; file may create its instance from any Java class
+with a default constructor, or by calling a static method on a class.
+
+In NetBeans infrastructure, &lt;tt&gt;*.instance&lt;/tt&gt; files result in &lt;tt&gt;InstanceDataObject&lt;/tt&gt;s.
+&lt;tt&gt;InstanceDataObject&lt;/tt&gt;s can supply &lt;tt&gt;InstanceCookie&lt;/tt&gt;s,
+which in turn instantiate the object.
+So, code to actually get an instance of an object declared in the system filesystem  ([[DevFaqSystemFilesystem]]) would look like this (plus error checking):
+
+&lt;pre&gt;
+public static Object getTheObject(String pathInSystemFilesystem) throws Exception {
+    return DataObject.find(FileUtil.getConfigFile(pathInSystemFilesystem)).
+        getLookup().lookup(InstanceCookie.class).instanceCreate();
+}
+&lt;/pre&gt;
+
+(FileUtil.getConfigObject is available for this purpose in NB 7.1+.)
+
+A much easier way to get all instances of objects in a folder exists:
+&lt;pre&gt;
+for (WhatISaidToPutHere instance :
+        Lookups.forPath("MyFolder").lookupAll(WhatISaidToPutHere.class)) {
+    // ...
+}
+&lt;/pre&gt;
+
+Note that a default constructor is not required in an XML layer;  you can also use a static method, using the following syntax:
+&lt;pre&gt;
+&lt;file name="ObjectTypes.instance"&gt;
+  &lt;attr name="instanceCreate" methodvalue="org.netbeans.core.ui.UINodes.createObjectTypes"/&gt;
+  &lt;attr name="instanceOf" stringvalue="org.openide.nodes.Node"/&gt;
+&lt;/file&gt;
+&lt;/pre&gt;
+(The &lt;tt&gt;instanceOf&lt;/tt&gt; attribute is optional;
+it lets the system avoid instantiating your object just to see if it is assignable to &lt;tt&gt;Node&lt;/tt&gt;.
+This is only useful in folders that contain objects of many different types mixed together,
+which is normally true only in the semi-deprecated &lt;tt&gt;Services&lt;/tt&gt; folder:
+code looking for instances of one type only would rather not load everything.)
+
+See also: [[DevFaqDotSettingsFiles]]
+
+----
+Applies to: NetBeans 6.7 and later</text>
+    </revision>
+  </page>
+</mediawiki>

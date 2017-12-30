@@ -1,0 +1,38 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===The next button is never enabled when I create my DataObject from a template. Help!===
+
+Most likely your <tt>DataObject</tt> does not put itself into its own <tt>CookieSet</tt>/<tt>Lookup</tt>.  If you call <tt>setCookieSet()</tt>, or override <tt>getLookup()</tt> or <tt>getCookie()</tt>, this can happen.  There are a few parts of NetBeans which will expect <tt>Node</tt>s to be present in their own <tt>Lookup</tt>s and <tt>DataObject</tt>s to be present in theirs.  It is always best to make sure they are there.  For a <tt>DataObject</tt>, the code for this is usually as simple as:
+
+<pre>
+getCookieSet().add(this);
+</pre>
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Admin 
+on 2009-11-06T15:38:49Z.
+

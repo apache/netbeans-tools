@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqMigratingToNewerPlatform</title>
+    <id>15632</id>
+    <revision>
+      <id>70002</id>
+      <timestamp>2016-11-24T13:02:17Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>API-changes/New or Deprecated API/Incompatibilities</comment>
+      <text xml:space="preserve">==Migrating to a newer version of the Platform==
+
+When migrating a module suite application to use a newer version of the platform you may want to be aware of the following issues:
+
+*'''The newer platform may contain new modules in the platform and/or ide cluster that are not excluded in your platform.properties'''
+**The clusters that your application depends on may have added new modules.  If you enabled a cluster and disabled all the modules you did not need before, you may be surprised when you go to build your application with the newer platform and get warning about module dependency errors.  This is because the cluster has added new modules that are not listed as being excluded for your project. If you get errors regarding module dependencies when you migrate, you may want to check your project's settings to see if there are new modules that were introduced that you do not need and disable them.
+
+
+*'''The newer platform may include modules with newer versions'''
+**For example, in 6.9, the Lookup classes have been moved into a separate module, named Lookup API. Therefore, all modules making use of Lookup need a new dependency on this new module. Also, dependencies on the Utilities API module, which previously contained the Lookup classes, need to be updated to the latest version. For Ant-based NetBeans Platform applications, run this target for each module making use of Lookup-related classes:
+	&lt;pre&gt; ant fix-dependencies 	&lt;/pre&gt; 
+*In the IDE, you can do the following to run the above Ant target: 
+**Important Files &gt; Build Scripts (right click) &gt; Run target &gt; fix-dependencies. 
+**Also, instead of the above, you can simply add the Lookup API module to each module that makes use of the Lookup classes. For each module, right-click the module in NetBeans IDE, choose Properties, go to the Libraries panel, click Add Dependency, and then add the Lookup module. For the Utilities API module, you can remove it from the list of dependencies and then readd it to set the correct version of the dependency. 
+**The difference between the above two options is as follows: The second option is much faster - perhaps 15 seconds for each module. The first option (ant fix-dependencies) is much slower - perhaps two minutes or more per module - but it is much more complete and generic in that it removes old unused dependencies as well as adding new dependencies.
+*To achieve the above for Maven-based NetBeans Platform applications
+**you need to add the Lookup dependency to the POM of all modules that use Lookup:
+&lt;pre&gt;&lt;dependency&gt;
+    &lt;groupId&gt;org.netbeans.api&lt;/groupId&gt;
+    &lt;artifactId&gt;org-openide-util-lookup&lt;/artifactId&gt;
+    &lt;version&gt;${netbeans.version}&lt;/version&gt;
+&lt;/dependency&gt;	&lt;/pre&gt; 
+
+*For Maven-based applications
+**you also need to update the "platform" definition (from "platform11" to "platform") in the application module:
+
+&lt;pre&gt;&lt;dependency&gt;
+    &lt;groupId&gt;org.netbeans.cluster&lt;/groupId&gt;
+    &lt;artifactId&gt;platform&lt;/artifactId&gt;
+    &lt;version&gt;${netbeans.version}&lt;/version&gt;
+    &lt;type&gt;pom&lt;/type&gt;
+&lt;/dependency&gt;&lt;/pre&gt;
+
+*'''API-changes/New or Deprecated API/Incompatibilities'''
+** http://bits.netbeans.org/dev/javadoc/apichanges.html
+
+==Further Resources==
+
+* http://bruehlicke.blogspot.com/2016/10/porting-my-nb-65-rcp-app-to-nb-82.html</text>
+    </revision>
+  </page>
+</mediawiki>

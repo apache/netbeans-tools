@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqTutorialsDebugging</title>
+    <id>7493</id>
+    <revision>
+      <id>62714</id>
+      <timestamp>2013-07-31T06:52:24Z</timestamp>
+      <contributor>
+        <username>Jachym Vojtek</username>
+        <id>14800</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Debugging modules===
+
+Once your module is installed all error messages are sent to your &lt;tt&gt;(NetBeans user directory)/var/log/messages.log&lt;/tt&gt;; use that for watching what's going on.
+
+You can use &lt;tt&gt;java.util.logging.Logger&lt;/tt&gt; (or &lt;tt&gt;org.openide.util.Exceptions&lt;/tt&gt;) to report exceptions and informational messages to the log file.
+
+You can debug your own module from within NetBeans just like you would any other project.  However, if you want to step into NetBeans code then you need to download the NetBeans source.
+You do not need to build it;
+just tell NetBeans where your NetBeans source code lives using '''Tools &gt; NetBeans Platform Manager &gt; Sources'''.
+
+If you still have strange problems stepping into NetBeans code, try the following:
+* Open the NetBeans project that contains the code you are trying to access - for example, if you are stepping into the editor, open the NetBeans editor project.
+* Now run the debugger again then open the debugger sources window ('''Window &gt; Debugging &gt; Sources''') and ensure all the checkboxes are ticked.
+* Now there is no reason why NetBeans debugging should fail!
+
+To launch NetBeans in debug mode manually:
+&lt;pre&gt;
+netbeans/bin/netbeans -J-Xdebug -J-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5858
+&lt;/pre&gt;
+then use '''Run &gt; Attach Debugger''' and then choose Connector = SocketAttach, port = 5858 and timeout = 5000 and press OK.
+
+''Note: if you run the debugged NetBeans instance on the same machine as your development IDE, do not forget to add '''--userdir xxx''' parameter to the debugged instance's command line. Otherwise the debugged process might try to reuse the default userdir, which is most probably already taken up by the development IDE. The debugged NetBeans instance then terminates right after start with very undescriptive message or no messages at all.'' 
+
+----
+Applies to: NetBeans 6.5+</text>
+    </revision>
+  </page>
+</mediawiki>

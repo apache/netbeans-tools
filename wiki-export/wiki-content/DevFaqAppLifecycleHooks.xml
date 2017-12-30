@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAppLifecycleHooks</title>
+    <id>7211</id>
+    <revision>
+      <id>56125</id>
+      <timestamp>2012-07-31T13:15:59Z</timestamp>
+      <contributor>
+        <username>Javydreamercsw</username>
+        <id>2603</id>
+      </contributor>
+      <comment>/* What are some of the hooks in the application's lifecycle I can plug into? */</comment>
+      <text xml:space="preserve">__NOTOC__
+====What are some of the hooks in the application's lifecycle I can plug into?====
+
+One major difference between developing a Platform application and a monolithic Java application is that there is no &lt;tt&gt;main&lt;/tt&gt; method.  This sometimes leaves developers wondering where they can insert their own code.  This FAQ entry describes some places where this is possible.
+
+Although a bit drastic for most cases, you can
+replace the main class used to start NetBeans
+([[DevFaqPlatformAppAuthStrategies]])
+with your own class and then delegate back to NetBeans' normal main class.
+This offers you a hook early in the startup sequence without having to modify the launchers or shell scripts.
+
+Any module may provide a [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/ModuleInstall.html ModuleInstall] implementation.  The &lt;tt&gt;validate&lt;/tt&gt; method will be called before your module is even loaded, so it is the first module-level hook available in the startup sequence.  Note that many services and classes offered by the platform are unlikely to be initialized at this point.
+
+A short time afterwards, the &lt;tt&gt;restored&lt;/tt&gt; method will be called on each &lt;tt&gt;ModuleInstall&lt;/tt&gt; class.
+More services and classes will be initialized at this point than with the &lt;tt&gt;validate&lt;/tt&gt; method, but the GUI will probably not yet be realized.
+You can post some code to be executed when the UI is fully loaded like this:
+
+&lt;pre&gt;
+@Override public void restored() {
+    WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+        public void run() {
+            // any code here will be run with the UI is available
+            SomeTopComponent.findInstance().open();
+        }
+    });
+}
+&lt;/pre&gt;
+
+The &lt;tt&gt;ModuleInstall&lt;/tt&gt; class offers two methods which let you plug into the exit sequence.
+The &lt;tt&gt;closing&lt;/tt&gt; method is called first and requires that you return a boolean value.
+If &lt;tt&gt;true&lt;/tt&gt;, then your module agrees to be closed,
+but if &lt;tt&gt;false&lt;/tt&gt;, then you will prevent the exit sequence from continuing.
+The &lt;tt&gt;close&lt;/tt&gt; method is called after all &lt;tt&gt;ModuleInstall&lt;/tt&gt; classes return &lt;tt&gt;true&lt;/tt&gt; from the &lt;tt&gt;closing&lt;/tt&gt; method
+and is the final hook in which modules can participate in the application's lifecycle.
+
+Note that providing a &lt;tt&gt;ModuleInstall&lt;/tt&gt; class will increase total startup time a little,
+even if you have taken care to execute any long-running tasks from its methods in a background thread.
+It is always preferable to register objects declaratively,
+and/or run procedural code when it is first needed rather than eagerly.
+
+Another major class in platform development is the [http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.html TopComponent] class.
+It offers several methods which allow you to hook into its lifecycle.
+
+Here are some events you can hook into for when a &lt;tt&gt;TopComponent&lt;/tt&gt; is opened:
+
+* &lt;tt&gt;JComponent.addNotify&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentOpened&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentShowing&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentActivated&lt;/tt&gt;
+
+When you set focus on a &lt;tt&gt;TopComponent&lt;/tt&gt;, the &lt;tt&gt;componentActivated&lt;/tt&gt; method is called.
+Likewise, the &lt;tt&gt;componentDeactivated&lt;/tt&gt; method is called when focus is moved away from that &lt;tt&gt;TopComponent&lt;/tt&gt;.
+
+Here are some events you can hook into for when a &lt;tt&gt;TopComponent&lt;/tt&gt; is closed:
+
+* &lt;tt&gt;TopComponent.canClose&lt;/tt&gt;
+* &lt;tt&gt;JComponent.removeNotify&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentHidden&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentDeactivated&lt;/tt&gt;
+* &lt;tt&gt;TopComponent.componentClosed&lt;/tt&gt;
+
+(The exact sequence in which the opening/closing hooks are invoked is not documented or guaranteed to remain constant.)
+
+Note that you can return &lt;tt&gt;false&lt;/tt&gt; from &lt;tt&gt;TopComponent.canClose&lt;/tt&gt; to prevent the &lt;tt&gt;TopComponent&lt;/tt&gt; from being closed at all.
+
+-----
+
+Applies to: NetBeans 6.5 and later
+
+====Further reading ====
+You can get more details along with code examples [http://wiki.netbeans.org/BookNBPlatformCookbookCH01#Module_Installer here].</text>
+    </revision>
+  </page>
+</mediawiki>

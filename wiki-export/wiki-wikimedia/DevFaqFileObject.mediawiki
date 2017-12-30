@@ -1,0 +1,43 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===What is a FileObject?===
+FileObjects are ''virtual files'' which live inside a [[DevFaqFileSystem| FileSystem ]].  They
+may represent a file on disk - or anything else walks and talks like a file, or can be made to - such as a file
+on a remote FTP server, a file entry in a JAR file, an entry in an XML file, etc.
+
+FileObjects differ from <tt>java.io.File</tt> in certain ways:
+* You don't generally ever have a FileObject representing a file that doesn't really exist (if you think a FileObject may have been deleted, check <code>isValid()</code>)
+* You can listen for changes on FileObjects
+* <tt>FileObjects</tt> can have key-value pairs of ad-hoc [[DevFaqFileAttributes| attributes ]] associated with them
+
+They are part of the [http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/doc-files/api.html Filesystems API];
+the javadoc for FileObject can be found [http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileObject.html here].
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Tboudreau 
+on 2010-02-19T01:44:39Z.
+

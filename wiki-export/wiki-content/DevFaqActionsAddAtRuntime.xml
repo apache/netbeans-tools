@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqActionsAddAtRuntime</title>
+    <id>19058</id>
+    <revision>
+      <id>69167</id>
+      <timestamp>2016-03-13T14:03:58Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>Initial state. Copied from mailing list</comment>
+      <text xml:space="preserve">==How do I add an action (incl. shortcut) at runtime?==
+
+Create system file system entries in the &lt;code&gt;Actions&lt;/code&gt;/&lt;code&gt;Menu&lt;/code&gt;/&lt;code&gt;Shortcuts&lt;/code&gt; folders! See the following example
+
+Usage:
+&lt;pre&gt;
+    private void initActions() { 
+        ActionRegistrationService ars =  Lookup.getDefault().lookup(ActionRegistrationService.class); 
+
+        try { 
+            String menuPath = "Menu/Machine/Jog"; 
+            
+            ars.registerAction(getMessage(this.getClass(), "JogService.xPlus") , "Machine", "M-RIGHT" , menuPath, new JogAction(this, 1, 0, 0)); 
+            ars.registerAction(getMessage(this.getClass(), "JogService.xMinus"), "Machine", "M-LEFT"  , menuPath, new JogAction(this,-1, 0, 0)); 
+            ars.registerAction(getMessage(this.getClass(), "JogService.yPlus") , "Machine", "M-UP"    , menuPath, new JogAction(this, 0, 1, 0)); 
+        } catch (IOException ex) { 
+            Exceptions.printStackTrace(ex); 
+        } 
+    } 
+&lt;/pre&gt;
+
+Helper-Service
+&lt;pre&gt;
+
+import com.google.common.base.Joiner; 
+import java.io.IOException; 
+import java.util.Arrays; 
+import javax.swing.Action; 
+import org.openide.filesystems.FileObject; 
+import org.openide.filesystems.FileUtil; 
+import org.openide.util.lookup.ServiceProvider; 
+
+/** 
+ * 
+ * @author wwinder 
+ */ 
+@ServiceProvider(service=ActionRegistrationService.class) 
+public class ActionRegistrationService { 
+    /** 
+     * Registers an action with the platform along with optional shortcuts and 
+     * menu items. 
+     * @param name Display name of the action. 
+     * @param category Category in the Keymap tool. 
+     * @param shortcut Default shortcut, use an empty string or null for none. 
+     * @param menuPath Menu location starting with "Menu", like "Menu/File" 
+     * @param action an action object to attach to the action entry. 
+     * @throws IOException 
+     */ 
+    public void registerAction(String name, String category, String shortcut, String menuPath, Action action) throws IOException { 
+        /////////////////////// 
+        // Add/Update Action // 
+        /////////////////////// 
+        String originalFile = "Actions/" + category + "/" + name + ".instance"; 
+        FileObject in = getFolderAt("Actions/" + category); 
+        FileObject obj = in.getFileObject(name, "instance"); 
+        if (obj == null) { 
+            obj = in.createData(name, "instance"); 
+        } 
+        action.putValue(Action.NAME, name); 
+        obj.setAttribute("instanceCreate", action); 
+        obj.setAttribute("instanceClass", action.getClass().getName()); 
+
+        ///////////////////// 
+        // Add/Update Menu // 
+        ///////////////////// 
+        in = getFolderAt(menuPath); 
+        obj = in.getFileObject(name, "shadow"); 
+        // Create if missing. 
+        if (obj == null) { 
+            obj = in.createData(name, "shadow"); 
+            obj.setAttribute("originalFile", originalFile); 
+        } 
+
+        ///////////////////////// 
+        // Add/Update Shortcut // 
+        ///////////////////////// 
+        in = getFolderAt("Shortcuts"); 
+        obj = in.getFileObject(shortcut, "shadow"); 
+        if (obj == null) { 
+            obj = in.createData(shortcut, "shadow"); 
+            obj.setAttribute("originalFile", originalFile); 
+        } 
+    } 
+
+    private FileObject getFolderAt(String inputPath) throws IOException { 
+        String parts[] = inputPath.split("/"); 
+        FileObject existing = FileUtil.getConfigFile(inputPath); 
+        if (existing != null) 
+            return existing; 
+
+        FileObject base = FileUtil.getConfigFile(parts[0]); 
+        if (base == null) return null; 
+
+        for (int i = 1; i &lt; parts.length; i++) { 
+            String path = Joiner.on('/').join(Arrays.copyOfRange(parts,0,i+1)); 
+            FileObject next = FileUtil.getConfigFile(path); 
+            if (next == null) { 
+                next = base.createFolder(parts[i]); 
+            } 
+            base = next; 
+        } 
+
+        return FileUtil.getConfigFile(inputPath); 
+    } 
+} 
+&lt;/pre&gt;
+
+Taken from mailing list http://forums.netbeans.org/topic65421.html
+Based on https://blogs.oracle.com/geertjan/entry/dynamically_creating_menu_items_part</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNodeInjectingLookupContents</title>
+    <id>14443</id>
+    <revision>
+      <id>40158</id>
+      <timestamp>2010-07-24T19:35:53Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">==I want to allow other modules to inject objects into my Node's Lookup or elsewhere (Actions, Properties...)==
+
+There is a simple general method for allowing you to define your own registry of objects as a folder in the System Filesystem, and look them up on demand.  
+
+&lt;source lang="java"&gt;
+class BaseNode extends AbstractNode {
+  //...
+  private static final String PATH_IN_SFS = "path/to/some/folder/actions";
+  public Action[] getActions(boolean ignored) {
+    return Lookups.forPath(PATH_IN_SFS).lookupAll(Action.class).toArray(new Action[0]);
+  }
+  //...
+}&lt;/source&gt;
+
+You can use this pattern for properties, or whatever.  If you want your Node to respond to new modules being loaded on the fly, you may want to get a Lookup.Result and listen for changes on it (not necessary in the example above, but necessary for things like Lookup contents or Properties, which are cached).
+
+===Injecting Lookup Contents===
+First, be sure this is something you really need.  Typically, you expose some model object from your Node, and [http://wiki.netbeans.org/DevFaqActionContextSensitive write Actions that are sensitive to it].
+
+However, if you want to use built-in actions (such as [http://bits.netbeans.org/dev/javadoc/org-openide-actions/org/openide/actions/OpenAction.html OpenAction]) over your custom Nodes, and the module which created the Node does not provide the &lt;code&gt;Openable&lt;/code&gt; or &lt;code&gt;OpenCookie&lt;/code&gt; object which, for example, &lt;code&gt;OpenAction&lt;/code&gt; needs, then you do need some way for other modules to inject contents into your lookup.  If you are both injecting an object into the lookup, and writing an action against that object in the same module (and not expecting other modules to also add actions sensitive to your Converter's type), you can probably skip the injecting of lookup contents, and just go straight to the Node's model object.
+
+Lookup contents should not be added programmatically - that would mean every module that cares about a Node type would have to be called to add contents (which may never be used) to it - meaning a performance penalty.  Also this breaks things like FilterNode, which cannot transparently proxy methods that exist on the Node it is acting as a clone of.
+
+It is simple to create a declarative registry for lookup contents.  It makes use of the fact that the contents of an [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/AbstractLookup.html AbstractLookup] are provided by a mutable [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/InstanceContent.html InstanceContent] object, and that a factory class can be added to an InstanceContent, [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/InstanceContent.Convertor.html InstanceContent.Converter].  So you can create a folder where other modules will register instances of InstanceContent.Converter for Nodes which hold an object of your type.  When you create the Node's lookup, you can collect all such Converters, and add them to your Lookup's contents.  Unless the lookup is queried for the type one Converter creates, it will never be called.
+
+Here is an example base Node class that will do this:
+&lt;source lang="java"&gt;
+public class BaseNode&lt;T&gt; extends AbstractNode {
+  final InstanceContent content;
+  final Class&lt;T&gt; type;
+  public BaseNode(Class&lt;T&gt; type, T modelObject) {
+    this(type, modelObject, new InstanceContent());
+  }
+  public BaseNode(Class&lt;T&gt; type, T modelObject, InstanceContent content){
+    super(Children.LEAF, new ProxyLookup(Lookups.fixed(modelObject), new AbstractLookup(content)));
+    this.content = content;
+    this.type = type;
+    //Populate lookup based on declaratively registered factories
+    String pathInSystemFS = getRegistrationPath("lookupContents");
+    Collection&lt;? extends InstanceContent.Convertor&gt; all = 
+       Lookups.forPath(pathInSystemFS).
+       lookupAll(InstanceContent.Convertor.class);
+    for (InstanceContent.Convertor&lt;T, ?&gt; factory : all) {
+      content.add(modelObject, factory);
+    }
+    //if you want to handle modules being loaded/unloaded in a running app,
+    //use lookupResult() instead of lookupAll(), retain a reference to the
+    //Lookup.Result, listen on it for changes, and remove all acquired
+    //InstanceContent objects if it changes, then rerun the above code
+  }
+  @Override
+  public Action[] getActions(boolean context) {
+    return Lookups.forPath(getRegistrationPath("actions")).
+         lookupAll(Action.class).toArray(new Action[0]);
+  }
+  String getRegistrationPath(String subfolder) {
+    //e.g. pass "lookupContents" and get 
+    //MyModule/com/foo/mymodule/MyType/lookupContents
+    return "MyModule/" + type.getName().replace('.', '/') + "/" + subfolder;
+  }
+}&lt;/source&gt;
+
+Suppose that we have some BaseNodes whose model objects are instances of Strings.  We want to add a Foo object to their Lookups, and register an action which operates against Foo objects.  So, we have an InstanceContent.Converter implementation:
+&lt;source lang="java"&gt;
+public class FooFactory implements InstanceContent.Convertor&lt;String, Foo&gt; {
+  @Override
+  public Foo convert(String string) {
+    return new Foo(string);
+  }
+  @Override
+  public Class&lt;? extends Foo&gt; type(String obj) {
+    return Foo.class;
+  }
+  @Override
+  public String id(String obj) {
+    return getClass().getName() + obj;
+  }
+  @Override
+  public String displayName(String obj) {
+    return obj;
+  }
+}
+&lt;/source&gt;
+
+The action implementation can be any Action subclass, so we can omit the code for that - but its classname for this example will be &lt;code&gt;org.netbeans.demo.elookup.FooAction&lt;/code&gt;.
+
+All we need to do now is register both of these objects in the [http://wiki.netbeans.org/DevFaqSystemFilesystem System Filesystem] and we will have working code.
+
+&lt;source lang="xml"&gt;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" 
+"http://www.netbeans.org/dtds/filesystem-1_1.dtd"&gt;
+&lt;filesystem&gt;
+    &lt;folder name="MyModule"&gt;
+        &lt;folder name="java"&gt;
+            &lt;folder name="lang"&gt;
+                &lt;folder name="String"&gt;
+                    &lt;folder name="lookupContents"&gt;
+                        &lt;file name="org-netbeans-demo-elookup-FooFactory.instance"/&gt;
+                    &lt;/folder&gt;
+                    &lt;folder name="actions"&gt;
+                        &lt;file name="org-netbeans-demo-elookup-FooAction.instance"/&gt;
+                    &lt;/folder&gt;
+                &lt;/folder&gt;
+            &lt;/folder&gt;
+        &lt;/folder&gt;
+    &lt;/folder&gt;
+&lt;/filesystem&gt;
+&lt;/source&gt;
+
+Note that objects created by such factories will be ''weakly cached'' by the lookup - if no object is holding a reference to the object, it can be garbage collected.  If such objects are expensive to create, or if you expect callers to attach listeners to the factory-created objects, you may want to cache them in your implementation of &lt;code&gt;InstanceContent.Converter&lt;/code&gt;.</text>
+    </revision>
+  </page>
+</mediawiki>

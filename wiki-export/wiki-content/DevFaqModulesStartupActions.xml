@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqModulesStartupActions</title>
+    <id>7401</id>
+    <revision>
+      <id>29790</id>
+      <timestamp>2009-12-03T13:43:29Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How do I run some code when my module starts/loads/unloads?===
+
+To run some code when your module is loaded, and basically every time the IDE starts and your module is enabled, simply create a subclass of &lt;tt&gt;org.openide.modules.ModuleInstall&lt;/tt&gt; and override the &lt;tt&gt;restored()&lt;/tt&gt; method. Bear in mind that this is being executing during the time the IDE/platform is starting up. You should limit the work you do here to that which is absolutely necessary.
+
+Once the class is created, you must declare it in your module's &lt;tt&gt;manifest.mf&lt;/tt&gt; file, like so:
+
+&lt;pre&gt;
+OpenIDE-Module-Install: org/netbeans/modules/editor/EditorModule.class
+&lt;/pre&gt;
+
+Likewise, to execute code when the IDE is shutting down, you can override the &lt;tt&gt;close()&lt;/tt&gt; method. This method of &lt;tt&gt;ModuleInstall&lt;/tt&gt; is called when the IDE is shutting down, contrary to the &lt;tt&gt;closing()&lt;/tt&gt; method, which is called to alert the module that the IDE is about to shut down. However, another module may veto the shutdown by returning &lt;tt&gt;false&lt;/tt&gt; from the &lt;tt&gt;closing()&lt;/tt&gt; method, so the &lt;tt&gt;close()&lt;/tt&gt; method is best for performing any cleanup work for your module.
+
+You can simply use '''File &gt; New File &gt; Module Development | Module Installer''' to create the &lt;tt&gt;ModuleInstall&lt;/tt&gt; class and its registration in the manifest.
+
+----
+Applies to: NetBeans 6.5 and later</text>
+    </revision>
+  </page>
+</mediawiki>

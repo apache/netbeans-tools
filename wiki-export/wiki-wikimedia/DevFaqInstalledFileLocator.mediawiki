@@ -1,0 +1,63 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+===Can I bundle some additional files with my module? If so, how can I find those files to use them from my module?===
+
+Sometimes you need to bundle some additional files with your module (for example native libraries or native executables).  
+
+====Bundling External File With Your Module====
+NetBeans provides a simple and straightforward way to bundle whatever files you want into a module project:
+
+* Create a folder in your project root directory called <tt>release/</tt> (note this means the ''project root''&mdash;the directory containing <tt>src/</tt> and <tt>nbproject/</tt> and <tt>MANIFEST.MF</tt>, ''not'' the source root directory of your module project!)
+* Put anything you want bundled with your module in that directory or a subdirectory of <tt>release/</tt>
+** The entire subtree of this folder will be included in your [[DevFaqWhatIsACluster|cluster]] and bundled into your module's [[DevFaqWhatIsNbm|NBM file]]
+** Note that if what you are adding is a native library (DLL, .so file, etc.) there is [[DevFaqNativeLibraries| a specific place to put this]]
+* If the thing you are bundling can change (for example, you are bundling a library you wrote, and you may make changes to that library and recompile it), you may want to override your module's <tt>release-files</tt> to rebuild/re-copy that library (i.e. <tt>&lt;target name="release" depends="compile-lib,projectized-common.release"/&gt;</tt> and then create your own <tt>compile-lib</tt> target that rebuilds the library and copies it somewhere under <tt>release/</tt> in your module project.
+
+The result is: 
+* the files you are bundling are included in your ''module''  
+** Note that this does not mean they will be inside your module's JAR file (that would not be useful)
+* They will be bundled ''with'' your module's JAR file and will be in a findable location at runtime (see below).
+
+''Note:'' If you are bundling third party software which '''has its own installer''' there is [[DevFaqUseNativeInstaller|a way to run that installer during module installation]].
+
+====Finding External Files At Runtime====
+Now your module includes the files you need.  You still need to get access to them at runtime.
+
+To do that, use <tt>[http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/InstalledFileLocator.html InstalledFileLocator]</tt>.  That is a class which can find a file which was installed by a module.  You simply give it your module's code-name (the thing you typed when you created the module, which looks like a package name) and a ''relative path'' (i.e. not including the <tt>release/</tt> directory):
+
+ File emulator = InstalledFileLocator.getDefault().locate(
+     "javacard/bin/jcre.exe",
+     "org.netbeans.modules.javacard.referenceimpl",
+     false);
+
+Always handle the case that the user (or disk crash, whatever) might have deleted it.
+
+If you are wondering why you don't just find the directory NetBeans is installed in and look in that directory, see the [[DevFaqWhatIsACluster#Why_Have_Clusters.3F|background information about clusters]]
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jglick 
+on 2010-06-14T22:11:57Z.
+

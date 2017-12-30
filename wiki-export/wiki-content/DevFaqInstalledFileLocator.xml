@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqInstalledFileLocator</title>
+    <id>15410</id>
+    <revision>
+      <id>39135</id>
+      <timestamp>2010-06-14T22:11:57Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">===Can I bundle some additional files with my module? If so, how can I find those files to use them from my module?===
+
+Sometimes you need to bundle some additional files with your module (for example native libraries or native executables).  
+
+====Bundling External File With Your Module====
+NetBeans provides a simple and straightforward way to bundle whatever files you want into a module project:
+
+* Create a folder in your project root directory called &lt;tt&gt;release/&lt;/tt&gt; (note this means the ''project root''&amp;mdash;the directory containing &lt;tt&gt;src/&lt;/tt&gt; and &lt;tt&gt;nbproject/&lt;/tt&gt; and &lt;tt&gt;MANIFEST.MF&lt;/tt&gt;, ''not'' the source root directory of your module project!)
+* Put anything you want bundled with your module in that directory or a subdirectory of &lt;tt&gt;release/&lt;/tt&gt;
+** The entire subtree of this folder will be included in your [[DevFaqWhatIsACluster|cluster]] and bundled into your module's [[DevFaqWhatIsNbm|NBM file]]
+** Note that if what you are adding is a native library (DLL, .so file, etc.) there is [[DevFaqNativeLibraries| a specific place to put this]]
+* If the thing you are bundling can change (for example, you are bundling a library you wrote, and you may make changes to that library and recompile it), you may want to override your module's &lt;tt&gt;release-files&lt;/tt&gt; to rebuild/re-copy that library (i.e. &lt;tt&gt;&amp;lt;target name="release" depends="compile-lib,projectized-common.release"/&amp;gt;&lt;/tt&gt; and then create your own &lt;tt&gt;compile-lib&lt;/tt&gt; target that rebuilds the library and copies it somewhere under &lt;tt&gt;release/&lt;/tt&gt; in your module project.
+
+The result is: 
+* the files you are bundling are included in your ''module''  
+** Note that this does not mean they will be inside your module's JAR file (that would not be useful)
+* They will be bundled ''with'' your module's JAR file and will be in a findable location at runtime (see below).
+
+''Note:'' If you are bundling third party software which '''has its own installer''' there is [[DevFaqUseNativeInstaller|a way to run that installer during module installation]].
+
+====Finding External Files At Runtime====
+Now your module includes the files you need.  You still need to get access to them at runtime.
+
+To do that, use &lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/InstalledFileLocator.html InstalledFileLocator]&lt;/tt&gt;.  That is a class which can find a file which was installed by a module.  You simply give it your module's code-name (the thing you typed when you created the module, which looks like a package name) and a ''relative path'' (i.e. not including the &lt;tt&gt;release/&lt;/tt&gt; directory):
+
+ File emulator = InstalledFileLocator.getDefault().locate(
+     "javacard/bin/jcre.exe",
+     "org.netbeans.modules.javacard.referenceimpl",
+     false);
+
+Always handle the case that the user (or disk crash, whatever) might have deleted it.
+
+If you are wondering why you don't just find the directory NetBeans is installed in and look in that directory, see the [[DevFaqWhatIsACluster#Why_Have_Clusters.3F|background information about clusters]]</text>
+    </revision>
+  </page>
+</mediawiki>

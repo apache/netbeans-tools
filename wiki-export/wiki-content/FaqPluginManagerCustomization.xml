@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>FaqPluginManagerCustomization</title>
+    <id>8334</id>
+    <revision>
+      <id>40462</id>
+      <timestamp>2010-08-06T16:17:14Z</timestamp>
+      <contributor>
+        <username>Matteodg</username>
+        <id>430</id>
+      </contributor>
+      <minor/>
+      <text xml:space="preserve">__NOTOC__
+===How to customize Plugin Manager?===
+
+There are several possibilities to customize behavior of Plugin Manager ('''Tools|Plugins''') to show more items or to change its behavior.
+
+'''Note:''' for NetBeans expert only. Use of these options at your own risk.
+
+====Show all modules====
+In default view, Plugin Manager shows all plugins unless specify its visibility flag to &lt;tt&gt;false&lt;/tt&gt; (&lt;tt&gt;AutoUpdate-Show-In-Client=false&lt;/tt&gt;) - in other words, Plugin Manager filters out most of like service modules as hidden in plugin infrastructure. To make Plugin Manager to be showing all modules being run in your IDE with switch &lt;tt&gt;plugin.manager.modules.only&lt;/tt&gt; set to &lt;tt&gt;true&lt;/tt&gt; (i.e.&lt;tt&gt;-J-Dplugin.manager.modules.only=true&lt;/tt&gt;).
+* system property &lt;tt&gt;plugin.manager.modules.only&lt;/tt&gt;
+* the default value: &lt;tt&gt;false&lt;/tt&gt;
+
+====Show plugin's code name base====
+Each NetBeans plugin has own '''code name''' what should be unique in NetBeans distribution, this code name will not show in plugin's details. To show this code name just run your IDE with switch &lt;tt&gt;plugin.manager.extended.description&lt;/tt&gt; set to &lt;tt&gt;true&lt;/tt&gt; (i.e.&lt;tt&gt;-J-Dplugin.manager.extended.description=true&lt;/tt&gt;)
+* system property &lt;tt&gt;plugin.manager.extended.description&lt;/tt&gt;
+* the default value: &lt;tt&gt;false&lt;/tt&gt;
+
+====Install all plugins into NetBeans installation directory====
+How to Plugin Manager chooses a directory where NBM will install?
+# If NetBeans install dir is not writable, install to &lt;tt&gt;userdir&lt;/tt&gt;.
+# If an update, overwrite the existing location, wherever that is.
+# Otherwise (new module), if a cluster name is specified in NBM (&lt;tt&gt;targetcluster&lt;/tt&gt;), put it there (creating the cluster if necessary).
+# Otherwise (no cluster name specified), if marked &lt;tt&gt;global&lt;/tt&gt;, maybe put it into an &lt;tt&gt;extra&lt;/tt&gt; cluster
+# Otherwise (&lt;tt&gt;global&lt;/tt&gt; set &lt;tt&gt;false&lt;/tt&gt; or unspecified), put it in &lt;tt&gt;userdir&lt;/tt&gt;.
+
+
+If &lt;tt&gt;plugin.manager.install.global&lt;/tt&gt; is set to &lt;tt&gt;true&lt;/tt&gt; then NBM will go into installation directory for all cases unless the install directory is &lt;tt&gt;read-only&lt;/tt&gt;.
+
+* system property &lt;tt&gt;plugin.manager.install.global&lt;/tt&gt;
+* the default value: &lt;tt&gt;false&lt;/tt&gt;
+
+====Check for new plugins just after IDE startup====
+Plugin Manager checks for '''updates''' of '''already installed''' plugins right after IDE startup, not for '''new plugins'''. To force Plugin Manager to check for new plugins as well, just run IDE with a option &lt;tt&gt;-J-Dplugin.manager.check.new.plugins=true&lt;/tt&gt;. New plugins will be notified in IDE status line.
+* system property &lt;tt&gt;plugin.manager.check.new.plugins&lt;/tt&gt;
+* the default value: &lt;tt&gt;false&lt;/tt&gt;
+
+====Check for updates just after IDE startup====
+As was written above, Plugin Manager is checking for '''updates''' of '''already installed''' plugins right after IDE startup. If you would like to suppress it, just run IDE with a option &lt;tt&gt;-J-Dplugin.manager.check.updates=false&lt;/tt&gt;.
+* system property &lt;tt&gt;plugin.manager.check.updates&lt;/tt&gt;
+* the default value: &lt;tt&gt;true&lt;/tt&gt;
+
+====To customize Interval of Automatically Check for Updates ('''''since NB6.1''''')====
+Use a launcher option &lt;tt&gt;plugin.manager.check.interval&lt;/tt&gt; with possible values: &lt;tt&gt;EVERY_STARTUP&lt;/tt&gt;, &lt;tt&gt;EVERY_DAY&lt;/tt&gt;,
+&lt;tt&gt;EVERY_WEEK&lt;/tt&gt;, &lt;tt&gt;EVERY_2WEEKS&lt;/tt&gt;, &lt;tt&gt;EVERY_MONTH&lt;/tt&gt; or &lt;tt&gt;NEVER&lt;/tt&gt; or also it's possible set the interval in minutes, like this &lt;tt&gt;-J-Dplugin.manager.check.interval=60&lt;/tt&gt; - to check it every hour.
+This option can force default value for Plugin Manager, i.e. if your
+application is launched with &lt;tt&gt;-J-Dplugin.manager.check.interval=EVERY_STARTUP&lt;/tt&gt; (or with modified in &lt;tt&gt;etc/netbeans.conf&lt;/tt&gt;),
+content of all subscribed Update Centers will be checked on every startup. If an user changes the check interval in ''Plugin Manager | Settings tab'' then future Autoupdate invocations will read user's values regardless the &lt;tt&gt;plugin.manager.check.interval&lt;/tt&gt;, as usual.
+
+* system property &lt;tt&gt;plugin.manager.check.interval&lt;/tt&gt;
+* the default value: &lt;tt&gt;EVERY_WEEK&lt;/tt&gt;
+
+====To give precedence to dedicated module while updating ('''''since NB6.1''''')====
+If Plugin Manager does install all available updates, it's possible to determinate set of modules which must be handled in exclusive mode before others. For example, update of Plugin Manager plugin should be installed as the first, in preference of common plugins because its update might be important for handling update of rest of plugins. In that case, Plugin Manager will notify users about availability of update Plugin Manager only (swallows down updates of rest) and when Plugin Manager is up-to-date, it will handle update of other plugins.
+* system property &lt;tt&gt;plugin.manager.first.class.modules&lt;/tt&gt;
+* the default value: &lt;tt&gt;org.netbeans.modules.autoupdate.services, org.netbeans.modules.autoupdate.ui&lt;/tt&gt;
+
+====To make Autoupdate/Plugin Manager high verbose in console====
+Just use a common logging capability for force Autoupdate/Plugin Manager to be running in high verbose mode, like this &lt;tt&gt;-J-Dorg.netbeans.modules.autoupdate.level=FINEST&lt;/tt&gt;, you also can specify the scope for logging in more detail (&lt;tt&gt;-J-Dorg.netbeans.modules.autoupdate.ui.actions.AutoupdateSettings.level=FINE&lt;/tt&gt;). Do not forget to switch on logging into console &lt;tt&gt;-J-Dnetbeans.logger.console=true&lt;/tt&gt;.
+
+------
+
+Applies to: NetBeans 6.0 or newer
+
+Platforms: All
+
+------
+Do not hesitate to contact me on [mailto:jrechtacek@netbeans.org jrechtacek@netbeans.org] if you have any question.</text>
+    </revision>
+  </page>
+</mediawiki>

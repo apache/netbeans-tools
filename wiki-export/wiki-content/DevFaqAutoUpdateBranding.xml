@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAutoUpdateBranding</title>
+    <id>7213</id>
+    <revision>
+      <id>51960</id>
+      <timestamp>2012-02-24T03:15:05Z</timestamp>
+      <contributor>
+        <username>Bruehlicke</username>
+        <id>3223</id>
+      </contributor>
+      <comment>/* How can I update the splash screen, title bar and other branding items via AutoUpdate? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How can I update the splash screen, title bar and other branding items via AutoUpdate?===
+
+It's easy to distribute new and/or updated modules via AutoUpdate, but you might also like to update branding items like the splash screen and version number in the application's title bar to reflect the changes.
+
+To do this, create a new module in your suite.  Edit its build.xml and AFTER the line
+&lt;pre&gt;
+&lt;import file="nbproject/build-impl.xml"/&gt;
+&lt;/pre&gt;
+
+insert
+
+&lt;pre&gt;
+&lt;property file="${suite.dir}/nbproject/project.properties"/&gt;
+&lt;target name="netbeans-extra" depends="init"&gt;
+    &lt;branding cluster="${cluster}" overrides="${suite.dir}/branding" token="${app.name}"/&gt;
+&lt;/target&gt;
+&lt;/pre&gt;
+
+Next, add the following to the modules' nbproject/project.properties file. You may also need to update the list of files in extra.module.files to include only those JARs which your suite actually brands.
+
+&lt;pre&gt;
+nbm.needs.restart=true
+nbm.is.global=true
+nbm.target.cluster=${app.name}
+extra.module.files=\
+        core/locale/core_${app.name}.jar,\
+        modules/ext/locale/updater_${app.name}.jar,\
+        modules/locale/org-netbeans-core-windows_${app.name}.jar,\
+        modules/locale/org-netbeans-core_${app.name}.jar,\
+        modules/locale/org-netbeans-modules-autoupdate-ui_${app.name}.jar,\
+        modules/locale/org-netbeans-modules-favorites_${app.name}.jar,\
+        modules/locale/org-netbeans-modules-javahelp_${app.name}.jar,\
+        modules/locale/org-netbeans-modules-projectui_${app.name}.jar
+&lt;/pre&gt;
+
+Finally, run the "nbms" Ant target on your suite and deploy the updates to your AutoUpdate center.
+
+Note that you [http://www.netbeans.org/issues/show_bug.cgi?id=122815 may encounter problems doing this in NetBeans 6.0].
+
+Thanks to Matteo Di Giovinazzo for sharing how to do this on the dev@openide list.</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWhenUseWrapperModule</title>
+    <id>7515</id>
+    <revision>
+      <id>29594</id>
+      <timestamp>2009-12-02T15:00:34Z</timestamp>
+      <contributor>
+        <username>Rmichalsky</username>
+        <id>384</id>
+      </contributor>
+      <comment>Note about wrapped jars UI</comment>
+      <text xml:space="preserve">__NOTOC__
+===When should I use a library wrapper module and when should I just package the library into my module?===
+
+The New Module Wizard offers easy support for creating a wrapper module:
+'''File &gt; New Project &gt; NetBeans Modules &gt; Library Wrapper Module''' and since NetBeans 6.8 it is similarly easy to either edit Library Wrapper Module after it has been created or package library directly to your module via '''Project Properties &gt; Libraries &gt; Wrapped JARs'''. 
+
+Before NB 6.8 it was more convenient to create Library Wrapper module due to existence of the wizard, but not Project Properties UI. This biased the answer to this question, but generally there's no harm in using a library wrapper module.
+
+Note that a library wrapper module can wrap more than one external JAR -
+you do not need to create one for each library.
+But it is a good idea to create a separate wrapper for each JAR
+if they come from different projects and might conceivably be used independently.
+
+The general algorithm for making an optimal decision about when to use a wrapper module is this:
+
+* If the library is from some third-party source, and your module is just using it, then
+:* If it is something very esoteric and your module will be the ''only'' module in an installation of NetBeans (or your NetBeans-based app) ever using it
+:* You are writing only one module that will use the library, ''or'' you want to declare the packages contained in your library in the public packages of your module
+:* If you will never want  deliver an update of that library by itself, without delivering an update of your module
+::* Then you probably just want to package the library directly into your module, as in [[DevFaqModuleDependencies | DevFaqModuleDependencies]]
+:* If you wrote the library you want to use
+::* You might just want to add the appropriate &lt;tt&gt;OpenIDE-Module-*&lt;/tt&gt; entries directly to its manifest and make it a module that way.  Remember to list the packages your module will need to export.
+::* Else, you probably want to read [[DevFaqWrapperModules | DevFaqWrapperModules]]
+
+There is a very slight performance penalty to using a wrapper module -
+it's one more JAR to open and read from, and one extra layer of indirection for the classloader.
+''That is not a reason to avoid using a wrapper module if that's what you need'' -
+it really is slight.
+In a very large application such as the NetBeans IDE,
+such considerations are more important because there are more JARs, more classloaders,
+and hence more overhead already.
+
+If you are developing the library yourself, but decide you want to keep the library project separate from any NB module project, you can do so.
+See [[DevFaqWrapperModules| Using a wrapper module for an existing project]]
+for information and various methods to hook them up for
+development.
+
+----
+Applies to: NetBeans 6.8 and above</text>
+    </revision>
+  </page>
+</mediawiki>

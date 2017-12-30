@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqSuppressExistingModule</title>
+    <id>7467</id>
+    <revision>
+      <id>29810</id>
+      <timestamp>2009-12-03T14:01:41Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===I want my module to disable some of the modules that would normally be enabled. Possible?===
+
+If you're building a complete application (for example, selecting the '''Standalone Application''' option for a module suite) just use the '''Libraries''' panel of the suite's '''Properties''' dialog to exclude modules you don't need from clusters you are otherwise including.
+
+If you have a single module which you want to install in an existing application (e.g. the NetBeans IDE) and disable another module, it's a little trickier. You can do it in your &lt;tt&gt;ModuleInstall.restored()&lt;/tt&gt; method:
+
+[http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/api.html#listing Modules API - List of Modules]
+
+Sample:
+
+[http://hg.netbeans.org/main/file/tip/versioning.system.cvss/src/org/netbeans/modules/versioning/system/cvss/ModuleLifecycleManager.java ModuleLifecycleManager.java] of the Java CVS Module
+
+You can also go through the Auto Update Services API:
+[http://blogs.sun.com/geertjan/entry/parsing_the_command_line_to1 Geertjan shows how]
+
+-----------
+
+Applies to: NetBeans 6.5 and later</text>
+    </revision>
+  </page>
+</mediawiki>

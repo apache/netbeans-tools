@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWeakListener</title>
+    <id>14371</id>
+    <revision>
+      <id>32811</id>
+      <timestamp>2010-01-24T06:12:27Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <comment>/* What is a WeakListener */</comment>
+      <text xml:space="preserve">__NOTOC__
+==What is a WeakListener==
+
+When you attach a listener to another object, via, for example, an &lt;code&gt;addPropertyChangeListener()&lt;/code&gt; method, that other object now holds a ''reference'' to that listener.
+
+In Java, any object that is referenced by another object which is still in use (i.e. referenced by something else that is still alive, and so forth) cannot be garbage collected.  One of the most frequent sources of memory leaks in Swing applications is attaching a listener to some long-lived object and never detaching the listener.  The entire object graph of the listener and anything it references is held in memory, whether it is needed or not, until the object being listened to is finally garbage collected.
+
+Since listeners are often implemented as inner (non-static) classes of some other object, and an inner class keeps a reference to the object that created it, the outer object instance is kept in memory too.
+
+&lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/WeakListeners.html WeakListeners]&lt;/code&gt; is a factory class which wraps your event listener in another one, but it only ''weakly'' (using &lt;code&gt;java.lang.ref.WeakReference&lt;/code&gt;) references your actual listener.  That means that, even though you are listening for changes, that will not block your listener from being garbage collected if nothing ''else'' still references it.
+
+There is one caveat to using WeakListeners - if you do something like this:
+&lt;pre&gt;
+someObject.addPropertyChangeListener(WeakListeners.propertyChange(new PropertyChangeListener() {
+   public void propertyChange(PropertyChangeEvent evt) {
+     ...
+   }
+}, someObject);
+&lt;/pre&gt;
+in fact you ''are not listening'' on someObject for any amount of time - the anonymous PropertyChangeListener you created will be instantly garbage-collected.  So keep a reference to your listener when using WeakListeners.</text>
+    </revision>
+  </page>
+</mediawiki>

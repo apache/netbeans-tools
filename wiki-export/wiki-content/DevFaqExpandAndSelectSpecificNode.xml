@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqExpandAndSelectSpecificNode</title>
+    <id>7259</id>
+    <revision>
+      <id>26044</id>
+      <timestamp>2009-11-06T15:41:05Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How do I make a particular node visible in the Explorer, and maybe select it?===
+
+In general you cannot. See [http://www.netbeans.org/nonav/issues/show_bug.cgi?id=7551 issue #7551.]
+
+If you created the Explorer view (e.g. you created a &lt;tt&gt;BeanTreeView&lt;/tt&gt; or similar and put it in a Swing panel of some sort) then you can use &lt;tt&gt;[http://www.netbeans.org/download/dev/javadoc/org-openide-explorer/org/openide/explorer/ExplorerManager.html#setSelectedNodes(org.openide.nodes.Node[ ExplorerManager.setSelectedNodes])]&lt;/tt&gt; and more rarely &lt;tt&gt;[http://www.netbeans.org/download/dev/javadoc/org-openide-explorer/org/openide/explorer/view/TreeView.html#expandNode(org.openide.nodes.Node) TreeView.expandNode]&lt;/tt&gt; to display a given node in your tree (The node ''must'' be a descendant of the current root node. You cannot construct a new "similar" &lt;tt&gt;Node&lt;/tt&gt; and hope to select it).
+
+If you did not create the Explorer view then there is no reliable way to find it. However you might try scanning&lt;tt&gt;[http://www.netbeans.org/download/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.Registry.html#getOpened() TopComponent.Registry.getOpened()]&lt;/tt&gt; for instances of &lt;tt&gt;ExplorerManager.Provider&lt;/tt&gt; and looking for appropriate nodes that way. Such tricks must be done with care - the fact that you can find the component to do this does not imply that the author of the component intends that it be there forever, remain of the same type, continue implementing &lt;tt&gt;ExplorerManager.Provider&lt;/tt&gt; or anything else.  Check nulls, check casts, be prepared for it not to work on future versions.
+
+In the particular case of making a new file wizard, you can and should ask for the file(s) you create to be selected when the wizard finishes, simply by returning them from &lt;tt&gt;[http://www.netbeans.org/download/dev/javadoc/org-openide-dialogs/org/openide/WizardDescriptor.InstantiatingIterator.html#instantiate() WizardDescriptor.InstantiatingIterator.instantiate()]&lt;/tt&gt;
+
+--------
+
+Applies to: NetBeans 5.0, 5.5, 6.x</text>
+    </revision>
+  </page>
+</mediawiki>

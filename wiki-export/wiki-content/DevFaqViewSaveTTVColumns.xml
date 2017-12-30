@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqViewSaveTTVColumns</title>
+    <id>7509</id>
+    <revision>
+      <id>40151</id>
+      <timestamp>2010-07-24T19:14:04Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Saving Column Attributes of a TreeTableView===
+
+Assuming you are embedding a &lt;tt&gt;TreeTableView&lt;/tt&gt; (TTV) inside a &lt;tt&gt;TopComponent&lt;/tt&gt;, you can override the &lt;tt&gt;readExternal(ObjectInput)&lt;/tt&gt; and &lt;tt&gt;writeExternal(ObjectOutput)&lt;/tt&gt; methods for preserving the attributes of the columns in your TTV (e.g. the column ordering, sorted-ness, sorting order, visibility, and width).
+
+Start by keeping a reference to the &lt;tt&gt;Node.Property&lt;/tt&gt; array used to define the columns of the TTV, since there is no way to get those properties from the TTV (i.e. there is no &lt;tt&gt;getProperties()&lt;/tt&gt; method). The examples below will refer to this &lt;tt&gt;Node.Property&lt;/tt&gt; array as "columns".
+
+In order to get and set the column widths of the tree-table, we need to subclass &lt;tt&gt;TreeTableView&lt;/tt&gt; and provide a &lt;tt&gt;getTable()&lt;/tt&gt; method that returns the &lt;tt&gt;treeTable&lt;/tt&gt; protected field of the &lt;tt&gt;TreeTableView&lt;/tt&gt; class. In the examples below, this reference will be referred to as &lt;tt&gt;treeTable&lt;/tt&gt; for brevity.
+
+First let us save the column attributes to the serialized &lt;tt&gt;TopComponent&lt;/tt&gt; via the &lt;tt&gt;writeExternal()&lt;/tt&gt; method.
+
+&lt;source lang="java"&gt;
+    public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal(out);
+        out.writeInt(columns.length);
+        for (int ii = 0; ii &lt; columns.length; ii++) {
+            Boolean b = (Boolean) columns[Ii].getValue("InvisibleInTreeTableView");
+            if (b == null) {
+                b = Boolean.FALSE;
+            }
+            out.writeBoolean(b.booleanValue());
+            Integer i = (Integer) columns[Ii].getValue("OrderNumberTTV");
+            if (i == null) {
+                i = new Integer(ii);
+            }
+            out.writeInt(i.intValue());
+            b = (Boolean) columns[Ii].getValue("SortingColumnTTV");
+            if (b == null) {
+                b = Boolean.FALSE;
+            }
+            out.writeBoolean(b.booleanValue());
+            b = (Boolean) columns[Ii].getValue("DescendingOrderTTV");
+            if (b == null) {
+                b = Boolean.FALSE;
+            }
+            out.writeBoolean(b.booleanValue());
+        }
+        try {
+            TableColumnModel tcm = treeTable.getColumnModel();
+            int count = tcm.getColumnCount();
+            for (int index = 0; index &lt; count; index++) {
+                TableColumn tc = tcm.getColumn(index);
+                out.writeInt(tc.getWidth());
+            }
+        } catch (IOException ioe) {
+            ErrorManager.getDefault().notify(ErrorManager.WARNING, ioe);
+        }
+    }
+&lt;/source&gt;
+
+Next, we see how to deserialize the column attributes.
+
+&lt;source lang="java"&gt;
+    public void readExternal(ObjectInput in)
+            throws IOException, ClassNotFoundException {
+        super.readExternal(in);
+        try {
+            int count = in.readInt();
+            for (int ii = 0; ii &lt; count; ii++) {
+                boolean b = in.readBoolean();
+                columns[Ii].setValue("InvisibleInTreeTableView", Boolean.valueOf(b));
+                int i = in.readInt();
+                columns[Ii].setValue("OrderNumberTTV", Integer.valueOf(i));
+                b = in.readBoolean();
+                columns[Ii].setValue("SortingColumnTTV", Boolean.valueOf(b));
+                b = in.readBoolean();
+                columns[Ii].setValue("DescendingOrderTTV", Boolean.valueOf(b));
+            }
+        } catch (Exception e) {
+            // Could be reading an old instance which is missing data.
+            // In any case, ignore this as there is no use in reporting it.
+        }
+        nodeView.setProperties(columns);
+
+        // Read the column widths from the stream immediately and save them
+        // to a final array for the Runnable below to access them.
+        TableColumnModel tcm = treeTable.getColumnModel();
+        int count = tcm.getColumnCount();
+        final int[[ | ]] widths = new int[Count];
+        try {
+            for (int index = 0; index &lt; count; index++) {
+                widths[Index] = in.readInt();
+            }
+        } catch (IOException ioe) {
+            // Could be reading an old instance which is missing data.
+            // In any case, ignore this as there is no use in reporting it
+            // (and return immediately so as not to invoke the runnable).
+            return;
+        }
+
+        // Changing Swing widgets must be done on the AWT event thread.
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                // TreeTableView prohibits moving the tree
+                // column, so it is always offset zero.
+                setTreePreferredWidth(widths[0]);
+                for (int index = 1; index &lt; widths.length; index++) {
+                    setTableColumnPreferredWidth(index - 1, widths[Index]);
+                }
+            }
+        });
+    }
+&lt;/source&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqGetOpenEditorWindows</title>
+    <id>7306</id>
+    <revision>
+      <id>69979</id>
+      <timestamp>2016-10-26T20:35:35Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>NbDocuent.findRecentEditorPAne</comment>
+      <text xml:space="preserve">===How can I get a list of open editor windows?===
+
+====To obtain a reference to the currently selected editor====
+
+&lt;pre&gt;
+Node[] arr = TopComponent.getRegistry().getCurrentNodes();
+for (int i = 0; i &lt; arr.length; i++) {
+    EditorCookie ec = (EditorCookie) arr[i].getCookie(EditorCookie.class);
+    if (ec != null) {
+        JEditorPane[] panes = ec.getOpenedPanes();
+        if (panes != null) {
+            // USE panes
+        }
+    }
+}
+&lt;/pre&gt;
+Note that EditorCookie.getOpenPanes() is deprecated (https://netbeans.org/bugzilla/show_bug.cgi?id=223383). Use &lt;code&gt;org.openide.text.NbDocument.findRecentEditorPane(EditorCookie)&lt;/code&gt; instead.
+
+
+====To obtain references to all opened editors====
+&lt;pre&gt;
+Set&lt;TopComponent&gt; comps = TopComponent.getRegistry().getOpened();
+for (TopComponent tc: comps) {
+    Node[] arr = tc.getActivatedNodes();
+    for (int j = 0; j &lt; arr.length; j++) {
+        EditorCookie ec = (EditorCookie) arr[j].getCookie(EditorCookie.class);
+        if (ec != null) {
+            JEditorPane[] panes = ec.getOpenedPanes();
+            if (panes != null) {
+                // USE panes
+            }
+        }
+    }
+}
+&lt;/pre&gt;
+
+====Variants to get the Editor TopComponents====
+=====Variant A)=====
+&lt;pre&gt;
+    private Collection&lt;TopComponent&gt; getCurrentOpenedEditors() {
+        final ArrayList&lt;TopComponent&gt; result = new ArrayList&lt;TopComponent&gt;();
+        final WindowManager wm = WindowManager.getDefault();
+        for (Mode mode : wm.getModes()) {
+            if (wm.isEditorMode(mode)) {
+                //result.addAll(Arrays.asList(mode.getTopComponents())); OR even faster
+                result.addAll(Arrays.asList(wm.getOpenedTopComponents(mode)));
+            }
+        }
+        return result;
+    }
+
+&lt;/pre&gt;
+
+=====Variant B)=====
+&lt;pre&gt;
+    private TopComponent getCurrentEditor() {
+	Set&lt;? extends Mode&gt; modes = WindowManager.getDefault().getModes();
+	for (Mode mode : modes) {
+	    if ("editor".equals(mode.getName())) {
+		return mode.getSelectedTopComponent();
+	    }
+	}
+	return null;
+    }
+
+    //or 
+    private TopComponent getCurrentEditor() {
+        Mode editor = WindowManager.getDefault().findMode("editor");
+        return editor.getSelectedTopComponent();
+    }
+&lt;/pre&gt;
+----
+'''Reference-''' [http://nbguru.wordpress.com/2008/07/25/tat-editor-windows-reactivated-8/ Editor Windows Reactivated]
+----</text>
+    </revision>
+  </page>
+</mediawiki>

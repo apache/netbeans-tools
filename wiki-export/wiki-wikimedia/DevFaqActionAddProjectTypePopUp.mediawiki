@@ -1,0 +1,83 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===How do I add an action to a project popup menu of a specific project type?===
+
+====Generic approach====
+
+You can install an action into the context menu of ''all'' projects simply by adding to your layer under the folder <tt>Projects/Actions/</tt>. Your action should be context-sensitive, meaning it should be a placeholder which implements <tt>ContextAwareAction</tt>; the context-aware derived action will do the real work. Generally it will look for an instance of <tt>Project</tt> in the supplied <tt>Lookup</tt> (context).
+
+If you just override <tt>isEnabled</tt> on the derived action based on the context, the menu item will always be present, though it will be greyed out in the case of inappropriate projects. If you want to ''hide'' the menu item for all but relevant projects, you need to set an additional flag (available starting in 6.9).
+
+The following trivial action shows the location of a project so long as its name comes in the first half of the alphabet:
+
+<source lang="java">
+@ActionID(...)
+@ActionRegistration(...)
+@ActionReference(path="Projects/Actions")
+public class DemoAction extends AbstractAction implements ContextAwareAction {
+    public @Override void actionPerformed(ActionEvent e) {assert false;}
+    public @Override Action createContextAwareInstance(Lookup context) {
+        return new ContextAction(context);
+    }
+    private static final class ContextAction extends AbstractAction {
+        private final Project p;
+        public ContextAction(Lookup context) {
+            p = context.lookup(Project.class);
+            String name = ProjectUtils.getInformation(p).getDisplayName();
+            // TODO state for which projects action should be enabled
+            char c = name.charAt(0);
+            setEnabled(c >= 'A' && c <= 'M');
+            putValue(DynamicMenuContent.HIDE_WHEN_DISABLED, true);
+            // TODO menu item label with optional mnemonics
+            putValue(NAME, "&Info on " + name);
+        }
+        public @Override void actionPerformed(ActionEvent e) {
+            // TODO what to do when run
+            String msg = "Project location: "
+                    + FileUtil.getFileDisplayName(p.getProjectDirectory());
+            DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message(msg));
+        }
+    }
+}
+</source>
+
+==== Specific approach====
+Certain project types also read their context menu actions from type-specific folders.
+
+For example 
+<ul>
+<li>Maven: <tt>Projects/org-netbeans-modules-maven/Actions</tt></li>
+</ul>
+
+----------
+
+Applies to: NetBeans 7.0+
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Markiewb 
+on 2017-02-08T22:29:09Z.
+

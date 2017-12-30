@@ -1,0 +1,97 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===How to customize Plugin Manager?===
+
+There are several possibilities to customize behavior of Plugin Manager ('''Tools|Plugins''') to show more items or to change its behavior.
+
+'''Note:''' for NetBeans expert only. Use of these options at your own risk.
+
+====Show all modules====
+In default view, Plugin Manager shows all plugins unless specify its visibility flag to <tt>false</tt> (<tt>AutoUpdate-Show-In-Client=false</tt>) - in other words, Plugin Manager filters out most of like service modules as hidden in plugin infrastructure. To make Plugin Manager to be showing all modules being run in your IDE with switch <tt>plugin.manager.modules.only</tt> set to <tt>true</tt> (i.e.<tt>-J-Dplugin.manager.modules.only=true</tt>).
+* system property <tt>plugin.manager.modules.only</tt>
+* the default value: <tt>false</tt>
+
+====Show plugin's code name base====
+Each NetBeans plugin has own '''code name''' what should be unique in NetBeans distribution, this code name will not show in plugin's details. To show this code name just run your IDE with switch <tt>plugin.manager.extended.description</tt> set to <tt>true</tt> (i.e.<tt>-J-Dplugin.manager.extended.description=true</tt>)
+* system property <tt>plugin.manager.extended.description</tt>
+* the default value: <tt>false</tt>
+
+====Install all plugins into NetBeans installation directory====
+How to Plugin Manager chooses a directory where NBM will install?
+# If NetBeans install dir is not writable, install to <tt>userdir</tt>.
+# If an update, overwrite the existing location, wherever that is.
+# Otherwise (new module), if a cluster name is specified in NBM (<tt>targetcluster</tt>), put it there (creating the cluster if necessary).
+# Otherwise (no cluster name specified), if marked <tt>global</tt>, maybe put it into an <tt>extra</tt> cluster
+# Otherwise (<tt>global</tt> set <tt>false</tt> or unspecified), put it in <tt>userdir</tt>.
+
+
+If <tt>plugin.manager.install.global</tt> is set to <tt>true</tt> then NBM will go into installation directory for all cases unless the install directory is <tt>read-only</tt>.
+
+* system property <tt>plugin.manager.install.global</tt>
+* the default value: <tt>false</tt>
+
+====Check for new plugins just after IDE startup====
+Plugin Manager checks for '''updates''' of '''already installed''' plugins right after IDE startup, not for '''new plugins'''. To force Plugin Manager to check for new plugins as well, just run IDE with a option <tt>-J-Dplugin.manager.check.new.plugins=true</tt>. New plugins will be notified in IDE status line.
+* system property <tt>plugin.manager.check.new.plugins</tt>
+* the default value: <tt>false</tt>
+
+====Check for updates just after IDE startup====
+As was written above, Plugin Manager is checking for '''updates''' of '''already installed''' plugins right after IDE startup. If you would like to suppress it, just run IDE with a option <tt>-J-Dplugin.manager.check.updates=false</tt>.
+* system property <tt>plugin.manager.check.updates</tt>
+* the default value: <tt>true</tt>
+
+====To customize Interval of Automatically Check for Updates ('''''since NB6.1''''')====
+Use a launcher option <tt>plugin.manager.check.interval</tt> with possible values: <tt>EVERY_STARTUP</tt>, <tt>EVERY_DAY</tt>,
+<tt>EVERY_WEEK</tt>, <tt>EVERY_2WEEKS</tt>, <tt>EVERY_MONTH</tt> or <tt>NEVER</tt> or also it's possible set the interval in minutes, like this <tt>-J-Dplugin.manager.check.interval=60</tt> - to check it every hour.
+This option can force default value for Plugin Manager, i.e. if your
+application is launched with <tt>-J-Dplugin.manager.check.interval=EVERY_STARTUP</tt> (or with modified in <tt>etc/netbeans.conf</tt>),
+content of all subscribed Update Centers will be checked on every startup. If an user changes the check interval in ''Plugin Manager | Settings tab'' then future Autoupdate invocations will read user's values regardless the <tt>plugin.manager.check.interval</tt>, as usual.
+
+* system property <tt>plugin.manager.check.interval</tt>
+* the default value: <tt>EVERY_WEEK</tt>
+
+====To give precedence to dedicated module while updating ('''''since NB6.1''''')====
+If Plugin Manager does install all available updates, it's possible to determinate set of modules which must be handled in exclusive mode before others. For example, update of Plugin Manager plugin should be installed as the first, in preference of common plugins because its update might be important for handling update of rest of plugins. In that case, Plugin Manager will notify users about availability of update Plugin Manager only (swallows down updates of rest) and when Plugin Manager is up-to-date, it will handle update of other plugins.
+* system property <tt>plugin.manager.first.class.modules</tt>
+* the default value: <tt>org.netbeans.modules.autoupdate.services, org.netbeans.modules.autoupdate.ui</tt>
+
+====To make Autoupdate/Plugin Manager high verbose in console====
+Just use a common logging capability for force Autoupdate/Plugin Manager to be running in high verbose mode, like this <tt>-J-Dorg.netbeans.modules.autoupdate.level=FINEST</tt>, you also can specify the scope for logging in more detail (<tt>-J-Dorg.netbeans.modules.autoupdate.ui.actions.AutoupdateSettings.level=FINE</tt>). Do not forget to switch on logging into console <tt>-J-Dnetbeans.logger.console=true</tt>.
+
+------
+
+Applies to: NetBeans 6.0 or newer
+
+Platforms: All
+
+------
+Do not hesitate to contact me on [mailto:jrechtacek@netbeans.org jrechtacek@netbeans.org] if you have any question.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Matteodg 
+on 2010-08-06T16:17:14Z.
+

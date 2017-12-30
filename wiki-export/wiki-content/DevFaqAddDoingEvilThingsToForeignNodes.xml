@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAddDoingEvilThingsToForeignNodes</title>
+    <id>7206</id>
+    <revision>
+      <id>25991</id>
+      <timestamp>2009-11-06T15:36:02Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===I have a reference to an existing Node from some other module. Can I add cookies/properties/actions/children?===
+
+No.
+
+Occasionally people want to do something like this, because they want to enhance, for example, the behavior or nodes for Java files or other nodes created by some other modules.  However, this is a recipe for disaster - nobody writing a Node subclass does so expecting that random modules will change its internal structures without warning.  It is possible to write code that does this sort of thing that looks like it works, but it is sheer luck and it will probably not work for long.  
+
+===='''''DO NOT DO THAT UNDER ANY CIRCUMSTANCES''''' ====
+
+(there, did I say that strongly enough?).
+
+Many modules are designed for extensibility - in fact, Nodes for Java files in the IDE do allow you to add children, actions, etc.  They offer an API for doing this sort of thing (for example, adding Actions to &lt;tt&gt;Loaders/text/x-java/Actions&lt;/tt&gt; declaratively);  see the beans module for an example of adding sub-nodes to Java classes.
+
+If you want to modify the children/properties/actions/etc. of a Node you did not create, look for an API that lets you do that in a supported way.  
+
+If one does not exist, [http://www.netbeans.org/issues/enter_bug.cgi file an enhancement request] against the module that actually creates these nodes, asking for an appropriate API for doing what you want (and be clear about exactly what you want or why).  If you really want to expedite it, write a patch that creates such an API (look at how other modules do this sort of thing and aim to follow a similar pattern) - it's hard to say no to working code.</text>
+    </revision>
+  </page>
+</mediawiki>

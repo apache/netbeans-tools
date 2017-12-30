@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWindowsXmlApi</title>
+    <id>7527</id>
+    <revision>
+      <id>26311</id>
+      <timestamp>2009-11-06T16:06:42Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How does the declarative XML API for the window system work?===
+The API is not hard, just a bit baroque.
+
+On startup, the window system needs to know some things to
+construct the main window, and possibly restore the state it was in before shutdown:
+* The window system needs know what components it will be displaying
+* It needs to know where to display individual components
+* And it has a way to define places where components can be displayed, and needs to know what places have been defined
+
+It would be a disaster for performance if all possible components in the system had
+to be instantiated/deserialized during startup just to figure out if they actually
+need to be on screen.  The XML definitions for window system components allow
+a module to completely declaratively provide all the information described above.
+
+There are three main file types to be concerned with - these are put in the [[DevFaqSystemFilesystem| System Filesystem ]]
+by declaring them in your module's [[DevFaqModulesLayerFile| layer file]]:
+* '''&lt;tt&gt;[[DevFaqDotSettingsFiles| .settings files]]&lt;/tt&gt;''' - representing [[DevFaqWindowsTopComponent| TopComponent]]s that will be on screen - these go in &lt;tt&gt;Windows2/Components&lt;/tt&gt;
+* '''&lt;tt&gt;[[DevFaqWindowsMode| .wsmode files]]&lt;/tt&gt;''' - representing [[DevFaqWindowsMode| docking modes]] - places where TopComponents can be put - think of them as tabbed containers - these go in &lt;tt&gt;Windows2/Modes&lt;/tt&gt;.  For each Mode, you will also create a folder in &lt;tt&gt;Windows2/Modes&lt;/tt&gt; where the &lt;tt&gt;.wstcref&lt;/tt&gt; files that indicate what components are present can go TopComponents can live (essentially tabbed containers)
+* '''&lt;tt&gt;[[DevFaqWindowsWstcrefAndFriends| .wstcrf files]]&lt;/tt&gt;''' - a pseudo symbolic-link that contains some configuration data and points to the appropriate .settings file via its ID - put these in the folder you created in &lt;tt&gt;Windows2/Modes&lt;/tt&gt;
+
+See also:
+* [[DevFaqWindowsWstcrefAndFriends| How to use .wstcrf and other files]]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/doc-files/api.html The Window System API]</text>
+    </revision>
+  </page>
+</mediawiki>

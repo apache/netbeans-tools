@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWindowsMode</title>
+    <id>7521</id>
+    <revision>
+      <id>58341</id>
+      <timestamp>2012-11-13T01:09:52Z</timestamp>
+      <contributor>
+        <username>Maehem</username>
+        <id>13446</id>
+      </contributor>
+      <comment>Added list of known modes. Added example code for docking a TC in a mode.</comment>
+      <text xml:space="preserve">__NOTOC__
+===What is a Mode in the Windowing System?===
+
+"Mode" refers to "docking mode".  A Mode is a place in a main window, a place between splitters. Separate "floating" window is also backed by Mode. Mode is usually visually represented by a tabbed container.  Programmatically it is represented by the class &lt;tt&gt;org.openide.windows.Mode&lt;/tt&gt;
+
+Think of a &lt;tt&gt;Mode&lt;/tt&gt; as synonymous with a one of the tabbed containers you see in the IDE's main window.  The name "Mode" is historical, and a bit unfortunate.  When you hear "Mode," think tabbed container and you'll be fine.
+
+'''A Mode is ''not'' a GUI component'''.  There is no legitimate programmatic way to fetch the component that represents a Mode on-screen, and the windowing system makes no guarantees about what that component is.
+
+Modes can contain one or more [[DevFaqWindowsTopComponent| TopComponent]]s.  They may be visible or non-visible at any given time.
+
+The [[DevFaqCustomWindowMode]] page has a visual representation of the available modes, and http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/doc-files/api.html has details about the contents of wstcref and settings files.
+
+===Pre-Defined Modes===
+NetBeans defines six modes in core.ui:
+*topSlidingSide
+*rightSlidingSide
+*leftSlidingSide
+*bottomSlidingSide
+*explorer
+*properties
+
+NetBeans defines additional modes in other places:
+*commonpalette
+*output
+*navigator
+*editor
+*CssPreviewTCWsmode
+
+===Docking a TopComponent into a Mode===
+To dock a TopComponent into the 'editor' mode:
+&lt;pre&gt;
+Mode myMode = WindowManager.getDefault().findMode("editor");
+TopComponent myTopComponent = WindowManager.getDefault().findTopComponent("MyTopComponent");
+myMode.dockInto(myTopComponent);
+&lt;/pre&gt;
+''The ID string of the TopComponent can usually be found in that TopComponent's Java file where it gets registered using annotations, or in the layer.xml.
+''</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>BrandingAboutDialog</title>
+    <id>6747</id>
+    <revision>
+      <id>45110</id>
+      <timestamp>2011-05-20T14:52:03Z</timestamp>
+      <contributor>
+        <username>Tomwheeler</username>
+        <id>1435</id>
+      </contributor>
+      <minor/>
+      <comment>Reverted edits by [[Special:Contributions/Pranavwright|Pranavwright]] ([[User talk:Pranavwright|Talk]]) to last revision by [[User:Stevenyi|Stevenyi]]</comment>
+      <text xml:space="preserve">__NOTOC__
+===Branding About Dialog===
+
+Read the thread [http://thread.gmane.org/gmane.comp.java.netbeans.modules.openide.devel/31632/focus=31642 Branding Help -&gt; About]
+and see also [http://blogs.kiyut.com/tonny/2007/10/18/customize-netbeans-platform-splash-screen-and-about-dialog/ Splash Screen and About Dialog Branding blog entry]
+
+Note: for LBL_Copyright, the email thread mentions modifying:
+
+    branding/core/core.jar/org/netbeans/core/startup/Bundle.properties
+
+The second link shows the correct location:
+
+    branding/modules/org-netbeans-core.jar/org/netbeans/core/ui/Bundle.properties</text>
+    </revision>
+  </page>
+</mediawiki>

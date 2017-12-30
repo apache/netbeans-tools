@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqFixDependencies</title>
+    <id>16455</id>
+    <revision>
+      <id>47183</id>
+      <timestamp>2011-09-02T19:07:45Z</timestamp>
+      <contributor>
+        <username>Javydreamercsw</username>
+        <id>2603</id>
+      </contributor>
+      <comment>/* Explanation */</comment>
+      <text xml:space="preserve">The harness already has a fixdependencies task with only one purpose: replace obsoleted modules with new ones like it happened when Lookup was separated into its own module. In normal applications you might need to manually modify or remove then add the module you changed version for. If the project is really big and complex this can be a nightmare. I went ahead and enhanced the task so it can be more useful.
+
+Basically the current task just replaces obsolete modules with its new version.
+
+To use it add this to your suite's build.xml:
+
+&lt;pre&gt;
+&lt;target name="fix-dependencies" description="Removes unused compilation dependencies on other modules."&gt;
+        &lt;echo&gt;Fixing dependencies for suite...&lt;/echo&gt;
+        &lt;!--Define custom task--&gt;
+        &lt;taskdef resource="org/netbeans/nbbuild/taskdefs.properties"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${harness.dir}/tasks.jar"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="stringutil" classname="ise.antelope.tasks.StringUtilTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${suite.dir}/../tools/AntelopeTasks_3.5.3.jar"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;echo&gt;Create the ant script...&lt;/echo&gt;
+        &lt;!--Create the ant script--&gt;
+        &lt;echo file="versions.xml"&gt;&lt;![CDATA[&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="Fix Versions" basedir="." default="fix"&gt;
+    &lt;taskdef resource="org/netbeans/nbbuild/taskdefs.properties"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${harness.dir}/tasks.jar"/&gt;
+            &lt;/classpath&gt;
+    &lt;/taskdef&gt;
+    &lt;target name="fix"&gt;
+        &lt;property name="build.compiler.deprecation" value="false" /&gt;
+        &lt;fixdependencies antfile="../../build.xml" 
+                        buildtarget="netbeans" cleantarget="clean" failonerror="true" sanitycheck="false"&gt;]]&gt;
+        &lt;/echo&gt;
+        &lt;!--Now update the versions to fix--&gt;
+        &lt;for list="${modules}" delimiter=":" param="cur" trim="true"&gt;
+            &lt;sequential&gt;
+                &lt;!--Read properties--&gt;
+                &lt;property file="@{cur}/manifest.mf" prefix="@{cur}"/&gt;&lt;!--Major release and implementation version are here--&gt;
+                &lt;if&gt;
+                    &lt;contains string="${@{cur}.OpenIDE-Module}" substring="/"/&gt;
+                    &lt;then&gt;
+                        &lt;length string="${@{cur}.OpenIDE-Module}" property="@{cur}.length.dist" /&gt;
+                        &lt;stringutil string="${@{cur}.OpenIDE-Module}" 
+                        property="@{cur}.OpenIDE-Module.indexOf"&gt;
+                            &lt;indexof string="/"/&gt;
+                        &lt;/stringutil&gt;
+                        &lt;math result="@{cur}.after" operand1="1" operation="+" 
+                        operand2="${@{cur}.OpenIDE-Module.indexOf}" datatype="int"/&gt;
+                        &lt;substring text="${@{cur}.OpenIDE-Module}" 
+                        start="${@{cur}.after}" 
+                        end="${@{cur}.length.dist}" 
+                        property="@{cur}.release-version" /&gt;
+                        &lt;substring text="${@{cur}.OpenIDE-Module}" start="0" 
+                        end="${@{cur}.OpenIDE-Module.indexOf}" 
+                        property="@{cur}.OpenIDE-Module" /&gt;
+                    &lt;/then&gt;
+                &lt;/if&gt;
+                &lt;property file="@{cur}/nbproject/project.properties" prefix="@{cur}."/&gt;&lt;!--Spec version is here--&gt;
+                &lt;if&gt;
+                    &lt;or&gt;
+                        &lt;isset property="@{cur}.release-version"/&gt;
+                        &lt;isset property="@{cur}.spec.version.base"/&gt;
+                    &lt;/or&gt;
+                    &lt;then&gt;
+                        &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[
+                &lt;replace codenamebase="]]&gt;${@{cur}.OpenIDE-Module}&lt;![CDATA[" addcompiletime="true"&gt;
+                    &lt;module codenamebase="]]&gt;${@{cur}.OpenIDE-Module}&lt;/echo&gt;
+                        &lt;if&gt;
+                            &lt;isset property="@{cur}.spec.version.base"/&gt;
+                            &lt;then&gt;
+                                &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[" spec="]]&gt;${@{cur}.spec.version.base}&lt;![CDATA["]]&gt;&lt;/echo&gt;
+                            &lt;/then&gt;
+                            &lt;else&gt;
+                                &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[/&gt;]]&gt;
+                                &lt;/echo&gt;
+                            &lt;/else&gt;
+                        &lt;/if&gt;
+                        &lt;if&gt;
+                            &lt;isset property="@{cur}.release-version"/&gt;
+                            &lt;then&gt;
+                                &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[ release="]]&gt;${@{cur}.release-version}&lt;![CDATA["/&gt;]]&gt;
+                                &lt;/echo&gt;
+                            &lt;/then&gt;
+                            &lt;else&gt;
+                                &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[/&gt;]]&gt;
+                                &lt;/echo&gt;
+                            &lt;/else&gt;
+                        &lt;/if&gt;
+                        &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[
+                &lt;/replace&gt;]]&gt;
+                        &lt;/echo&gt;
+                    &lt;/then&gt;
+                &lt;/if&gt;
+            &lt;/sequential&gt;
+        &lt;/for&gt;
+        &lt;echo file="versions.xml" append="true"&gt;&lt;![CDATA[
+            &lt;fileset dir="nbproject" &gt;
+                &lt;include name="project.xml" /&gt;
+            &lt;/fileset&gt;
+        &lt;/fixdependencies&gt;
+    &lt;/target&gt;
+&lt;/project&gt;]]&gt;
+        &lt;/echo&gt;
+        &lt;echo&gt;Create the ant script...Done!&lt;/echo&gt;
+        &lt;!--Now update modules--&gt;
+        &lt;echo&gt;Fixing module dependencies...&lt;/echo&gt;
+        &lt;subant target="module-fix-dependencies"&gt;
+            &lt;fileset dir="." includes="**/build.xml" excludes="build.xml"/&gt;
+        &lt;/subant&gt;
+        &lt;echo&gt;Fixing module dependencies...Done!&lt;/echo&gt;
+        &lt;delete file="versions.xml"/&gt;
+        &lt;!--Run NB fix dependencies in all modules as well--&gt;
+        &lt;echo&gt;Fixing NB dependencies for suite...&lt;/echo&gt;
+        &lt;subant target="fix-dependencies" buildpath="${modules}" inheritrefs="false" inheritall="false"/&gt;
+        &lt;echo&gt;Fixing NB dependencies for suite...Done!&lt;/echo&gt;
+        &lt;echo&gt;Fixing dependencies for suite...Done!&lt;/echo&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="module-fix-dependencies"&gt;
+        &lt;ant antfile= "${suite.dir}/versions.xml" target="fix"/&gt;
+    &lt;/target&gt;
+&lt;/pre&gt;
+
+And add this to all your module's build.xml:
+
+&lt;pre&gt;
+&lt;!--Add this to have the module-fix-dependencies target work from within each module--&gt;
+    &lt;import file="${suite.dir}/build.xml"/&gt;
+&lt;/pre&gt;
+
+==Explanation==
+fix-dependencies task will do the following:
+*Create an ant file named versions.xml by gathering the current module's version information.
+**versions.xml uses the fixdependencies target (modified) to update all module dependencies.
+*Run the versions.xml file from within each module (using subant)
+*Delete the versions.xml file when done.
+*Call NetBeans fix-dependencies task
+
+Doesn't look like much but it's a lot of work. 
+
+&lt;b&gt;Note:&lt;/b&gt; You need to have defined the if task (from ant-contrib) to use the targets above. Also you'll need antelope library: http://antelope.tigris.org/</text>
+    </revision>
+  </page>
+</mediawiki>

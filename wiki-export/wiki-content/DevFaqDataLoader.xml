@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqDataLoader</title>
+    <id>7233</id>
+    <revision>
+      <id>40163</id>
+      <timestamp>2010-07-24T19:48:10Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===What is a DataLoader?===
+As of NetBeans 6.8, it is usually not necessary to implement DataLoader directly - today it is usually an implementation detail of writing file support, and you can simply write a [[DevFaqDataObject| DataObject]] subclass and register it as follows:
+
+&lt;source lang="java"&gt;
+    &lt;folder name="Loaders"&gt;
+        &lt;folder name="text"&gt;
+            &lt;folder name="x-foo"&gt;
+                &lt;folder name="Factories"&gt;
+                    &lt;file name="FooDataLoader.instance"&gt;
+                        &lt;attr name="dataObjectClass" stringvalue="com.foo.modules.foofile.FooDataObject"/&gt;
+                       &lt;attr name="instanceCreate" methodvalue="org.openide.loaders.DataLoaderPool.factory"/&gt;
+                        &lt;attr name="mimeType" stringvalue="text/x-foo"/&gt;
+                    &lt;/file&gt;
+                &lt;/folder&gt;
+            &lt;/folder&gt;
+        &lt;/folder&gt;
+    &lt;/folder&gt;
+&lt;/source&gt;
+
+This registers the DataObject subclass &lt;code&gt;com.modules.foofile.FooDataObject&lt;/code&gt; against the MIME type &lt;code&gt;text/x-foo&lt;/code&gt;.
+
+====DataLoader Details====
+[http://bits.netbeans.org/dev/javadoc/org-openide-loaders/org/openide/loaders/DataLoader.html DataLoaders] are factories for DataObjects.  A DataLoader is typically associated with one or more [http://en.wikipedia.org/wiki/MIME MIME types] (such as &lt;code&gt;text/x-java&lt;/code&gt;), and is allowed to be the system-wide factory for DataObjects for individual files of that MIME type.
+
+MIME type is typically determined by the file extension, though it can depend on content for things like XML files. [[DevFaqFileRecognition|(more about how NetBeans recognizes files)]].
+
+DataLoaders are factories for [[DevFaqDataObject| DataObjects]].  Typically there is a 1:1 mapping between file-type:DataLoader-subclass and a 1:1 mapping from file:DataObject.  When a file is first encountered, and something calls [http://bits.netbeans.org/dev/javadoc/org-openide-loaders/org/openide/loaders/DataObject.html#find(org.openide.filesystems.FileObject) &lt;code&gt;DataObject.find(theFileObject)&lt;/code&gt;], the correct DataLoader is found and used to asked to create DataObject for that file.
+
+Modules that provide the ability the system to open (or otherwise use) files of a particular type will register DataLoaders for those types. So typically for each file type (as defined by MIME type, which in practice usually means file name extension, or XML subtype) there is a matching DataObject
+subclass.
+
+Note that DataLoaders do not ''have'' to be tied to MIME types &amp;mdash; you can still write a DataLoader subclass, registered the old-fashioned way via the JAR manifest, which gets the first chance in the system to claim '''any''' file in the system.  However this is rarely wise or useful to do.</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,123 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+==Translate Your NetBeans Module==
+
+ABBREVIATIONS USED:
+* i18n = internationalization
+* l10n = localization
+* t9n = translation
+
+[[{INSERTTableOfContentsWHERETitle=Summary} | {INSERT TableOfContents WHERE title=Summary}]]
+
+===Why translate my module?===
+Software that is translated or in the native language is more user-friendly than when it is in a foreign language. It is really good if we can have applications translated for all users. More and more users will prefer our applications instead of a foreign language version. This is the same for NetBeans modules. When you have an internationalized (i18n) or localized (l10n) module, more users will consider using your module. Think about that!!<br>
+
+BTW, nobody is fluent in all languages, so, we will need a way to make i18n easy to maintain and redistribute for people that can help with our translations, such as friends and contributors in other countries. This is one of the great things about open-source; you can get help from contributors to test and translate your open-source project. And, it can also help a translation vendor who might work on your commercial project too. In any case, we will need an infrastructure to make this workflow easy for developers and translators.
+
+===How can I translate my module? What is the easiest way to do this and which tools should I use?===
+We will provide the steps to promote translation of NetBeans modules. For this approach, we will use [http://www.omegat.org/omegat/omegat.html OmegaT] tool. The following steps will describe how you can configure your environment to make localization easier to maintain and redistribute to other translators.
+
+====Creating a NetBeans Module project====
+Just create a simple module project, named 'SimpleI18nModule'. For details about NetBeans module development, see:
+* [http://www.netbeans.org/kb/trails/platform.html NetBeans Modules and Rich-Client Applications Learning Trail]
+* [http://platform.netbeans.org/tutorials/quickstart-nbm.html Introduction to NetBeans Module Development]
+
+====Creating an i18n infrastructure====
+Once your project is created, you will need to copy the i18n help files. These files are created to help develpers make i18n easier. The new files are:
+* <tt>build-i18n_TranslateNetbeansModule.xml</tt>
+:* Include the target to make NetBeans create the build and NBM files with i18n files.
+* <tt>i18n_TranslateNetbeansModule.properties</tt>
+:* Include per-project specific properties, as paths, to make <tt>build-i18n_TranslateNetbeansModule.xml</tt> useful. See the file comments to details about each property.
+{{information|
+;Suggestion: Update your <tt>i18n_TranslateNetbeansModule.properties</tt> should be the first thing to do when setting up the i18n on your project. This avoids several problems!!
+----
+;Tip: All these files and updated <tt>build.xml</tt> are available on <tt>i18n_TranslateNetbeansModule.zip</tt> file. Just unzip this file in your module base folder and make the appropriate changes in the <tt>i18n_TranslateNetbeansModule.properties</tt> file to make your module ready.
+}}
+You must also change the <tt>build.xml</tt> file too. Import <tt>build-i18n_TranslateNetbeansModule.xml</tt> files instead of <tt>nbproject/build-impl.xml</tt>. The new <tt>build.xml</tt> file is something like this:
+<pre>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="org.yourorghere.simplei18nmodule" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project org.yourorghere.simplei18nmodule.</description>
+    <!--import file="nbproject/build-impl.xml"/-->
+    <import file="build-i18n_TranslateNetbeansModule.xml"/>
+</project>
+</pre>
+The structure of your project is now something like this:
+
+[[Image:project-struct_TranslateNetbeansModule.gif]]
+
+Now, the infrastructure for your project is done. You can develop your module as you wish and, when it is time for translation, the new targets from <tt>build-i18n_TranslateNetbeansModule.xml</tt> will be required.
+
+====Translating the new module====
+To do the translation, previously stated, you will need the OmegaT Translation Editor. For example, we will use version 1.6.1. You can get started on OmegaT in [http://translatedfiles.netbeans.org/docs/HOWTOs/How-to-translate-NetBeans-using-OmegaT.html How to translate NetBeans IDE using OmegaT].
+Before creating new OmegaT project(s), you will use the following structure in your module folder:
+
+[[Image:project-struct-i18n_TranslateNetbeansModule.gif]]
+
+The two highlighted folders are designed for i18n operations. <tt>omegat</tt> folder is designed to maintain the original OmegaT projects. For example, you will need a project for each language you will translate your module into. So, the suggestion is to create a default module, with the English to English language (or <native> to <native> language, assuming that module is created in <native> by default) to make the bases for the specific-language translation modules.
+
+The <tt>translatedfiles</tt> folder will contain the translated files from the OmegaT project; in other words, all <tt>javahelp</tt> and <tt>src</tt> translated files (<tt>target</tt> files). The <tt>omegat</tt> and <tt>translatedfiles</tt> folder can be renamed to any other name, so you just need to update <tt>i18n.basedir</tt> and <tt>translatedfiles.basedir</tt> properties in the <tt>i18n_TranslateNetbeansModule.properties</tt> file. It is not necessary create these folders manually. There is a helper target on <tt>build-i18n_TranslateNetbeansModule.xml</tt> named <tt>i18n-setup-project</tt>, which creates all necessary folders, based on your <tt>i18n_TranslateNetbeansModule.properties</tt> file.
+
+After creating your folder structure, create a new OnegaT project on the <tt>omegat</tt> folder, that will be the translation base project for all languages. Follow the [http://translatedfiles.netbeans.org/docs/HOWTOs/How-to-translate-NetBeans-using-OmegaT.html How to translate NetBeans IDE using OmegaT] tutorial to learn about creating your project.
+{{warning|
+If you are using JavaHelp on your module, you will need an additional change to your OmegaT settings.
+Add a new pattern on your File Filters > Text Files:
+<pre>
+Source Filename Pattern: *toc.xml
+Source File Encoding: <auto>
+Target File Encoding: UTF-8
+Target Filename Pattern: ${nameOnly}_${targetLocale}.${extension}
+</pre>
+}}
+Now, OmegaT will request you to import source files. Just cancel this operation. Now, run the <tt>i18n-update-omegat-source</tt> on the <tt>build-i18n_TranslateNetbeansModule.xml</tt> build file. If your <tt>i18n.default.name</tt> property is correctly defined, your OmegaT project sources will be updated. Now, just copy your default project, and create a new project, e.g omegat-pt_BR (for Brazilian Portuguese translations) or omegat-ja for Japanese, and open it on OmegaT, configure its properties, as target language and so on.
+
+When you finish the translation, just have OmegaT generate your target files and NetBeans rebuild your project. Then run your project to see the results.
+{{information|
+;Suggestion: Define your target folder as <tt>translatedfiles</tt> folder. This will make your translations easier.
+----
+;Tip: To run your module in a different language, you can put this in the project.properties file:
+<pre>run.args.extra=--locale cs:CZ</pre>
+In case of a standalone module, this file is part of the module;
+and in the case of a module suite module, this file belongs to the suite.
+<br>PS: Tip by Boeck Heiko
+}}
+
+====Contact and support====
+If you have any problem or need help to translate into any other language, please contact [mailto:dev@translatedfiles.netbeans.org dev@translatedfiles.netbeans.org]. If you wish help maintaining the NetBeans IDE and modules in your language, visit us at http://translatedfiles.netbeans.org/.
+----
+{{attachments|
+* [[Media:i18n_TranslateNetbeansModule.zip]]
+* [[Media:build-i18n_TranslateNetbeansModule.xml]]
+* [[Media:i18n_TranslateNetbeansModule.properties]]}}
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Admin 
+on 2009-11-05T17:04:49Z.
+

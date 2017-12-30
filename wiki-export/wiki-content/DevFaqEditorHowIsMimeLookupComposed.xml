@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqEditorHowIsMimeLookupComposed</title>
+    <id>7253</id>
+    <revision>
+      <id>39301</id>
+      <timestamp>2010-06-16T14:05:24Z</timestamp>
+      <contributor>
+        <username>Vstejskal</username>
+        <id>363</id>
+      </contributor>
+      <minor/>
+      <comment>/* Embedded mime types */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How is MimeLookup composed?===
+
+In order to get [[DevFaqEditorWhatIsMimeLookup| MimeLookup]] you have to supply
+[[DevFaqEditorWhatIsMimePath| MimePath]]. With the default &lt;tt&gt;MimeLookup&lt;/tt&gt;
+implementation provided by Netbeans the contents of &lt;tt&gt;MimeLookup&lt;/tt&gt; is defined by
+a hierarchical structure of folders on the system FileSystem. The structure
+starts in the &lt;tt&gt;Editors&lt;/tt&gt; folder and then follows all the components of the &lt;tt&gt;MimePath&lt;/tt&gt; you
+have supplied.
+
+For example if you ask for &lt;tt&gt;MimeLookup&lt;/tt&gt; for the following &lt;tt&gt;MimePath&lt;/tt&gt; of
+&lt;tt&gt;text/x-java&lt;/tt&gt; you will get &lt;tt&gt;Lookup&lt;/tt&gt; with contents from the following
+folders:
+
+&lt;pre&gt;
+    Editors/text/x-java
+    Editors
+&lt;/pre&gt;
+
+As you can see &lt;tt&gt;MimeLookup&lt;/tt&gt; for &lt;tt&gt;text/x-java&lt;/tt&gt; contains not only editor
+features registered for the &lt;tt&gt;text/x-java&lt;/tt&gt; mime type itself, but it also
+inherits general features registered for an empty &lt;tt&gt;MimePath&lt;/tt&gt; (i.e. in the
+root of the hierarchy).
+
+The inheritence algorithm used for composing &lt;tt&gt;MimeLookup&lt;/tt&gt; for a given
+&lt;tt&gt;MimePath&lt;/tt&gt; supports more than just simple inheritance from the root. It also
+supports compound mime types such as &lt;tt&gt;text/x-ant+xml&lt;/tt&gt; and embedded mime types
+such as &lt;tt&gt;text/x-jsp/text/x-java&lt;/tt&gt;.
+
+====Compound mime types====
+
+Let's have a look at the &lt;tt&gt;MimeLookup&lt;/tt&gt; composition for a compound mime type
+&lt;tt&gt;text/x-ant+xml&lt;/tt&gt;. The resulting &lt;tt&gt;Lookup&lt;/tt&gt; will contain things registered in
+the following folders:
+
+&lt;pre&gt;
+    Editors/text/x-ant+xml
+    Editors/text/xml
+    Editors
+&lt;/pre&gt;
+
+That's the reason why editor features provided by XML modules for general
+XML files work also for specialized, but XML-based, files.
+
+====Embedded mime types====
+
+The inheritance hierarchy becomes even more complicated when dealing with embedded mime
+types. Let's use a java scriplet inside a JSP page as an example of language embedding.
+The &lt;tt&gt;MimePath&lt;/tt&gt; for the scriplet is &lt;tt&gt;text/x-jsp/text/x-java&lt;/tt&gt; and its &lt;tt&gt;MimeLookup&lt;/tt&gt; will
+contain features registered in the following folders:
+
+&lt;pre&gt;
+    Editors/text/x-jsp/text/x-java
+    Editors/text/x-java
+    Editors
+&lt;/pre&gt;
+
+The algorithm for computing the inheritance tree for a particular &lt;tt&gt;MimePath&lt;/tt&gt;
+combines all the above cases together and works always the same way no matter what
+feature you are going to look for in the resulting &lt;tt&gt;MimeLookup&lt;/tt&gt;.
+
+--------
+
+Applies to: NetBeans 6.x and with some exceptions also to 5.x
+
+Platforms: All
+
+See also:
+[[DevFaqEditorWhatIsMimeLookup| What is MimeLookup?]],
+[[DevFaqEditorWhatIsMimePath| What is MimePath?]],
+[http://www.netbeans.org/download/dev/javadoc/org-netbeans-modules-editor-mimelookup/index.html MimeLookup API]</text>
+    </revision>
+  </page>
+</mediawiki>

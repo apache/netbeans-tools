@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWrapperModules</title>
+    <id>7529</id>
+    <revision>
+      <id>42061</id>
+      <timestamp>2010-11-29T15:53:52Z</timestamp>
+      <contributor>
+        <username>Mwisnicki</username>
+        <id>39</id>
+      </contributor>
+      <comment>fixes build when j2seproject depends on other j2seproject, see also http://www.symphonious.net/2010/01/25/ant-subant-and-basedir/</comment>
+      <text xml:space="preserve">__NOTOC__
+===What is a library wrapper module and how do I use it?===
+
+If your module uses some external library,
+you will probably use a wrapper module to make classes from that library available to your module at runtime.
+
+A wrapper module is a module that contains no code;
+really the only significant thing about it is its manifest, which does two significant things,
+in addition to the standard module unique ID/version/etc.:
+* Has a &lt;tt&gt;Class-Path&lt;/tt&gt; entry for one or more JARs, conventionally in the subdirectory &lt;tt&gt;ext/&lt;/tt&gt; of the directory where the module is.
+* Declares &lt;tt&gt;OpenIDE-Module-Public-Packages&lt;/tt&gt; followed by a list of the packages from the library that other modules should be able to use.
+
+You can use '''File &gt; New Project &gt; NetBeans Modules &gt; Library Wrapper Module''' to make a library wrapper.
+
+So a wrapper module acts as a proxy to turn a library into a NB module.
+Since you can't modify the NetBeans classpath directly ([[DevFaqNetBeansClasspath]]),
+nor would you want to,
+this is the way you let your code use third-party libraries.
+It serves the same function that running with &lt;tt&gt;java -cp&lt;/tt&gt; or setting &lt;tt&gt;CLASSPATH&lt;/tt&gt;
+would do in a smaller Java application.
+
+There are other options for packaging libraries described in [[DevFaqWhenUseWrapperModule | DevFaqWhenUseWrapperModule]].
+
+If the above was confusing, read [[DevFaqModuleDependencies | DevFaqModuleDependencies]].
+
+===Using a wrapper module for an existing project===
+
+If you are developing the library yourself, but decide you want to
+keep the library project separate from any NB module project, you can
+do so. Just make a plain Java project for the library and build it;
+and also create a library wrapper module from its JAR output. Here are
+two ways to hook them up. The first modifies the project so that when
+the project is built, it copies the jar to the wrapper module. The
+second modifies the wrapper module so that the wrapper cleans, builds
+and picks up the jar.
+
+===Method 1 &lt;br&gt;===
+To hook them up (since the library wrapper module wizard just
+copies the JAR you select), you can make the plain Java SE project
+build into the wrapper. Say your Java SE project is in
+e.g.&lt;tt&gt;/src/suite/libs/foo&lt;/tt&gt; and your NBM wrapper is in
+&lt;tt&gt;/src/suite/foo-wrapper&lt;/tt&gt;; just edit
+&lt;tt&gt;/src/suite/libs/foo/nbproject/project.properties&lt;/tt&gt; to specify e.g.:
+
+&lt;pre&gt;
+dist.jar=../../foo-wrapper/release/modules/ext/foo.jar
+&lt;/pre&gt;
+
+Now you can just build the Java SE project and it will update the
+wrapper's JAR file. Also code completion on anything that compiles
+against the foo library should "see" sources in
+&lt;tt&gt;/src/suite/libs/foo/src&lt;/tt&gt; (so long as the Java SE project is open).
+
+===Method 2 &lt;br&gt;===
+Here's how to have the wrapper module build/clean the Java SE project
+and then pick
+up the JAR from the Java SE project's original location. This method provides
+source association (even if the Java SE project is not open!). You 
+modify a few things in the wrapper project
+# &lt;tt&gt;project.xml&lt;/tt&gt;         &lt;br/&gt;adjust the &lt;tt&gt;&lt;class-path-extension&gt;&lt;/tt&gt;
+# &lt;tt&gt;project.properties&lt;/tt&gt;  &lt;br/&gt; specify &lt;tt&gt;extra.module.files&lt;/tt&gt;
+# remove the wrapper's release directory
+# &lt;tt&gt;build.xml&lt;/tt&gt;           &lt;br/&gt; to override the &lt;tt&gt;release&lt;/tt&gt; target
+The following example demonstrates these steps.
+&lt;tt&gt;harness/README&lt;/tt&gt; gives the details.
+See also {{iz|70894}}, which would make it easier.
+
+====Example using method 2: Having the wrapper module clean and build the project====
+
+With these changes to a wrapper module, build/clean on the
+wrapper, or on the module suite that contains the wrapper, also does
+build/clean on the project.
+
+For this example, &lt;tt&gt;my-wrapper&lt;/tt&gt; is a library wrapper module for the JAR file
+produced by the regular Java project called &lt;tt&gt;my-project&lt;/tt&gt;.
+&lt;tt&gt;my-project&lt;/tt&gt; and &lt;tt&gt;my-wrapper&lt;/tt&gt; are in the same directory; this only
+affects relative path specifications and is not a general requirement.
+This example was created on NetBeans 5.5. If you have jars from
+multiple projects in a wrapper, then this example is extended by using
+&lt;tt&gt;&lt;antsub&gt;&lt;/tt&gt; instead of &lt;tt&gt;&lt;ant&gt;&lt;/tt&gt; and a &lt;tt&gt;FileSet&lt;/tt&gt; in the &lt;tt&gt;release&lt;/tt&gt;
+target's &lt;tt&gt;&lt;copy&gt;&lt;/tt&gt; task.
+
+''Only the &lt;tt&gt;my-wrapper&lt;/tt&gt; project needs modification.''
+
+====First====
+In &lt;tt&gt;my-wrapper/nbproject/project.xml&lt;/tt&gt;, change 
+&lt;tt&gt;&lt;class-path-extension&gt;&lt;/tt&gt;'s &lt;tt&gt;&lt;binary-origin&gt;&lt;/tt&gt; to
+reference the jar created by &lt;tt&gt;my-project&lt;/tt&gt;. This change gives
+code completion with Javadoc and Go to Source when referencing
+&lt;tt&gt;my-project&lt;/tt&gt;.
+&lt;pre&gt;
+&lt;binary-origin&gt;../my-project/dist/my-project.jar&lt;/binary-origin&gt;
+&lt;/pre&gt;
+
+''Make sure a &lt;tt&gt;../src&lt;/tt&gt; directory (relative to the JAR location) containing the corresponding sources of the
+library exists if you want Go to Source functionality to work.''
+
+====Second====
+In &lt;tt&gt;my-wrapper/nbproject/project.properties&lt;/tt&gt; specify where
+&lt;tt&gt;my-project&lt;/tt&gt;'s JAR file is installed in the suite's cluster. This
+puts &lt;tt&gt;my-project.jar&lt;/tt&gt; in the wrapper's NBM; it is needed since the
+wrapper's release directory is no longer used as a staging area.
+&lt;pre&gt;
+extra.module.files=modules/ext/my-project.jar
+&lt;/pre&gt;
+
+====Third====
+Delete the directory &lt;tt&gt;my-wrapper/release&lt;/tt&gt;. The original JAR file was
+copied here when the wrapper was created.
+''It will interfere if it is left around.''
+
+====Fourth====
+In &lt;tt&gt;my-wrapper/build.xml&lt;/tt&gt; add the following.  Customize the first
+two properties' &lt;tt&gt;value=&lt;/tt&gt; to specify your project's relative location and JAR.
+The &lt;tt&gt;release&lt;/tt&gt; target is replaced; now it builds &lt;tt&gt;my-project&lt;/tt&gt; then
+copies the JAR to the suite's cluster.  The clean target
+first cleans as usual, then cleans &lt;tt&gt;my-project&lt;/tt&gt;.
+&lt;pre&gt;
+&lt;property name="original.project.dir" value="../my-project"/&gt;
+&lt;property name="original.project.jar"
+          value="${original.project.dir}/dist/my-project.jar"/&gt;
+
+&lt;target name="release"&gt;
+    &lt;echo message="Building ${original.project.dir}"/&gt;
+    &lt;ant dir="${original.project.dir}" usenativebasedir="true"
+         target="jar" inheritall="false" inheritrefs="false"/&gt;
+    &lt;echo message="Done building ${original.project.dir}"/&gt;
+
+    &lt;copy todir="${cluster}/modules/ext"
+          file="${original.project.jar}"/&gt;
+&lt;/target&gt;
+
+
+&lt;target name="clean" depends="projectized-common.clean"&gt;
+    &lt;echo message="Cleaning ${original.project.dir}"/&gt;
+    &lt;ant dir="${original.project.dir}" usenativebasedir="true"
+         target="clean" inheritall="false" inheritrefs="false"/&gt;
+    &lt;echo message="Done cleaning ${original.project.dir}"/&gt;
+&lt;/target&gt;
+&lt;/pre&gt;
+
+===How do I include native libraries (&lt;tt&gt;*.so&lt;/tt&gt; or &lt;tt&gt;*.dll&lt;/tt&gt;) in my library wrapper module?===
+
+Some libraries come with a native counterpart.
+The current Library Wrapper wizard doesn't cater to this.
+As per the JNI section in [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/api.html#jni this document],
+you simply need to create a &lt;tt&gt;lib&lt;/tt&gt; directory under &lt;tt&gt;&lt;my-wrapper&gt;/release/modules&lt;/tt&gt;
+(which gets created by the wizard),
+alongside the &lt;tt&gt;ext&lt;/tt&gt; directory mentioned earlier in this document.
+This directory is where you place your native libraries.
+
+===How do I include more that one jar in my library wrapper module? ===
+With the library wrapper creation wizard it's possible to choose more than one jar (use the CTRL key to select more than one file in the file dialog). Or enter absolute file paths divided by the path separator (e.g. ; for windows systems) into the (very small) file input field.
+
+To add later more, use the project's properties dialog.
+
+----
+Applies to: NetBeans 6.8 and later</text>
+    </revision>
+  </page>
+</mediawiki>

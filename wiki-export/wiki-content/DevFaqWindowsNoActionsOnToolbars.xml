@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWindowsNoActionsOnToolbars</title>
+    <id>7522</id>
+    <revision>
+      <id>45533</id>
+      <timestamp>2011-06-15T11:23:36Z</timestamp>
+      <contributor>
+        <username>Adayth</username>
+        <id>10783</id>
+      </contributor>
+      <minor/>
+      <comment>/* I want to disable the popup menu on the toolbars in the main window. How do I do that? */</comment>
+      <text xml:space="preserve">__NOTOC__
+==I want to disable the popup menu on the toolbars in the main window. How do I do that?==
+
+There is no canonical (or pretty) way to do this, but there is a hack you can do - it works in NetBeans 5.0, 5.5 and 6.x (and probably earlier versions but this wasn't tested).  
+
+Create the following &lt;tt&gt;[[DevFaqModulesStartupActions| ModuleInstall]]&lt;/tt&gt; class (remember to add a reference to it in the module manifest, e.g. 
+
+&lt;pre&gt;
+OpenIDE-Module-Install: org/netbeans/modules/toolbarthing/Installer.class
+&lt;/pre&gt;
+
+If you are using 5.0's update 1 of module development support or later, you can just use New File &gt; NetBeans Plug-In Modules &gt; Module Installer):
+
+&lt;pre&gt;
+package org.netbeans.modules.toolbarthing;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.EventQueue;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
+import org.openide.modules.ModuleInstall;
+import org.openide.windows.WindowManager;
+public class Installer extends ModuleInstall implements Runnable {
+
+    public void restored() {
+         WindowManager.getDefault().invokeWhenUIReady(this);
+    }
+
+    public void run() {
+        JToolBar[] tb = findToolbars();
+        for (int i = 0; i &lt; tb.length; i++) {
+            processToolbar (tb[I]);
+        }
+    }
+
+    private JToolBar[] findToolbars() {
+        List l = new ArrayList();
+        JFrame jf = (JFrame) WindowManager.getDefault().getMainWindow();
+        findToolbars (jf.getContentPane(), l);
+        JToolBar[[ | ]] tb = (JToolBar[[ | ]]) l.toArray(new JToolBar[L.size()]);
+        return tb;
+    }
+
+    private void findToolbars(Component c, List l) {
+        if (c instanceof JToolBar) {
+            l.add(c);
+        } else if (c instanceof Container) {
+            Component[] cc = ((Container) c).getComponents();
+            for (int i=0; i &lt; cc.length; i++) {
+                findToolbars(cc[I], l);
+            }
+        }
+    }
+
+    private void processToolbar (JToolBar bar) {
+        MouseListener[] ml = bar.getMouseListeners();
+        for (int i = 0; i &lt; ml.length; i++) {
+            if (ml[I].getClass().getName().indexOf("PopupListener") &gt;= 0) {
+                bar.removeMouseListener (ml[I]);
+            }
+        }
+    }
+}
+&lt;/pre&gt;
+
+The above doesn't seems to work in 6.9.1. This is another similar module installer hack to achieve this:
+
+&lt;pre&gt;
+public class Installer extends ModuleInstall
+{
+
+  public void restored()
+  {
+    removeToolbarPopupMenu();
+  }
+
+  private void removeToolbarPopupMenu()
+  {
+    WindowManager.getDefault().invokeWhenUIReady(
+      new Runnable()
+      {
+        @Override
+        public void run()
+        {
+          removeAllPopupListeners(ToolbarPool.getDefault());
+        }
+      });
+  }
+
+  private static void removeAllPopupListeners(Component c)
+  {
+    if(c instanceof Container)
+    {
+      for(Component c2 : ((Container)c).getComponents())
+      {
+        for(MouseListener l : c2.getMouseListeners())
+        {
+          if(l.getClass().getName().contains("PopupListener"))
+          {
+            c2.removeMouseListener(l);
+            // Uncomment to obtain a similar console output
+            // Removing: org.openide.awt.ToolbarPool$PopupListener@1535ac from javax.swing.JPanel[...]
+            // Removing: org.openide.awt.ToolbarPool$PopupListener@1535ac from org.openide.awt.Toolbar[File,...]
+            //System.out.println("Removing: " + l + " from " + c2);
+          }
+        }
+        findToolbars(c2);
+      }
+    }
+  }
+}
+&lt;/pre&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

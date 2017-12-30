@@ -1,0 +1,105 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===URIs and URLs===
+
+'''Q:''' What is the difference?
+
+'''A:''' A URL is a kind of URI. URNs such as
+<tt>urn:oasis:foo</tt> are URIs but not URLs.
+
+'''Q:''' Should I use <tt>java.net.URI</tt> or <tt>java.net.URL</tt>?
+
+'''A:''' Whichever is more convenient. <tt>URL</tt>s must use a registered
+URL protocol and cannot handle URNs; there is slightly more overhead
+in making a URL than a URI, but not much. <tt>URI</tt> provides better methods
+for relativizing and canonicalizing URLs as well as other operations
+on the syntactic structure. To directly load content you need to use a
+URL. <tt>URI</tt> seems to have difficulty with the <tt>jar</tt> protocol.
+
+'''Q:''' Can I interconvert <tt>URI</tt>s and <tt>URL</tt>s?
+
+'''A:''' Yes, use <tt>uri.toURL()</tt> and
+<tt>URI.create(url.toExternalForm())</tt>.
+
+'''Q:''' Can I interconvert <tt>File</tt>s and <tt>URI</tt>s?
+
+'''A:''' Easily. Use <tt>file.toURI()</tt>. In the other
+direction, use <tt>new File(uri)</tt>.
+
+For <tt>URL</tt>s, go through <tt>URI</tt>. ''Never'' use
+<tt>file.toURL()</tt>; it does not handle unusual characters
+correctly.
+
+''Careful'' with file URLs/URIs denoting directories. NetBeans
+APIs generally expect these to end in a slash
+(<tt>/</tt>). However <tt>file.toURI()</tt> will not end in a
+slash if the file does not currently exist! Be sure to check if the
+URI ends in a slash and add one if not, if you in fact know that the
+<tt>File</tt> is intended to represent a directory.
+
+'''Q:''' Can I interconvert <tt>FileObject</tt>s and URLs?
+
+'''A:''' Use <tt>fileObject.getURL()</tt>, or
+<tt>URLMapper</tt> methods for more control over the kind of
+returned protocol; in the other direction, use
+<tt>URLMapper.findFileObject(url)</tt>.
+
+For URIs, go through URL.
+
+'''Q:''' How do <tt>jar</tt> URLs work?
+
+'''A:''' Unlike e.g. <tt>URLClassLoader</tt>, in the NetBeans
+APIs <tt>file:/tmp/foo.jar</tt> refers to the raw byte contents of
+<tt>foo.jar</tt>. To refer to the root entry of the JAR (e.g. for
+use as a classpath entry) you ''must'' use
+<tt>jar:file:/tmp/foo.jar!/</tt>. <tt>FileUtil</tt> has
+methods (<tt>getArchiveFile</tt>, <tt>getArchiveRoot</tt>, and
+<tt>isArchiveFile</tt>) to help you convert between these
+representations.
+
+'''Q:''' Which URL protocols are used in NetBeans?
+
+'''A:''' Several, including some custom protocols:
+
+* <tt>file</tt> - for representing files on disk.
+* <tt>jar</tt> - for representing entries inside JARs and ZIPs, including the root directory entry.
+* <tt>nbres</tt> - a resource loaded from a NetBeans module (or technically the cross-module class loader), e.g. <tt>nbres:/org/netbeans/modules/foo/resources/foo.dtd</tt> may load the same thing as <tt>jar:file:/opt/netbeans/ide4/modules/org-netbeans-modules-foo.jar!/org/netbeans/modules/foo/resources/foo.dtd</tt>.
+* <tt>nbresloc</tt> - same, but transparently localized and branded according to the usual conventions, e.g. <tt>nbresloc:/org/netbeans/modules/foo/resources/foo.html</tt> may actually load the same thing as <tt>nbres:/org/netbeans/modules/foo/resources/foo''nb''ja.html</tt>.
+* <tt>nbdocs</tt> - same as <tt>nbresloc</tt> but also searches in <tt>docs/</tt> subfolders of installation directories, e.g. <tt>nbdocs:/org/netbeans/modules/usersguide/ide.css</tt> may work like <tt>file:/opt/netbeans/ide4/docs/org/netbeans/modules/usersguide/ide.css</tt>.
+* <tt>nbinst</tt> - loads installation files using <tt>InstalledFileLocator</tt> in installation directories, e.g. <tt>nbinst:///modules/ext/some-lib.jar</tt> may load the same thing as <tt>file:/opt/netbeans/ide4/modules/ext/some-lib.jar</tt>.
+* <tt>nbfs</tt> - refers to a file object. As of NetBeans 4.0 there are no user-mounted filesystems so this is only useful to refer to file objects in the system filesystem (XML layers). For example, <tt>nbfs:/SystemFileSystem/Templates/Other/html.html</tt> refers to an HTML file templates installed in the IDE.
+
+Also note that, unlike <code>java.net.URL</code>, <code>URI.equals()</code> does not make a network connection to determine equality.  Never put URLs into a HashSet or similar equality-testing collection for this reason.
+
+-------
+
+Applies to: NetBeans 4.0, 4.1, 5.0, 5.5, 6.0, 6.1, 6.5, 6.7
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Tboudreau 
+on 2010-01-24T05:45:04Z.
+

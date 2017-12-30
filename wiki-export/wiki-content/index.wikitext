@@ -1,0 +1,541 @@
+﻿This is the developer-oriented FAQ for NetBeans IDE 4.x, 5.x, 6.x, 7.x and 8.x. ''Developer'' in this context means "person writing NetBeans extension modules (plug-ins), or applications based on the NetBeans Platform".  Don't see your developer-oriented question here? Ask on [http://netbeans.org/projects/platform/lists/dev/archive <tt>dev@platform.netbeans.org</tt>] ([http://netbeans.org/community/lists/top.html subscribe to post]).  Not writing modules?  See the [[FaqIndex| list of other FAQs]].
+
+'''Want the whole FAQ in one big HTML file?''' Download it [http://deadlock.netbeans.org/hudson/job/faqsuck/lastSuccessfulBuild/artifact/other/faqsuck/build/faq.html here] for offline reading (rebuilt daily).
+
+Here's [[HowToAddFAQEntries|How To Add FAQ Entries]].  One Big Important Thing about adding developer FAQ entries:  If they don't start with "DevFaq" they are not going to get indexed properly.  Please add items, but please follow this simple guideline. 
+
+__TOC__ 
+
+
+------
+
+===Getting Started===
+* [[DevFaqWhatIsAModule| What is a module?]]
+* [[DevFaqBecomingProficient| Becoming a proficient module developer]]
+* [[DevFaqAccessSourcesUsingMercurial| How do I get sources for NetBeans using Mercurial (hg)?]]
+* [[DevFaqAccessSourcesWeb| How do I get zipped sources for a periodic build?]]
+* [[DefFaqMapApisToTasks| What API do I want to use for x, y or z? ]]
+* [http://netbeans.org/community/contribute/patches.html I have fixed a bug in NetBeans. Can I contribute the patch?]
+* [[DevFaqSellingModules| I have written a module. Can I sell it?]]
+* [[DevFaqGeneralPackageNamingConventions| Why are some packages org.netbeans.api.something and others are org.netbeans.something.api?]]
+* [[DevFaqGeneralWhatIsNetBeansExe| What is netbeans.exe, who compiles it and why is it there?]]
+* [http://netbeans.org/community/contribute/hg.html How do I get commit access to NetBeans source repository?]
+* [[DevFaqGeneralWhereIsJavadoc| Where can I find Javadoc for the IDE and Platform?]]
+* [[DevFaqGeneralWhereIsPlatformHowToBuild| Where is the Platform and how can I build it?]]
+* [[DevFaqNetBeansPlatformManager| How do I set up a NetBeans Platform in the IDE?]]
+* [[DevFaqSourceTreeModuleDescriptions| There sure are a lot of modules in the source tree.  What are they for]]?
+* [[DevFaqLibrariesModuleDescriptions| In the Libraries tab of my application's Project Properties, there sure are a lot of modules listed. What are they for]]?
+
+===Tutorials and important starting points===
+* [[DevFaqApisBasics| What are the basic things I should know about NetBeans' architecture to get started creating NetBeans Platform applications?]]
+* [[DevFaqTutorialsIndex| Any tutorials out there, please?]]
+* [[DevFaqTutorialsAPI| NetBeans API starting point]]
+* [[DevFaqAnnotationList| NetBeans Annotation Cheat Sheet]]
+
+===Getting support, where to find examples===
+* [http://netbeans.org/community/lists/top.html NetBeans mailing lists - get help from experts all around the globe]
+* [http://platform.netbeans.org/servlets/SearchList?listName=dev Search the support list for module developers]
+* [http://netbeans.org/servlets/SearchList?listName=nbdev Search the NetBeans development mailing list]
+* [[DevFaqFileBug| Filing a bug report]]
+* [[DevFaqSampleCode| Examples of how to use various APIs]]
+* [http://hg.netbeans.org/main/misc/file/tip/platform/samples/ Browse Samples Online]
+* [[DevFaqMoreDocsOnCertainAPIs| Where can I find more documentation on certain APIs?]]
+* [http://netbeans.org/kb/support.html Consider all of these support options]
+* [[NetBeansCertifiedEngineerCourse| Can I get training material for the NetBeans Certification course?]]
+
+===Application Lifecycle and Hooks===
+* [[DevFaqAppLifecycleHooks| What are some of the hooks in the application's lifecycle I can plug into?]]
+
+===Development issues, module basics and classpath issues, and information about RCP/Platform application configuration===
+* [[DevFaqNetBeansClasspath| My module uses some libraries. I've tried setting CLASSPATH but it doesn't work. Help!]]
+* [[DevFaqModuleDependencies| How do module dependencies/classloading work?]]
+* [[DevFaq2SrcPaths| How do I have two source directories within one module?]]
+* [[DevFaqClassLoaders| What classloaders are created by the module system?]]
+* [[DevFaqUiDefaultsPropsNotFound| Why can't I load properties using UIDefaults?]]
+* [[DevFaqHowPackageLibraries| I need to package some third party libraries with my module.  How do I do that?]]
+* [[DevFaqWhatIsNbm| What is an "NBM"?]]
+* [[DevFaqSignNbm| Can I sign NBMs I create?]]
+* [[DevFaqApiSpi| What is an SPI?  How is it different from an API?]]
+* [[DevFaqSpecifyJdkVersion| My module requires JDK 6 - how do I keep it from being loaded on an older release?]]
+* [[DevFaqWrapperModules| What is a library wrapper module and how do I use it?]]
+* [[DevFaqWhenUseWrapperModule| When should I use a library wrapper module and when should I just package the library into my module?]]
+* [[DevFaqExternalLibraries| How to store external libraries in the NetBeans Hg repository]]
+* [[DevFaqNativeLibraries| How do I add native libraries?]]
+* [[DevFaqImplementationDependency| What is an implementation dependency and what/how/when should I use one?]]
+* [[DevFaqNoClassDefFound| My module uses class XYZ from NetBeans' APIs.  It compiles, but I get a NoClassDefFoundError at runtime. Why?]]
+* [[DevFaqWhatIsACluster| What is a module cluster?]]
+* [[DevFaqSuitesVsClusters| What is the difference between a suite and a cluster?]]
+* [[DevFaqHowToReuseModules| How can I reuse my modules in several RCP applications?]]
+* [[DevFaqHowToReuseModules| Can I use modules from update center in my RCP application?]]
+* [[DevFaqHowToFixDependencies| My project.xml lists more dependencies than I really need. How can I fix it?]]
+* [[DevFaqOrphanedNetBeansOrgModules| Can I work on just one or two modules from the NetBeans source base by themselves?]]
+* [[DevFaqJavaHelp| Is there a standard way to provide user documentation (help) for my module?]]
+* [[DevFaqTopManager| Where is TopManager?  I'm trying to do the examples from the O'Reilly book]]
+* [[DevFaqDependOnCore| There is a class under org.netbeans.core that does what I need.  Can I depend on it?]]
+* [[DevFaqNbIdiosyncracies| Common calls that should be done slightly differently in NetBeans than standard Swing apps (loading images, localized strings, showing dialogs)]]
+* [[DevFaqModulePatching| How do I create a patch for a preexisting NetBeans module?]]
+* [[DevFaqNbPlatformAndHarnessMixAndMatch| I want to use one version of the Platform with another version of the build harness. Can I?]]
+* [[DevFaqUIResponsiveness| I am developing a NetBeans module. What performance criteria should it satisfy?]]
+* [[DevFaqPlatformRuntimeProperties| I want to set some flags or CLI arguments for running my NB RCP/Platform based application (such as disable assertions). How do I do that?]]
+* [[DevFaqMemoryLeaks| How can I fix memory leaks?]]
+* [[DevFaqRuntimeMemory| How to run module with more PermGen and Heap memory?]]
+* [[DevFaqWeakListener| What is a WeakListener?]]
+* [[DevFaqWeakListenerWhen| When should I use a WeakListener?]]
+* [[DevFaqProfiling| How can I profile NetBeans?]]
+* [[DevFaqNetBeansFullHack| Can I test changes to the IDE without going through the license check and so on?]]
+* [[DevFaqCustomizeBuild| How can I customize the build process?]]
+* [[DevFaqNetBeansProjectsDirectory| How can I customize the default project directory for my application, replacing "NetBeansProjects"?]]
+* [[DevFaqMigratingToNewerPlatform| Migrating to a newer version of the Platform]]
+* [[FaqRunSameTargetOnAllModules| How can I launch an Ant Task on all modules of my suite?]]
+* [[DevFaqModuleReload|Do I need to restart NetBeans every time to debug new changes?]]
+* [[DevFaqAutomaticPlatformDownload|How can I have my application compiled in a specific version of the platform?]]
+* [[DevFaqAnnotationDevelopDebug|How do I develop and debug annotations for NetBeans platform apps?]]
+
+===Mavenized Builds===
+* [http://mojo.codehaus.org/nbm-maven/nbm-maven-plugin/ See also plugin documentation]
+* [[DevFaqMavenL10N|How can I create localization modules using Maven?]]
+* [[DevFaqMavenSystemScope|Why can't I use system scope for a library wrapper module?]]
+* [[DevFaqMavenPlatformRebel|Can I use JRebel to speed up development?]]
+* [[DevFaqMavenHowToMigrateFromANT|How to convert an ANT-based NetBeans Module to a Maven-based NetBeans Module?]]
+
+===Configuration: How Modules Install Things===
+* [[DevFaqModulesGeneral|What are the ways a module can influence the system?]]
+* [[DevFaqLookupDefault|What is the "default Lookup"?]]
+* [[DevFaqModulesStartupActions|How do I run some code when my module starts/loads/unloads?]]
+* [[DevFaqModulesLayerFile|What is an XML layer?]]
+* [[DevFaqSystemFilesystem|What is the system filesystem?]]
+* [[DevFaqFilesystemSee|How can I see the filesystem?]]
+* [[DevFaqInstanceDataObject|What are .instance files?]]
+* [[DevFaqDotSettingsFiles|What are .settings files?]]
+* [[DevFaqDotShadowFiles|What are .shadow files?]]
+* [[DevFaqUserDir|What is the user directory, what is in it, and why do I need one?]]
+* [[DevFaqOrderAttributes|How do I specify the order for my menu items/toolbar buttons/files in the system filesystem?]]
+* [[DevFaqDynamicSystemFilesystem|Can I dynamically change the contents of the System Filesystem at runtime?]]
+* [[DevFaqInstalledFileLocator|Can I bundle some additional files with my module?  If so, how can I find those files to use them from my module?]]
+
+===When There Are Multiple Ways To Do Something...===
+* [[DevFaqModulesDeclarativeVsProgrammatic|Installing things declaratively vs. installing things programmatically]]
+* [[DevFaqWhenToUseWhatRegistrationMethod| I need to register some object to be found at runtime, or run some code on startup.  Which way should I use?]]
+* [[DevFaqWaysToRegisterInDefaultLookup| Which way should I register an object in the default Lookup?]]
+* [[DevFaqRegisterObjectsViaInstanceOrSettingsFiles| Should I register an object in my layer file using .instance or .settings files?  What about .shadow files?]]
+
+===Actions: How to add things to Files, Folders, Menus, Toolbars and more===
+* [[DevFaqActionAddMenuBar| How do I add an action to the main menu?]]
+* [[DevFaqActionAddToolBar| How do I add an action to a toolbar in the main window?]]
+* [[DevFaqToggleActionAddToEditorToolbar| How do I add a toggle-able action to the toolbar/main menu?]]
+* [[DevFaqActionAddToEditorToolbar| How do I add an action to the toolbar of the editor?]]
+* [[DevFaqActionContextSensitive| How do I make an action that is automatically enabled/disabled depending on what's selected?]]
+* [[DevFaqCheckableActionPreferenceOption| How do I make a checkable/toggle-able action that represents a preference option?]]
+* [[DevFaqActionsFolder| What is the Actions folder in the system filesystem, and why should I use it?]]
+* [[DevFaqActionsAddAtRuntime| How do I add an action (incl. shortcut) at runtime?]]
+* [[DevFaqActionAddFileMime| How do I add an action to all files of a given mime-type?]]
+* [[DevFaqActionAddEditorPopup| How do I add an action to the context menu of a specific editor?]]
+* [[DevFaqActionAddToContextMenuOfAllEditors|How do I add an action to the context menu of all editors?]]
+* [[DevFaqActionAddProjectPopUp| How do I add an action to a project popup menu?]]
+* [[DevFaqActionAddProjectTypePopUp| How do I add an action to a project popup menu of a specific project type?]]
+* [[DevFaqActionAddProjectOwnTypePopUp| How do I add an action to a project popup menu of my own project type?]]
+* [[DevFaqActionAddFolder| How do I add an action to a folder?]]
+* [[DevFaqActionAddAnyFolder| How do I add an action to any folder?]]
+* [[DevFaqActionAddJavaPackage| How do I add an action to an Java package?]]
+* [[DevFaqActionAddTools| How do I add an action to the tools menu?]]
+* [[DevFaqActionAddDataObject| How do I add an action to my custom node?]]
+* [[DevFaqActionNodePopupSubmenu| How do I make my Node have a submenu on its popup menu?]]
+* [[DevFaqActionAddTabPopup| How do I add an action to the global popup menu of tabs?]]
+* [[DevFaqDropdownMenuAddToolbar| How do I add a dropdown menu to toolbar?]]
+* [[DevFaqDropdownMenuAddToolbarEnabled| How do I add a dropdown menu to toolbar that is selectively enabled/disabled?]]
+* [[DevFaqHideRemoveToolbarMenu| How do I hide/remove default toolbar buttons and/or menu items?]]
+* [[DevFaqHideShowToolbar| How do I hide/show toolbar dynamically?]]
+* [[DevFaqRenamingMenuItem| Some module in the IDE etc. already has a menu item I like, but I just want to rename it. Can I?]]
+* [[DevFaqSwitchingMenusByContext| Can I change the contents of a menu according to the selected file in the editor, or hide or show a whole menu?]]
+* [[DevFaqUsingSubmenus| Can I install submenus into popups or other menus, instead of a regular action?]]
+* [[DevFaqMainwindowClosingAction| How do i change the closing action of the MainWindow?]]
+* [[DevFaqFileOpenAction| How do I get the Open File item on the File menu into my platform application? ]]
+* [[DevFaqFindLocationInSourcesFromUi| Looking at the UI how do I find a module that implements a menu item ]]
+* [[DevFaqJSeparatorInMainToolbar| How can I add a JSeparator to the main toolbar? ]]
+* [[DevFaqTweakRegistryByCodeDeduction| How do I remove Menu Item, Toolbar Button from plug-in's XML Layer?]]
+* [[DevFaqTweakRegistryByCodeReplacement| How do I have only Shortcut Keys for an Action?]]
+* [[DevFaqChangeMenuItemToolbarAppearanceForAction| How do I change the appearance of the menu items and toolbar buttons for my Action]]
+* [[DevFaqLogActionStartup| How do I invoke the IDE-Log upon Startup?]]
+* [http://netbeans.dzone.com/news/which-netbeans-platform-action| Which NetBeans Platform Action Class Should I Use?]
+* [http://netbeans.dzone.com/how-to-make-context-sensitive-actions How to Make the NetBeans Platform Sensitive to Customers]
+* [[DevFaqAddGlobalContext| How do I add content to the Global Context?]]
+* [[DevFaqAddIconToContextMenu|How do I add an icon to the context menu?]]
+* [[DevFaqAddActionToMembersOrHierarchyView|How do I add an action to the context menu of the members or hierarchy view?]]
+* [[DevFaqInvokeActionProgrammatically|How do I invoke an action programmatically?]]
+* [[DevFaqHowOrganizeOrReuseExistingActionsWithAnnotations|How can I reuse and/or organise actions only by using annotations (@ActionReferences)?]]
+* [[DevFaqHowToFixPopuppresenterreturningnull|How can I fix "WARNING [org.openide.util.Utilities]: findContextMenuImpl, getPopupPresenter returning null for" when using a PopupPresenter ?]]
+* [[DevFaqHowToDefineTheKeyMapCategoryForAnAction|How do I define and localise the keymap category of an action?]]
+<!-- * [[DevFaqHowCreateAnActionObject| How can I to create an Action object and attach this action to one or more components on frame without manually editing Generated Code?]] -->
+* [[DevFaqAddMacroableAction|How do I create an action which can be invoked by a macro?]]
+
+===Key Bindings===
+* [[DevFaqKeybindings| How do key bindings work?]]
+* [[DevFaqRebindingKeys| Binding one key to more than one action]]
+* [[DevFaqLogicalKeybindings| Why should I use D- for Ctrl and O- for Alt? I thought C- stood for Ctrl and A- stood for Alt!]]
+* [[DevFaqOrderActions| I want my action to appear between two existing items/in a specific place in the menu.  Can I do that?]]
+* [[DevFaqGlobalVsEditorKeybindings| What about editor-specific keybindings?]]
+* [[DevFaqKeybindingsInUse| Which keybindings are already being used?]]
+* [[DevFaqAddDefaultActionShortcuts|How do I add default shortcuts for SystemActions (like cut, paste, etc)?]]
+* [[DevFaqGetShortCutForAction|How to get the shortcut/shortkey of an action at runtime?]]
+* [[DevFaqAddShortCutForAction|How to set the shortcut of an action outside of your own module?]]
+
+===Lookup===
+* [[DevFaqLookup| What is a Lookup?]]
+* [[DevFaqLookupWhere| What uses Lookup?]]
+* [[DevFaqLookupVsHashmap| Why use Lookup - wouldn't a Map be good enough?]]
+* [[DevFaqLookupGenerics| How do I use Java generics with Lookup?]]
+* [[DevFaqLookupDefault| What is the "default Lookup"?]]
+* [[DevFaqLookupHowToOverride| How can I override an instance in the Lookup?]]
+* [[DevFaqLookupCookie| What is the difference between getCookie(Class), SharedClassObject.findObject(Class) and Lookup.lookup(Class)?]]
+* [[DevFaqLookupImplement| How do I implement my own lookup or proxy another one?]]
+* [[DevFaqLookupNonSingleton| If there is more than one of a type in a Lookup, which instance will I get?]]
+* [[DevFaqLookupContents| How can I find out what is in a Lookup]]
+* [[DevFaqLookupForDataNode| How can I add support for lookups on nodes representing my file type?]]
+* [[DevFaqWhenLookup| When should I use Lookup in my own APIs?]]
+* [[DevFaqLookupPackageNamingAndLookup| After adding my class to Lookup I get a "ClassNotFoundException" when trying to look it up, why?]]
+* [[DevFaqLookupEventBus| Event Bus in NetBeans]]
+* [[DevFaqLookupLazyLoad| How do I lazy-load an item in the lookup?]]
+* [[apidesign:CompileTimeCache|Register instances via custom annotations]]
+* [[DevFaqSysFsLookupRegistration| How can I register services into the lookup using the system filesystem?]]
+
+===Files and Data Objects===
+* [[DevFaqFileRecognition| How does NetBeans recognize files?]]
+* [[DevFaqFileObject| What is a FileObject?]]
+* [[DevFaqFileSystem| What is a FileSystem?]]
+* [[DevFaqFileAttributes| What are file attributes?]]
+* [[DevFaqDataObject| What is a DataObject?]]
+* [[DevFaqDataLoader| What is a DataLoader?]]
+* [[DevFaqListenForSaveEvents| How can I be notified when a file is modified and saved?]]
+* [[DevFaqListenForOpenEvents| How can I be notified when a file is opened?]]
+* [[DevFaqDataSystemsAddPopupToAllFolders| How do I add a menu item to the popup menu of every folder in the system?]]
+* [[DevFaqFileContextMenuAddition| Can I add a menu item to the context menu of every Java source file?]]
+* [[DevFaqImplementFilesystem| I'm having trouble implementing this filesystem....]]
+* [[DevFaqNewXMLFileType| How do I add support for an XML type with a different extension?]]
+* [[DevFaqDataObjectInItsCookieSet| The next button is never enabled when I create my DataObject from a template.  Help!]]
+* [[DevFaqFileObjectInMemory| How can I create a FileObject in memory?]]
+* [[DevFaqMIMEResolver| How can I create declarative MIMEResolver and add new file type?]]
+* [[DevFaqListeningForFileChanges| I am listening for changes in a folder/file but when there are changes I do not receive an event]]
+* [[DevFaqListenForChangesInNonExistentFile| I want to listen for changes in a file that may not exist or may be deleted and re-created]]
+* [[DevFaqFileChoosers| I need to show a file chooser.  How can I remember most-recently-used directories?]]
+
+===Converting between common data types and finding things===
+* [[DevFaqFileVsFileObject| FileObjects versus Files]]
+* [[DevFaqUriVsUrl| URIs and URLs]]
+* [[DevFaqFileFileObject| How do I get a java.io.File for a FileObject?]]
+* [[DevFaqFileObjectFile| How do I get a FileObject for a File?]]
+* [[DevFaqDataObjectFileObject| How do I get a DataObject for a FileObject?]]
+* [[DevFaqFileObjectDataObject| How do I get a FileObject for a DataObject?]]
+* [[DevFaqNodeDataObject| How do I get a Node for a DataObject?]]
+* [[DevFaqDataObjectNode| How do I get a DataObject for a Node?]]
+* [[DevFaqFindSfs| How do I get a reference to the system filesystem?]]
+* [[DevFaqFindInstance| I have a .instance file.  How do I get an actual object instance?]]
+* [[DevFaqFolderOfInstances| I have a folder full of .instance files.  How do I get any/all of the object instances?]]
+
+===Editor and Edited Files===
+* [[DevFaqGetOpenEditorWindows| How can I get a list of open editors/documents?]]
+* [[DevFaqEditorGetCurrentDocument| How can I get the currently open document in the selected editor?]]
+* [[DevFaqListenEditorChanges| How can I track what file the user is currently editing?]]
+* [[DevFaqFindCaretPositionInEditor| How can I get the position of the caret/line in the selected editor?]]
+* [[DevFaqOpenReadOnly| How can I open a file in the editor in read-only mode?]]
+* [[DevFaqOpenFileAtLine| How can I open a file in the editor at a particular line number and column?]]
+* [[DevFaqEditorHowToGetMimeTypeFromDocumentOrJTextComponent| How to get mime type from Document or JTextComponent?]]
+* [[DevFaqModifyOpenFile| Is it safe to programmatically modify a file which is open in the editor?]]
+* [[DevFaqMultipleProgrammaticEdits| I want to make some programmatic changes to the edited file.  How can I do it so one Undo undoes it all?]]
+* [[DevFaqSyntaxColoring| Can I add syntax coloring for my own data object/MIME type?]]
+* [[DevFaqEditorCodeCompletionAnyJEditorPane| How to add code completion to any JEditorPane]]
+* [[DevFaqEditorWhatIsMimePath| What is MimePath?]]
+* [[DevFaqEditorWhatIsMimeLookup| What is MimeLookup?]]
+* [[DevFaqEditorHowIsMimeLookupComposed| How is MimeLookup composed?]]
+* [[DevFaqEditorJEPForMimeType| How can I create JEditorPane for a specific document type?]]
+* [[DevFaqI18nFileEncodingQueryObject| Project Encoding vs. File Encoding - What are the precedence rules used in NetBeans 6.0?]]
+* [https://blogs.oracle.com/geertjan/entry/creating_error_annotations_in_netbeans2 I want to add annotations to my editor, for errors, or other reasons. How?]
+* [[DevFaqFileEditorContextMenuAddition| Can I add a menu item to the context menu of the Java source editor?]]
+* [[DevFaqEditorHowToAddDiffView| How to use the diff view in my own application/plugin?]]
+* [[DevFaqEditorHowToReuseEditorHighlighting| How to reuse XML syntax highlighting in your own editor]]
+* [[DevFaqEditorHowToAddCodeTemplates| How to add code templates?]]
+
+=== File Management (within the IDE/Application)===
+* [[DevFaqOpenFile | How can I open a file in the IDE programatically?]]
+
+===Module System===
+* [[DevFaqSuppressExistingModule| I want my module to disable some of the modules that would normally be enabled. Possible?]]
+* [[DevFaqTutorialsDebugging| How do I debug a module I'm building?]]
+* [[DevFaqDisableAutoupdate| Can I disable Auto Update (for example, while running tests)?]]
+* [[DevFaqChangeRestartSplash| How can I change the NetBeans splash screen shown when an installed module requires restart?]]
+* [[DevFaqModuleObfuscation| How can I obfuscate a module?]]
+* [[DevFaqModuleCCE| Why am I getting a ClassCastException when the class is clearly of the right type?]]
+* [[DevFaqModuleDupePackages| Can two or more modules contain the same package?]]
+* [[DevFaqNonGuiPlatformApp| Can I create a console or server (non-GUI) app with the NetBeans Platform?]]
+* [[DevFaqModuleLoadUnloadNotification| How can code in one module be notified when other modules are loaded or unloaded?]]
+* [[Autoload| What is an autoload module?]]
+* [[DevFaqFixDependencies| How fix module dependencies automatically?]]
+
+===Nodes and Explorer===
+* [[DevFaqWhatIsANode| What is a Node?]]
+* [[DevFaqExplorer| What is "explorer"?]]
+* [[DevFaqExplorerManager| What is an ExplorerManager?]]
+* [[DevFaqExplorerViews| What is an Explorer View?]]
+* [[DevFaqExplorerConnectNode| How do I show a Node in my explorer view?]]
+* [[DevFaqNodeSubclass| I need to create my own Nodes. What should I subclass?]]
+* [[DevFaqNodeSerialize| How to serialize my nodes?]]
+* [[DevFaqNodesChildFactory| I need to show Nodes for objects that are slow to create.  How do I compute Node children on a background thread?]]
+* [[DevFaqCreateExplorerPanel| How do I create a TopComponent (tab in the main window) to show some Nodes?]]
+* [[DevFaqAddDoingEvilThingsToForeignNodes| I have a reference to an existing Node from some other module.  Can I add cookies/properties/children?]]
+* [[DevFaqAddingRemovingChildrenDynamically| Can I add, remove or reorder children of a node on the fly?]]
+* [[DevFaqExpandAndSelectSpecificNode| How do I make a particular node visible in the Explorer, and maybe select it?]]
+* [[DevFaqFilesFromNodes| How do I get at the file that a particular node represents?]]
+* [[DevFaqTrackingExplorerSelections| Tracking selections in the Explorer]]
+* [[DevFaqNodesCustomLookup| I need to add to/remove from/customize the content of my Node/DataObject/TopComponent's Lookup.  How do I do it?]]
+* [[DevFaqTrackGlobalSelection| I need to write some code that tracks the global selection.  What should I do?]]
+* [[DevFaqNodesDecorating| How do I "decorate" nodes that come from another module (i.e. add icons, actions)?]]
+* [[DevFaqViewSaveTTVColumns| How do I preserve the column attributes of a TreeTableView?]]
+* [[DevFaqSuppressEditTTVColumns| How do I remove the "..." buttons of a TreeTableView?]]
+* [[DevFaqSortableTTVColumns| How can I make sortable columns in a TreeTableView?]]
+* [[DevFaqNodeViewCapability| How can I add a "View" capability for data my node represents?]]
+* [[DevFaqNodeSelectAll| How can I implement "Select all/Deselect all/Invert selection" features?]]
+* [[DevFaqNodeChildrenDotLeaf| Why do my nodes in the Explorer always have an expand-box by them, even though they have no children?]]
+* [[DevFaqNodeDeletionDialog| How can I prevent (or override) the node deletion dialog?]]
+* [[DevFaqChangeNodeAppearance| How can I change my node's appearance?]]
+* [[DevFaqCutCopyPaste| How do I handle cut, copy and paste?]]
+* [[DevFaqGraphicalChoiceView| How can I graphically create a ChoiceView?]]
+* [[DevFaqExplorerViewsInMantisse| How can I design explorer views in Mantisse GUI editor?]]
+* [[DevFaqNodePropertyForFiles| I have a Node.Property for a file. How can I control the file chooser that is the custom editor?]]
+* [[DevFaqPropertyEditorHints| I have a Node.Property. I want to control its appearance or custom editor somehow.  Can I do that without writing my own property editor?]]
+* [[DevFaqNodeInjectingLookupContents| I want to allow other modules to inject objects into my Node's Lookup, or Actions into its actions]]
+* [[DevFaqOutlineViewHorizontalScrolling|How can I add horizontal scrolling support to the OutlineView component?]]
+
+===Tasks and Progressbar===
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-api-progress/overview-summary.html How to use the Progress API?]
+* [http://rubenlaguna.com/wp/2010/01/18/cancellable-tasks-and-progress-indicators-netbeans-platform/ Cancellable Tasks and Progress Indicators]
+* [[DevFaqTaskLongRunningAsyncTask| How to execute a long running task from an action without blocking the GUI?]]
+* [[DevFaqExternalExecution| How to run/execute an external program?]]
+
+===Command Line Parsing===
+* [[HowToEnableDisableMenusFromCommandLine | Can something that the user sets on the command line determine whether a menu item is enabled?]]
+* [[HowToEnableDisableModulesFromCommandLine | Same as the above, but this time for enabling/disabling modules?]]
+* [[HowToPassCommandLineArgumentsToANetBeansPlatformApplicationWhenRunInsideTheIDE | How to pass command line arguments to a NetBeans Platform application when run inside the IDE]]
+* [[HowToParseTheCommandLine NetBeans| Platform parsing command line arguments]]
+
+===Threading===
+* [[DevFaqBackgroundThread| What is a background thread and why do I need one?]]
+* [[DevFaqThreading| I need to run some code on a background thread.  Can the platform help me?]]
+* [[DevFaqRequestProcessor| When should I use RequestProcessor.getDefault() and when should I create my own RequestProcessor?]]
+* [[DevFaqThreadingBuiltIn| What APIs come with built-in background thread handling?]]
+* [[DevFaqRequestProcessorTask| How can I run an operation occasionally on a background thread, but reschedule it if something happens to delay it?]]
+
+===Creating a Custom Programming Language===
+* [[DevFaqSyntaxHighlight|How do I add syntax highlighting for my language?]]
+* [[DevFaqCustomDebugger|How can I create a custom Debugger for my language?]]
+
+===Settings===
+* [[DevFaqSetPrefs| How do I let the user set preferences/options/customization/configuration for my module/application?]]
+* [[DevFaqExtendOptionsWindow| Can I add new panels to the Options window?]]
+* [[DevFaqExportImport| How to register options for export/import to module's layer?]]
+* [[DevFaqJavaStartParms| How do I change the application's Java start parameters?]]
+* [[DevFaqExtendOptionsSearch| How can I configure my options panel to be found by global quicksearch or options search?]]
+* [[DevFaqOpenOptionsAtCategory| How do you open the option dialog with a preselected category?]]
+* [[DevFaqHowToChangeSettingsFromAnExternalModules| How do you change the configuration of other modules?]]
+
+===Window System===
+* [[DevFaqWindowsGeneral| What is the window system]]
+* [[DevFaqWindowsMode| What are Modes?]]
+* [[DevFaqWindowsTopComponent| What are TopComponents?]]
+* [[DevFaqWindowsMatisse| How do I use Matisse/GroupLayout (new form editor/layout manager in 5.0) in my windowing system components]]
+* [[DevFaqWindowsComponentHowTo| I want to show my own component(s) in the main window - where do I start?]]
+* [[DevFaqWindowsAndDialogs| Windows and dialogs]]
+* [[DevFaqWindowsXmlApi| How does the XML API for installing window system components work?]]
+* [[DevFaqWindowsWstcrefAndFriends| How do I use .wstcrf/.wsmode/.settings files to install my module's components in the window system?]]
+* [[DevFaqWindowsOpenInMode| My TopComponent always opens in the editor area, but I want it to open in the same place as XYZ]]
+* [[DevFaqWindowsTopComponentLookup| Why does TopComponent have a getLookup() method?  What is it for?]]
+* [[DevFaqWindowsNoActionsOnToolbars| I want to disable the popup menu on the toolbars in the main window.  How do I do that?]]
+* [[DevFaqExecutableIcon| How can I change the executable's icon?]]
+* [[DevFaqWindowsInternals| How does the window system ''really'' work?]]
+* [[DevFaqReplaceWindowSystem| How can I replace the Window System?]]
+* [[DevFaqInitialMainWindowSize|How do I set the initial size of the main window?]]
+* [http://netbeans.dzone.com/news/secrets-netbeans-window-system Secrets of the NetBeans Window System]
+* [[DevFaqEditorTopComponent| I want to create a TopComponent class to use as an editor, not a singleton]]
+* [[DevFaqNonSingletonTopComponents| How can I change my TopComponent to not be a singleton?]]
+* [[DevFaqMultipleTopComponentAction| I have a non-singleton TopComponent. Can I write actions which show all available instances in the main menu?]]
+* [[DevFaqWindowsOpenTopComponents| Which TopComponents are open?]]
+* [[DevFaqOverrideDefaultWindowSize| How to override the default size of an existing window?]]
+* [[DevFaqCustomWindowMode| How to create a custom window mode?]]
+* [[DevFaqMainTitle| How to change main title contents?]]
+* [[DevFaqCustomizeWindowSystem| How can I customize the window system via the latest 7.1 techniques/enhancements?]]
+* [[DevFaqMixingLightweightHeavyweight | How to mix lightweight (Swing) and heavyweight (AWT) components?]]
+* [[DevFaqWindowsMaximizeViaCode| How to maximize a TopComponent?]]
+
+===Dialogs API===
+* [[DevFaqDialogsApiIntro| What is the Dialogs API and How Do I Use It?]]
+* [[DevFaqDialogControlOKButton| How can I control when the OK button is enabled]]
+
+===XML Multiview API===
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_1 How do I get started with the XML Multiview API? (Part 1)]
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_2 How do I get started with the XML Multiview API? (Part 2)] 
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_3 How do I get started with the XML Multiview API? (Part 3)]
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_4 How do I get started with the XML Multiview API? (Part 4)]
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_5 How do I get started with the XML Multiview API? (Part 5)]
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_6 How do I get started with the XML Multiview API? (Part 6)]
+* [https://blogs.oracle.com/geertjan/entry/visual_editor_part_7 How do I get started with the XML Multiview API? (Part 7)]
+* [[DevFaqMultiViewChangeTabInCode| How to change selected tab of Multiview?]]
+
+===Project Handling===
+* [[DevFaqOpenProjectProgramatically | How can I open a Project programatically?]]
+* [[DevFaqGetProjectForFileInEditor | How to get the project of the active file in the editor?]]
+* [[DevFaqGetNameOrIconForProject | How to get the name or icon of a project?]]
+* [[DevFaqGetNameOfProjectGroup | How to get the name of the active project group?]]
+* [[DevFaqListenForOpeningClosingProject | How to listen for projects to be opened/closed?]]
+
+===Project Types===
+* [[DevFaqPossibleToExtend| Is it possible to extend an existing project type?]]
+* [[DevFaqActionAddProjectCustomizer| How to add a new panel to a Project Properties dialog?]]
+* [[DevFaqActionAddProjectPopUp| How do I add an action to a project popup menu?]]
+* [[DevFaqActionAddProjectTypePopUp| How do I add an action to a project popup menu of a specific project type?]]
+* [[DevFaqIdentifyMain| How do I identify the "main project"?]]
+* [[DevFaqActionAddProjectCustomizerToMultipleTypes| How do I register a "ProjectCustomizer" to multiple project types?]]
+* [[DevFaqActionAllAvailableProjectTypes| How determine all available project types?]]
+*[[DevFaqAddFileTemplateToNewFileContentMenu|How can I define the available File types when the user right-clicks the project folder and chooses "New"?]]
+
+Also see [[BuildSystemDesign]] and [[ProjectGroups]].
+
+===Saving===
+* [https://blogs.oracle.com/geertjan/entry/savecookie Help, the Save menu item is disabled!]
+* [https://blogs.oracle.com/geertjan/entry/savecookie_part_2 Hmmm. Is there a better solution?]
+
+===Versioning===
+* [[ProjectVersioning |How to add versioning actions like GIT, Mercurial, SVN, CVS to my own nodes?]]
+
+===Printing===
+* [[DevFaqHowToPrint | Help, the Print menu item is disabled!]]
+
+===HTML Browser===
+* [[DevFaqHowToOpenURL|How to open a URL in the internal/default HTML browser?]]
+
+===Wizards and Templates===
+* [[DevFaqMakeGroupTemplate| How do I make a file template which actually creates a set of files at once?]]
+* [[DevFaqTemplatesInNonIdeApp| I am creating a non-IDE application.  How do I enable/control templates?]]
+* [https://blogs.oracle.com/geertjan/entry/freemarker_baked_into_netbeans_ide1 How do I get started using FreeMarker to generate my templates?] (and [https://blogs.oracle.com/geertjan/entry/freemarker_fun_pack this plugin] might help too)
+* [[DevFaqWizardPanelError| How do I show that a user has filled an invalid input into my wizard?]]
+* [[DevFaqOpenFilesAfterProjectCreation| How to open files in editor after project creation?]]
+* [[DevFaqWizardChangeLabelsOfDefaultButtons| How to customize the button text of default buttons of a wizard (Finish, Cancel, etc.)?]]
+
+===Properties and PropertySheet===
+* [[DevFaqPropertySheetEditors|  How do I change the default behavior of PropertySheet editors?]]
+* [[DevFaqPropertySheetNodes|  How do I show my node's properties in the Properties view?]]
+* [[DevFaqPropertySheetTabs| How do I display different groups of properties on buttons in the property sheet the way Matisse does?]]
+* [https://blogs.oracle.com/geertjan/entry/propertyeditorsupport_paintvalue How do I color the cells in a property sheet?]
+* [https://blogs.oracle.com/geertjan/entry/propertyeditorsupport_paintvalue How do I display an icon in my property sheet?]
+* [[DevFaqPropertySheetHideDescription| How do I hide the description area in property window?]]
+* [[DevFaqPropertySheetReadonlyProperty| How do I add a readonly property?]]
+
+===Output Window===
+* [[DevFaqOutputWindow| How do I create my own tab in the output window and write to it?]]
+* [[DevFaqOutputWindowExternalProcess| How do I route the output from an external process to the output window?]]
+* [[DevFaqCustomIOProvider| How to implement custom IOProvider?]]
+* [[DevFaqOWTabEmbedding| How do I embed output window tab to another component?]]
+* [[DevFaqOWColorText| How to use color text in Output Window?]]
+* [[DevFaqInput | How to get user input in the Output Window?]]
+
+===Using Enterprise Resources from NetBeans module===
+* [[DevFaqAppClientOnNbPlatformTut| Java EE Application Client on top of NetBeans Platform Tutorial]]
+* [[DevFaqCallEjbFromNbm| How to call EJB from NetBeans module]]
+
+===Running and Writing tests===
+* [[DevFaqUsingSimpletests|Using NbModuleSuite & friends]]
+* [[DevRunningTestsPlatformApp|Running tests on a platform application]]
+* [http://openide.netbeans.org/tutorial/test-patterns.html Typical Test Patterns]
+* [[NetBeansDeveloperTestFAQ| NetBeans Developer Test FAQ]]
+* [[TestingThingsThatUseFileObjectDataObjectDataFolder| Testing things that use FileObjects]]
+* [[DevFaqTestDataObject| Writing Tests for DataObjects and DataLoaders]]
+* [[DevFaqTestUsingSystemFileSystem| How do I test something which uses the System Filesystem?]]
+
+===Branding your application===
+* [[BrandingAboutDialog| Branding About Dialog]]
+* [[BrandingUpdaterSplash| Branding Updater Splash]]
+* [[DevFaqVersionNumber| How do I set the version number?]]
+* [[DevFaqRemoveStatusBar| How do I remove the status bar?]]
+* [[TranslateNetbeansModule| Translating a NetBeans Module]]
+
+===Authentication and Authorization in Platform Apps===
+* Building a Login Screen for a NetBeans Platform Application: [https://blogs.oracle.com/geertjan/date/20070426 Part 1], [https://blogs.oracle.com/geertjan/date/20070427 Part 2] and [https://blogs.oracle.com/geertjan/date/20070612 Part 3]
+* [[DevFaqPlatformAppAuthStrategies| Other strategies for authentication and authorization]]
+
+===Logging and Error Handling===
+* [[DevFaqLogging| Using java.util.logging in NetBeans]]
+* [[DevFaqUIGestures| UI Logging through Gestures Collector]]
+* [[DevFaqUnexpectedExceptionDialog| How can I suppress the Unexpected Exception dialog?]]
+* [[DevFaqCustomizingUnexpectedExceptionDialog|How can I customize the Unexpected Exception dialog?]]
+* [[DevFaqAddTimestampToLogs|How can I add a timestamp to the logs?]]
+
+
+===JavaHelp===
+* [[DevFaqHelpGuidelines| JavaHelp integration guide]]
+* [[DevFaqIdeWelcome| How do I fix problems about 'ide.welcome'?]]
+* [https://blogs.oracle.com/geertjan/entry/branding_the_default_help_topic How do I change the default help topic?]
+* [https://blogs.oracle.com/geertjan/date/20060310 How do I remove the helpset?]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-javahelp/org/netbeans/api/javahelp/doc-files/help-guide.html How do I connect ui to JavaHelp?]
+* [[DevFaqJavaHelpNotDisplayed| Why doesn't my JavaHelp content show up?]]
+* [[DevFaqJavaHelpForNodeProperties| How can I hook up JavaHelp to property sets or individual properties?]]
+* [[DevFaqJavaHelpOverrideCustom| How can I override JavaHelp to display my own custom help or documentation?]]
+
+===Look and Design===
+* [[DevFaqChangeLookAndFeel|How can I set the Swing look and feel on startup?]]
+* [[DevFaqCustomFontSize| I have a custom component.  How can I make it respond to --fontsize like the rest of NetBeans?]]
+* [[DevFaqImagesForDarkLaf|How to provide non-inverted images for dark LookAndFeels like DarkMetal/Darcula?]]
+
+===Deploying Changes through AutoUpdate and using Autoupdate API===
+* [[DevFaqCustomUpdateCenter| How can I use AutoUpdate to deploy updates and new modules for my application?]]
+* [[DevFaqAutoUpdateBranding| How can I update the splash screen, title bar and other branding items via AutoUpdate?]]
+* [[FaqPluginManagerCustomization#To_customize_Interval_of_Automatically_Check_for_Updates_.28since_NB6.1.29| How can I set the interval at which AutoUpdate checks its servers?]]
+* [[DevFaqAutoUpdateAPIJavadoc| How can I find Javadoc of Autoupdate API with hints to use it?]]
+* [[FaqPluginManagerCustomization| What other documentation is available about AutoUpdate?]]
+* [[DevFaqNbmPostInstall| How to specify post-install code in NBM?]]
+* [[DevFaqUseNativeInstaller| How can I run the installer for something else during module installation?]] (''since NB6.5'')
+* [https://blogs.oracle.com/rechtacek/entry/how_to_update_netbeans_platform How to update NetBeans Platform Application silently?]
+* [[DevFaqNBMPack200| How to deal with pack200 compression in NBM?]] (''since NB6.9'')
+* [[DevFaqAutoUpdateCheckEveryStartup| How to force to check for updates at every startup?]]
+* [[DevFaqHowToChangeUpdateCenterURL|How to change the update center URL via code?]]
+
+===Deployment using installers / NBI===
+* [[DevInstallerAddVersioningInfo| How to add versioning information to be shown in "Installed Programs" (Windows-only)?]]
+
+===Programmatic access to Java Sources===
+The following applies only to NetBeans 6.0 and later. 
+
+* [[JavaHT_GetAllMembers| How do I Get All Methods/Fields/Constructors of a Class?]]
+* [[JavaHT_Modification| How can I programmatically modify a Java source file?]]
+* [[DevFaqObtainSourcesOfAJavaClass| How to obtain a source file for a Java class and open in the editor?]]
+* [[DevFaqScanForClasses| How can I scan a classpath to find all classes of a particular type?]]
+* See [[Java_DevelopersGuide | Java_DevelopersGuide]] for more specific FAQ entries
+
+===When things go wrong: Troubleshooting===
+* [[DevFaqTroubleshootClassNotFound| I've got a class not found error/exception.  How can I fix it?]]
+* [[DevFaqTroubleshootMissingItemsInZippedSources| I find files missing from the source ZIP file]]
+
+
+===Licensing Issues===
+* [[DevFaqLic3rdPartyComponents| NetBeans Platform and 3rd party components ]]
+* [[DevFaqMpl3rdPartySources| Where to download sources of MPL third-party components?]]
+* [[DevFaqLgpl3rdPartySources| Where to download sources of LGPL third-party components?]]
+* [[DevFaqEpl3rdPartySources| Where to download sources of EPL third-party components?]]
+
+===Using Sounds===
+* [[DevFaqMakeItTalk| How to make my application talk?]]
+* [[DevFaqUseSounds| How to use sounds in my application?]]
+
+===Contributor Agreement ===
+* [[FaqWhatIsCA| What is the Contributor Agreement ("CA")? ]] 
+* [[FaqDoINeedACA| Do I have to fill out a CA? ]] 
+* [[FaqHowDoIFileACA| How do I file a completed CA? ]] 
+* [[FaqCanIFileByEmail| Can I file my completed CA by e-mail? ]] 
+* [[FaqJCAAndCA| I've already signed a JCA; do I still have to sign the CA? ]] 
+* [[FaqOtherSunCA| I've already signed a CA for another Oracle project, do I need to sign another one for NetBeans? ]] 
+* [[FaqWhichVersionCA| I've already signed a recent version of the CA, do I need to sign the newest version?]] 
+* [[FaqCAForEveryContribution| Do I have to file a CA for every contribution? ]] 
+* [[FaqCanICancelCA| Once I have a CA on file, can I change my mind and cancel? ]] 
+* [[FaqCAAndRejectedContribution| I tried to make a contribution to netbeans.org and signed a CA, but my contribution was not accepted. What is the result? ]] 
+* [[FaqWhyTheCA| Why does NetBeans request a CA? ]] 
+* [[FaqListedOnCopyright| I have a CA or JCA on file and I have made a code contribution to netbeans.org. Can I get listed on the copyright notice? ]] 
+* [[FaqCompanyOrIndividualCA| If my company wants me to contribute changes, who should sign the CA, me or my company? ]] 
+* [[FaqBlanketJCAForEmployees| Can my company sign a blanket JCA for all its employees? ]]
+
+<!--ENDFAQ-->

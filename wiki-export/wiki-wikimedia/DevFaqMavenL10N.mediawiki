@@ -1,0 +1,46 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+===How can I create localization modules using Maven?===
+
+If you have localized versions of resources ''in your own modules'', you can simply place them alongside the base version; for example, <tt>src/main/resources/my/module/Bundle_de.properties</tt> would provide a German translation of <tt>src/main/resources/my/module/Bundle.properties</tt>.
+
+But to localize ''other people's modules'', then as explained in [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/i18n-branding.html#placement Physical Placement of Localized Resources] you will need to create <tt>modules/locale/*_*.jar</tt> JARs with the localized resources. (Simply bundling localized resources in your own module will not work, because these are usually searched for starting with the original module's <tt>ClassLoader</tt>, which cannot "see" your modules.)
+
+The simplest way to do this is to use the existing [http://mojo.codehaus.org/nbm-maven-plugin/branding-mojo.html <tt>nbm:branding</tt> goal], which despite its name can handle localization as well as branding. (These are nearly interchangeable in the NB Platform.) [[File:Localedemo.zip]] demonstrates how to localize parts of the Options dialog to Czech. Take note of:
+
+* <tt>lokalizace/pom.xml</tt> asks to use this goal when building the module. It overrides the "branding token" (otherwise inherited from the parent POM) with your locale identifier. (Specifying this custom execution is required in the 3.3 plugin; future versions may run the goal automatically during the package phase when there is anything to process, but you would still need to declare the locale in your plugin configuration.)
+* <tt>lokalizace/src/main/nbm-branding/</tt> contains the actual localizations.
+** Localizations must be grouped by module to be localized, under a folder path matching the path of the original module in its cluster.
+** The locale suffix (<tt>_cs</tt> in this case) is inserted automatically by the build, so the source file should be named simply <tt>Bundle.properties</tt>.
+* <tt>application/pom.xml</tt> specifies <tt>--locale cs</tt> so that you can quickly test the localization just by running the app.
+* It also turns on <tt>NbBundle</tt> debugging mode when requested by a special profile. This can be helpful to pinpoint where a particular English string is coming from: every visible string will be annotated with a bundle number (cross reference with console output) and line number. You can also use the Search field in the branding editor (available from the context menu of <tt>lokalizace</tt>) to find all potentially localizable strings in the Platform matching some keyword; this editor also creates the right folder structure for you automatically when localizing new bundles.
+
+The module bundling the localizations can now be included in your app, or distributed by any other means. When the specified locale is active, your localizations will be applied.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jglick 
+on 2011-01-21T13:59:19Z.
+

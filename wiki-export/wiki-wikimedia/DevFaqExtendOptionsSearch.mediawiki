@@ -1,0 +1,70 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+=How can configure my options panel to be found by global quicksearch or options search?=
+
+==Quicksearch==
+
+Use the <code>keywords</code> attribute of the <code>@OptionsPanelController.SubRegistration</code>/<code>@OptionsPanelController.TopLevelRegistration</code>
+
+
+For example
+<code>
+<pre>
+@OptionsPanelController.SubRegistration(
+        id = "XXX",
+        location = "Java",
+        displayName = "#AdvancedOption_DisplayName_MYPLUGIN",
+        keywords = "#AdvancedOption_Keywords_MYPLUGIN",
+        keywordsCategory = "Java/MYPLUGIN")
+@org.openide.util.NbBundle.Messages({"AdvancedOption_DisplayName_MYPLUGIN=MYPLUGIN", "AdvancedOption_Keywords_MYPLUGIN=keyword1,keyword2"})
+public final class MYPLUGINOptionsPanelController extends OptionsPanelController
+</pre>
+</code>
+
+==Options search==
+
+Use the <code>keywords</code> attribute of the <code>@OptionsPanelController.Keywords</code>. Place the annotation at the OptionPanel and '''NOT''' at the OptionsPanelController.
+
+For example
+<code>
+<pre>
+@org.netbeans.spi.options.OptionsPanelController.Keywords(location="Java", tabTitle="XXX", keywords={"configures format","highlighting","much more"})
+public class MYPLUGINOPTIONSPanel extends javax.swing.JPanel
+
+</pre>
+</code>
+
+==Further resources==
+[1] http://bits.netbeans.org/8.0/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.SubRegistration.html
+
+[2] http://bits.netbeans.org/8.0/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.TopLevelRegistration.html
+
+[3] http://bits.netbeans.org/8.0/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.Keywords.html
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Markiewb 
+on 2015-03-04T10:19:38Z.
+

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqFileVsFileObject</title>
+    <id>7292</id>
+    <revision>
+      <id>32801</id>
+      <timestamp>2010-01-24T05:41:34Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <comment>/* Files vs. file objects */</comment>
+      <text xml:space="preserve">__NOTOC__
+===Files vs. file objects===
+
+What exactly is the difference between a filename on disk and a
+&lt;tt&gt;FileObject&lt;/tt&gt;? How do I convert them?
+
+Raw files on disk are generally represented in Java using &lt;tt&gt;java.io.File&lt;/tt&gt;. These correspond directly to what the operating system thinks of as a file.
+
+Under the Filesystems API, raw files are not usually manipulated
+directly. Rather, you should usually be using &lt;tt&gt;FileObject&lt;/tt&gt;.
+Besides the fact that most other APIs that
+work with files expect &lt;tt&gt;FileObject&lt;/tt&gt;, these have a
+number of advantages:
+
+* The filesystem they come from need not correspond to physical files on disk, but could be JAR file entries, or potentially database entries, FTP downloads, etc.
+
+* The rest of the IDE can interact with them in an object-oriented fashion, including locking and change notification.
+
+However a &lt;tt&gt;FileObject&lt;/tt&gt; must always really exist on disk (or whatever backing storage is used), unlike &lt;tt&gt;File&lt;/tt&gt;.
+
+In case translation from one to the other is necessary:
+* To look for a &lt;tt&gt;FileObject&lt;/tt&gt; representing a &lt;tt&gt;File&lt;/tt&gt;, use &lt;tt&gt;FileUtil.toFileObject(File)&lt;/tt&gt;.
+* To look for a &lt;tt&gt;File&lt;/tt&gt; from a &lt;tt&gt;FileObject&lt;/tt&gt;, you may use &lt;tt&gt;FileUtil.toFile(FileObject)&lt;/tt&gt;.</text>
+    </revision>
+  </page>
+</mediawiki>

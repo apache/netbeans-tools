@@ -1,0 +1,49 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+====Q: How do I show that a user has filled an invalid input into my wizard?====
+
+A: Set the <tt>WizardPanel_errorMessage</tt> property in the WizardPanel instance that is related to the displayed panel. 
+
+Example:
+
+<tt>wizardDescriptor.putProperty("WizardPanel_errorMessage", NbBundle.getMessage(MyPanel1.class, "key"));</tt>
+
+'''''Note''''': Since WizardDescritor, spec.version 7.8 (i.e.since [http://www.netbeans.org/downloads/index.html NetBeans 6.5 Platform])
+* you can use <tt>WizardDescriptor.PROP_ERROR_MESSAGE</tt> instead of "WizardPanel_errorMessage".
+* beside <tt>WizardDescriptor.PROP_ERROR_MESSAGE</tt> you can also use <tt>WizardDescriptor.PROP_WARNING_MESSAGE</tt> for warning messages or <tt>WizardDescriptor.PROP_INFO_MESSAGE</tt> for information messages.
+* All kind of messages will be badged with appropriate icons: error [[File:Error.gif]], warning [[File:Warning.gif]], info [[File:info.png]]
+* To clean the message just call <tt>wizardDescriptor.putProperty(WizardDescriptor.PROP_ERROR_MESSAGE, null);</tt>
+
+You can obtain the instance of <tt>WizardDescriptor</tt> in the <tt>WizardDescriptor.Panel.readSettings</tt> as <tt>settings</tt> parameter method.
+
+==Update in NetBeans 6.8==
+Two new methods in <tt>NotifyDescriptor</tt> were added to allow API client to create [http://bits.nbextras.org/dev/javadoc/org-openide-dialogs/org/openide/NotificationLineSupport.html NotificationLineSupport] which allow handling error/warning/info messages in dialogs. If a dialog descriptor creates this support, <tt>DialogDisplayer</tt>  allocates necessary space at the bottom of dialog where API clients can set info/warning/error messages with appropriate icons.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jrechtacek 
+on 2009-12-15T14:23:16Z.
+

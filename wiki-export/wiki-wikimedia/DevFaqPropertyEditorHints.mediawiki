@@ -1,0 +1,156 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+==I have a Node.Property. I want to control its appearance or custom editor somehow.  What options are available?==
+
+NetBeans built-in property editors support a number of "hints" which will affect how the property editor behaves.  A few are global to all property editors;  the rest are specific to property editors for specific types.
+
+http://bits.netbeans.org/dev/javadoc/org-openide-explorer/org/openide/explorer/doc-files/propertyViewCustomization.html
+
+Note that all of these are ''hints'' - a property editor is free to ignore them or not support them in the future.  However all of these have been present since NetBeans 3.6 and are ''should'' still work as of NetBeans 6.9.
+
+{|- border="1"
+! Property Type
+! Hint Name
+! Value Type
+! Effect
+|- valign="top"
+| Any
+| <code>suppressCustomEditor</code>
+| <code>java.lang.Boolean</code>
+| Causes the property not to show a [...] button in the property sheet
+|- valign="top"
+| Any
+| <code>valueIcon</code>
+| <code>javax.swing.Icon</code>
+| Causes the property not to show an icon beside the value (should be 16x16 or smaller) when not in edit mode
+|- valign="top"
+| Most editors (string, etc.)
+| <code>htmlDisplayValue</code>
+| <code>java.lang.String</code>
+| An HTML-ized string which should be rendered using HTML rendering, not literally.  The subset of HTML supported by [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/HtmlRenderer.html org.openide.awt.HtmlRenderer] is supported.  Generally the value should be a formatted variant of the actual value - otherwise when the user edits the value, it will suddenly seem to have changed.
+|- valign="top"
+| All property editors
+| <code>nameIcon</code>
+| <code>java.awt.Image</code> or <code>javax.swing.Icon</code>
+| An icon which should be displayed next to the property name in the property sheet (16x16 or smaller)
+|- valign="top"
+| All property editors
+| <code>helpID</code>
+| <code>java.lang.String</code>
+| A JavaHelp help ID to provide custom help for this property's ''custom editor'' (not when the property sheet has focus)
+|- valign="top"
+| All property editors
+| <code>postSetAction</code>
+| <code>javax.swing.Action</code>
+| An action which should be invoked after the property sheet has updated the property's value from the property editor (not very useful unless you need access to the <code>TableCellEditor</code> - not sure what this was used for)
+|- valign="top"
+| <code>java.lang.String</code> and editors which show a combo box
+| <code>initialEditValue</code>
+| <code>java.lang.String</code>
+| A string which should be the initial value when the user starts editing, even if the actual property value is null
+|- valign="top"
+| Most editors (string, etc.)
+| <code>htmlDisplayValue</code>
+| <code>java.lang.String</code>
+| An HTML-ized string which should be rendered using HTML rendering.  Has effect only when a cell in the property sheet or tree table or outline is ''not'' in edit mode.
+|- valign="top"
+| Any editor that shows a combo box in the property sheet
+| <code>canEditAsText</code>
+| <code>java.lang.Boolean</code>
+| Causes the combo box to be editable by text entry
+|- valign="top"
+| <code>java.io.File</code> and <code>java.io.File[]</code>
+|colspan="3" align="center" valign="middle"|''See the [[DevFaqNodePropertyForFiles| separate FAQ entry for File properties]]''
+|- valign="top"
+| <code>java.lang.String[]</code> (array of strings)
+| <code>item.separator</code>
+| <code>java.lang.String</code>
+| The delimiter for splitting a user entered string into an array (the default is a , character)
+|- valign="top"
+| <code>java.lang.Integer</code>
+| <code>stringKeys</code>
+| <code>java.lang.String[]</code> (array of strings)
+| Keys - allows an integer editor to show a combo box with strings, instead of a text editor.  If this property is used, the additional hint <code>intValues</code>; for custom code generation in the form editor, optionally <code>codeValues</code> may also be set.
+|- valign="top"
+| <code>java.lang.Integer</code>
+| <code>intValues</code>
+| <code>int[]</code> (''not <code>java.lang.Integer</code>'' - array of ints)
+| The values that map to the strings passed in the <code>stringKeys</code> hint
+|- valign="top"
+| <code>java.lang.Integer</code>
+| <code>codeValues</code>
+| <code>java.lang.String[]</code> (array of strings)
+| The value that should be returned by the property editor's <code>getJavaInitializationString()</code> method if the corresponding value is selected
+|- valign="top"
+| <code>java.lang.Boolean</code>
+| <code>stringValues</code>
+| <code>java.lang.String[]</code> (array of strings)
+| Alternate names to show instead of <code>true</code> and <code>false</code> (note, this will result in a radio-button boolean editor instead of a checkbox; to use radio buttons in all boolean editors, set the system property <code>netbeans.ps.forceRadioButtons</code> to <code>true</code>)
+|- valign="top"
+| <code>java.lang.String</code>
+| <code>instructions</code>
+| <code>java.lang.String</code>
+| Localized instructions to the user which should be visible above the text field/area in the custom editor
+|- valign="top"
+| <code>java.lang.String</code>
+| <code>oneline</code>
+| <code>java.lang.Boolean</code>
+| Instruct the custom editor to use a single-line JTextField instead of a mult-line JTextArea
+|- valign="top"
+| <code>java.awt.Image</code>
+| <code>images</code>
+| <code>java.awt.Image[]</code>
+| An array of images the user can select from
+|- valign="top"
+| <code>java.awt.Image</code>
+| <code>values</code>
+| <code>java.lang.String[]</code>
+| Names for the images passed in the <code>images</code> hint
+|- valign="top"
+| <code>java.awt.Image</code>
+| <code>descriptions</code>
+| <code>java.lang.String[]</code>
+| An array of descriptions corresponding to the array of images passed in the <code>images</code> hint
+|- valign="top"
+| <code>java.lang.Object</code> (yes, you can have a property of Object and there is an editor for it - the user can select from all objects of a type in the [[DevFaqDefaultLookup|default Lookup]] or a specific lookup [see below] using a combo box)
+| <code>superClass</code>
+| <code>java.lang.Class</code>
+| The superclass, passed to <code>Lookup.getDefault().lookupAll()</code> to find all possible values
+|- valign="top"
+| <code>java.lang.Object</code>
+| <code>nullValue</code>
+| <code>java.lang.Object</code> (must be of the same type as the type passed in the <code>superClass</code> hint)
+| The value the editor should show if the property initially has a value of null
+|- valign="top"
+| <code>java.lang.Object</code>
+| <code>lookup</code>
+| <code>org.openide.util.Lookup</code>
+| A specific lookup for this editor to query for possible values, instead of using the default lookup
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jmborer 
+on 2015-02-05T15:53:11Z.
+

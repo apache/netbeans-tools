@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqMavenL10N</title>
+    <id>15933</id>
+    <revision>
+      <id>42428</id>
+      <timestamp>2011-01-21T13:59:19Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* How can I create localization modules using Maven? */</comment>
+      <text xml:space="preserve">===How can I create localization modules using Maven?===
+
+If you have localized versions of resources ''in your own modules'', you can simply place them alongside the base version; for example, &lt;tt&gt;src/main/resources/my/module/Bundle_de.properties&lt;/tt&gt; would provide a German translation of &lt;tt&gt;src/main/resources/my/module/Bundle.properties&lt;/tt&gt;.
+
+But to localize ''other people's modules'', then as explained in [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/i18n-branding.html#placement Physical Placement of Localized Resources] you will need to create &lt;tt&gt;modules/locale/*_*.jar&lt;/tt&gt; JARs with the localized resources. (Simply bundling localized resources in your own module will not work, because these are usually searched for starting with the original module's &lt;tt&gt;ClassLoader&lt;/tt&gt;, which cannot "see" your modules.)
+
+The simplest way to do this is to use the existing [http://mojo.codehaus.org/nbm-maven-plugin/branding-mojo.html &lt;tt&gt;nbm:branding&lt;/tt&gt; goal], which despite its name can handle localization as well as branding. (These are nearly interchangeable in the NB Platform.) [[File:Localedemo.zip]] demonstrates how to localize parts of the Options dialog to Czech. Take note of:
+
+* &lt;tt&gt;lokalizace/pom.xml&lt;/tt&gt; asks to use this goal when building the module. It overrides the "branding token" (otherwise inherited from the parent POM) with your locale identifier. (Specifying this custom execution is required in the 3.3 plugin; future versions may run the goal automatically during the package phase when there is anything to process, but you would still need to declare the locale in your plugin configuration.)
+* &lt;tt&gt;lokalizace/src/main/nbm-branding/&lt;/tt&gt; contains the actual localizations.
+** Localizations must be grouped by module to be localized, under a folder path matching the path of the original module in its cluster.
+** The locale suffix (&lt;tt&gt;_cs&lt;/tt&gt; in this case) is inserted automatically by the build, so the source file should be named simply &lt;tt&gt;Bundle.properties&lt;/tt&gt;.
+* &lt;tt&gt;application/pom.xml&lt;/tt&gt; specifies &lt;tt&gt;--locale cs&lt;/tt&gt; so that you can quickly test the localization just by running the app.
+* It also turns on &lt;tt&gt;NbBundle&lt;/tt&gt; debugging mode when requested by a special profile. This can be helpful to pinpoint where a particular English string is coming from: every visible string will be annotated with a bundle number (cross reference with console output) and line number. You can also use the Search field in the branding editor (available from the context menu of &lt;tt&gt;lokalizace&lt;/tt&gt;) to find all potentially localizable strings in the Platform matching some keyword; this editor also creates the right folder structure for you automatically when localizing new bundles.
+
+The module bundling the localizations can now be included in your app, or distributed by any other means. When the specified locale is active, your localizations will be applied.</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqRequestProcessorTask</title>
+    <id>7452</id>
+    <revision>
+      <id>26236</id>
+      <timestamp>2009-11-06T15:59:19Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How can I operation occasionally on a background thread, but reschedule it if something happens to delay it?===
+
+There are a lot of reasons you might want to reschedule a background operation.  For example, you want to re-parse a file 3 seconds after the user stops typing, so you can show errors.  But at 2 seconds she starts typing again.  You don't want that task to run a second from now anymore.  You can either cancel the task, or even simpler, call &lt;tt&gt;task.schedule(3000)&lt;/tt&gt; every time a key is pressed.  If it was already scheduled, it will be rescheduled for 3 seconds from now again.
+
+Or imagine you have the situation described in [[DevFaqRequestProcessor| the FAQ about RequestProcessor.getDefault()]] - a node for a file needs to read the file after it is created to mark itself if the file has errors.  &lt;tt&gt;RequestProcessor.Task&lt;/tt&gt; makes this sort of thing easy.
+
+&lt;pre&gt;
+public class FooDataNode extends DataNode implements PropertyChangeListener, Runnable {
+  private boolean error;
+  private static final RequestProcessor THREAD_POOL = new RequestProcessor("FooDataNode processor", 1);
+  private final RequestProcessor.Task task = THREAD_POOL.create(this);
+
+  FooDataNode(FooDataObject obj) {
+    super(obj, Children.LEAF);
+    obj.addPropertyChangeListener(WeakListeners.propertyChange(this, obj));
+    task.schedule(100);
+  }
+
+  public void propertyChange(PropertyChangeEvent evt) {
+    DataObject obj = (DataObject) evt.getSource();
+    if (DataObject.PROP_MODIFIED.equals(evt.getPropertyName()) &amp;&amp; !obj.isModified()) { //file was saved
+      task.schedule(100);
+    }
+  }
+
+  @Override
+  public String getHtmlDisplayName() {
+    return error ? "&lt;font color=\"!nb.errorForeground\"&gt;" + getDisplayName() : null;
+  }
+
+  public void run() {
+    boolean old = error;
+    error = doesTheFileHaveErrors();
+    if (old != error) {
+      fireDisplayNameChange(null, null);
+    }
+  }
+
+  private boolean doesTheFileHaveErrors() {
+    assert !EventQueue.isDispatchThread();
+    //parse the file here
+    return true; //whatever the value should be
+  }
+}
+&lt;/pre&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

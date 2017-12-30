@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqCheckableActionPreferenceOption</title>
+    <id>17991</id>
+    <revision>
+      <id>61101</id>
+      <timestamp>2013-05-03T21:46:57Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <minor/>
+      <comment>/* How do I make a checkable action that represents a preference option? */</comment>
+      <text xml:space="preserve">=How do I make a checkable action that represents a preference option?=
+See 
+[http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/Actions.html org-openide-awt/org.openide.awt.Actions.checkbox(...)]
+
+Here an example for a checkable action which represents the state of the "ignoreCase" property within the property file "org/netbeans/modules/diff.properties"
+&lt;code&gt;
+    &lt;folder name="Actions"&gt;
+        &lt;folder name="Diff"&gt;
+            &lt;file name="toggle-ignore-case-diff-option.instance"&gt;
+                &lt;attr bundlevalue="org.netbeans.modules.diff.Bundle#CTL_IgnoreCaseOptionAction" name="displayName"/&gt;
+                &lt;attr name="Name" stringvalue="toggle-ignore-case-diff-option"/&gt;
+                &lt;attr name="preferencesNode" stringvalue="/org/netbeans/modules/diff" /&gt;
+                &lt;attr name="preferencesKey" stringvalue="ignoreCase"/&gt;
+                &lt;attr name="instanceCreate" methodvalue="org.openide.awt.Actions.checkbox"/&gt;
+            &lt;/file&gt;
+        &lt;/folder&gt;
+    &lt;/folder&gt;
+&lt;/code&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

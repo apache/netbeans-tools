@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAnnotationList</title>
+    <id>16868</id>
+    <revision>
+      <id>51825</id>
+      <timestamp>2012-02-21T07:24:28Z</timestamp>
+      <contributor>
+        <username>Geertjan</username>
+        <id>440</id>
+      </contributor>
+      <text xml:space="preserve">===NetBeans Annotation Cheat Sheet===
+
+====Actions====
+
+* [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/ActionID.html @ActionID]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/ActionReference.html @ActionReference]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/ActionReferences.html @ActionReferences]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/ActionRegistration.html @ActionRegistration]
+
+====Editor====
+
+* [http://bits.netbeans.org/dev/javadoc/org-openide-loaders/org/openide/loaders/DataObject.Registration.html @DataObject.Registration] (new in 7.2)
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-lib2/org/netbeans/api/editor/EditorActionRegistration.html @EditorActionRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-lib2/org/netbeans/api/editor/EditorActionRegistrations.html @EditorActionRegistrations]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-mimelookup/org/netbeans/spi/editor/mimelookup/MimeLocation.html @MimeLocation]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-mimelookup/org/netbeans/api/editor/mimelookup/MimeRegistration.html @MimeRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-editor-mimelookup/org/netbeans/api/editor/mimelookup/MimeRegistrations.html @MimeRegistrations]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/MIMEResolver.ExtensionRegistration.html @MIMEResolver.ExtensionRegistration] (new in 7.2)
+* [http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/MIMEResolver.NamespaceRegistration.html @MIMEResolver.NamespaceRegistration] (new in 7.2)
+* [http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/MIMEResolver.Registration.html @MIMEResolver.Registration] (new in 7.2)
+
+====Lookup====
+
+* [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/ServiceProvider.html @ServiceProvider]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/ServiceProviders.html @ServiceProviders]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectapi/org/netbeans/spi/project/LookupMerger.Registration.html @LookupMerger.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectapi/org/netbeans/spi/project/LookupProvider.Registration.html @LookupProvider.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectapi/org/netbeans/spi/project/LookupProvider.Registration.ProjectType.html @LookupProvider.Registration.ProjectType]
+
+====Navigator====
+
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-spi-navigator/org/netbeans/spi/navigator/NavigatorPanel.Registration.html @NavigatorPanel.Registration] (new in 7.2)
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-spi-navigator/org/netbeans/spi/navigator/NavigatorPanel.Registrations.html @NavigatorPanel.Registrations] (new in 7.2)
+
+====Nodes====
+
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectuiapi/org/netbeans/spi/project/ui/support/NodeFactory.Registration.html @NodeFactory.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-core-ide/org/netbeans/api/core/ide/ServicesTabNodeRegistration.html @ServicesTabNodeRegistration]
+
+====Options Window====
+
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.ContainerRegistration.html @OptionsPanelController.ContainerRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.SubRegistration.html @OptionsPanelController.SubRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-options-api/org/netbeans/spi/options/OptionsPanelController.TopLevelRegistration.html @OptionsPanelController.TopLevelRegistration]
+
+====Project System====
+
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-project-ant/org/netbeans/spi/project/support/ant/AntBasedProjectRegistration.html @AntBasedProjectRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectuiapi/org/netbeans/spi/project/ui/support/ProjectCustomizer.CompositeCategoryProvider.Registration.html @ProjectCustomizer.CompositeCategoryProvider.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-projectapi/org/netbeans/spi/project/ProjectServiceProvider.html @ProjectServiceProvider]
+
+====Window System====
+
+* [http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.OpenActionRegistration.html @TopComponent.OpenActionRegistration]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.Registration.html @TopComponent.Registration]
+
+====Miscellaneous====
+
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-settings/org/netbeans/api/settings/ConvertAsJavaBean.html @ConvertAsJavaBean]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-settings/org/netbeans/api/settings/ConvertAsProperties.html @ConvertAsProperties]
+* [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/NbBundle.Messages.html @NbBundle.Messages]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-versioning/org/netbeans/modules/versioning/spi/VersioningSystem.Registration.html @VersioningSystem.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-core-multiview/org/netbeans/core/spi/multiview/MultiViewElement.Registration.html @MultiViewElement.Registration]
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-sendopts/org/netbeans/spi/sendopts/Arg.html @Arg] (new in 7.2)
+* [http://bits.netbeans.org/dev/javadoc/org-netbeans-api-annotations-common/org/netbeans/api/annotations/common/StaticResource.html @StaticResource] (new in 7.2)</text>
+    </revision>
+  </page>
+</mediawiki>

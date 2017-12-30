@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqPropertyEditorHints</title>
+    <id>14405</id>
+    <revision>
+      <id>67596</id>
+      <timestamp>2015-02-05T15:53:11Z</timestamp>
+      <contributor>
+        <username>Jmborer</username>
+        <id>90</id>
+      </contributor>
+      <text xml:space="preserve">==I have a Node.Property. I want to control its appearance or custom editor somehow.  What options are available?==
+
+NetBeans built-in property editors support a number of "hints" which will affect how the property editor behaves.  A few are global to all property editors;  the rest are specific to property editors for specific types.
+
+http://bits.netbeans.org/dev/javadoc/org-openide-explorer/org/openide/explorer/doc-files/propertyViewCustomization.html
+
+Note that all of these are ''hints'' - a property editor is free to ignore them or not support them in the future.  However all of these have been present since NetBeans 3.6 and are ''should'' still work as of NetBeans 6.9.
+
+{|- border="1"
+! Property Type
+! Hint Name
+! Value Type
+! Effect
+|- valign="top"
+| Any
+| &lt;code&gt;suppressCustomEditor&lt;/code&gt;
+| &lt;code&gt;java.lang.Boolean&lt;/code&gt;
+| Causes the property not to show a [...] button in the property sheet
+|- valign="top"
+| Any
+| &lt;code&gt;valueIcon&lt;/code&gt;
+| &lt;code&gt;javax.swing.Icon&lt;/code&gt;
+| Causes the property not to show an icon beside the value (should be 16x16 or smaller) when not in edit mode
+|- valign="top"
+| Most editors (string, etc.)
+| &lt;code&gt;htmlDisplayValue&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| An HTML-ized string which should be rendered using HTML rendering, not literally.  The subset of HTML supported by [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/HtmlRenderer.html org.openide.awt.HtmlRenderer] is supported.  Generally the value should be a formatted variant of the actual value - otherwise when the user edits the value, it will suddenly seem to have changed.
+|- valign="top"
+| All property editors
+| &lt;code&gt;nameIcon&lt;/code&gt;
+| &lt;code&gt;java.awt.Image&lt;/code&gt; or &lt;code&gt;javax.swing.Icon&lt;/code&gt;
+| An icon which should be displayed next to the property name in the property sheet (16x16 or smaller)
+|- valign="top"
+| All property editors
+| &lt;code&gt;helpID&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| A JavaHelp help ID to provide custom help for this property's ''custom editor'' (not when the property sheet has focus)
+|- valign="top"
+| All property editors
+| &lt;code&gt;postSetAction&lt;/code&gt;
+| &lt;code&gt;javax.swing.Action&lt;/code&gt;
+| An action which should be invoked after the property sheet has updated the property's value from the property editor (not very useful unless you need access to the &lt;code&gt;TableCellEditor&lt;/code&gt; - not sure what this was used for)
+|- valign="top"
+| &lt;code&gt;java.lang.String&lt;/code&gt; and editors which show a combo box
+| &lt;code&gt;initialEditValue&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| A string which should be the initial value when the user starts editing, even if the actual property value is null
+|- valign="top"
+| Most editors (string, etc.)
+| &lt;code&gt;htmlDisplayValue&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| An HTML-ized string which should be rendered using HTML rendering.  Has effect only when a cell in the property sheet or tree table or outline is ''not'' in edit mode.
+|- valign="top"
+| Any editor that shows a combo box in the property sheet
+| &lt;code&gt;canEditAsText&lt;/code&gt;
+| &lt;code&gt;java.lang.Boolean&lt;/code&gt;
+| Causes the combo box to be editable by text entry
+|- valign="top"
+| &lt;code&gt;java.io.File&lt;/code&gt; and &lt;code&gt;java.io.File[]&lt;/code&gt;
+|colspan="3" align="center" valign="middle"|''See the [[DevFaqNodePropertyForFiles| separate FAQ entry for File properties]]''
+|- valign="top"
+| &lt;code&gt;java.lang.String[]&lt;/code&gt; (array of strings)
+| &lt;code&gt;item.separator&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| The delimiter for splitting a user entered string into an array (the default is a , character)
+|- valign="top"
+| &lt;code&gt;java.lang.Integer&lt;/code&gt;
+| &lt;code&gt;stringKeys&lt;/code&gt;
+| &lt;code&gt;java.lang.String[]&lt;/code&gt; (array of strings)
+| Keys - allows an integer editor to show a combo box with strings, instead of a text editor.  If this property is used, the additional hint &lt;code&gt;intValues&lt;/code&gt;; for custom code generation in the form editor, optionally &lt;code&gt;codeValues&lt;/code&gt; may also be set.
+|- valign="top"
+| &lt;code&gt;java.lang.Integer&lt;/code&gt;
+| &lt;code&gt;intValues&lt;/code&gt;
+| &lt;code&gt;int[]&lt;/code&gt; (''not &lt;code&gt;java.lang.Integer&lt;/code&gt;'' - array of ints)
+| The values that map to the strings passed in the &lt;code&gt;stringKeys&lt;/code&gt; hint
+|- valign="top"
+| &lt;code&gt;java.lang.Integer&lt;/code&gt;
+| &lt;code&gt;codeValues&lt;/code&gt;
+| &lt;code&gt;java.lang.String[]&lt;/code&gt; (array of strings)
+| The value that should be returned by the property editor's &lt;code&gt;getJavaInitializationString()&lt;/code&gt; method if the corresponding value is selected
+|- valign="top"
+| &lt;code&gt;java.lang.Boolean&lt;/code&gt;
+| &lt;code&gt;stringValues&lt;/code&gt;
+| &lt;code&gt;java.lang.String[]&lt;/code&gt; (array of strings)
+| Alternate names to show instead of &lt;code&gt;true&lt;/code&gt; and &lt;code&gt;false&lt;/code&gt; (note, this will result in a radio-button boolean editor instead of a checkbox; to use radio buttons in all boolean editors, set the system property &lt;code&gt;netbeans.ps.forceRadioButtons&lt;/code&gt; to &lt;code&gt;true&lt;/code&gt;)
+|- valign="top"
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| &lt;code&gt;instructions&lt;/code&gt;
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| Localized instructions to the user which should be visible above the text field/area in the custom editor
+|- valign="top"
+| &lt;code&gt;java.lang.String&lt;/code&gt;
+| &lt;code&gt;oneline&lt;/code&gt;
+| &lt;code&gt;java.lang.Boolean&lt;/code&gt;
+| Instruct the custom editor to use a single-line JTextField instead of a mult-line JTextArea
+|- valign="top"
+| &lt;code&gt;java.awt.Image&lt;/code&gt;
+| &lt;code&gt;images&lt;/code&gt;
+| &lt;code&gt;java.awt.Image[]&lt;/code&gt;
+| An array of images the user can select from
+|- valign="top"
+| &lt;code&gt;java.awt.Image&lt;/code&gt;
+| &lt;code&gt;values&lt;/code&gt;
+| &lt;code&gt;java.lang.String[]&lt;/code&gt;
+| Names for the images passed in the &lt;code&gt;images&lt;/code&gt; hint
+|- valign="top"
+| &lt;code&gt;java.awt.Image&lt;/code&gt;
+| &lt;code&gt;descriptions&lt;/code&gt;
+| &lt;code&gt;java.lang.String[]&lt;/code&gt;
+| An array of descriptions corresponding to the array of images passed in the &lt;code&gt;images&lt;/code&gt; hint
+|- valign="top"
+| &lt;code&gt;java.lang.Object&lt;/code&gt; (yes, you can have a property of Object and there is an editor for it - the user can select from all objects of a type in the [[DevFaqDefaultLookup|default Lookup]] or a specific lookup [see below] using a combo box)
+| &lt;code&gt;superClass&lt;/code&gt;
+| &lt;code&gt;java.lang.Class&lt;/code&gt;
+| The superclass, passed to &lt;code&gt;Lookup.getDefault().lookupAll()&lt;/code&gt; to find all possible values
+|- valign="top"
+| &lt;code&gt;java.lang.Object&lt;/code&gt;
+| &lt;code&gt;nullValue&lt;/code&gt;
+| &lt;code&gt;java.lang.Object&lt;/code&gt; (must be of the same type as the type passed in the &lt;code&gt;superClass&lt;/code&gt; hint)
+| The value the editor should show if the property initially has a value of null
+|- valign="top"
+| &lt;code&gt;java.lang.Object&lt;/code&gt;
+| &lt;code&gt;lookup&lt;/code&gt;
+| &lt;code&gt;org.openide.util.Lookup&lt;/code&gt;
+| A specific lookup for this editor to query for possible values, instead of using the default lookup</text>
+    </revision>
+  </page>
+</mediawiki>

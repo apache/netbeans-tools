@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqOrphanedNetBeansOrgModules</title>
+    <id>7435</id>
+    <revision>
+      <id>39117</id>
+      <timestamp>2010-06-14T20:10:34Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Can I work on just one or two modules from the NetBeans source base by themselves?===
+
+====Introduction====
+
+Normally to work on modules versioned in the NetBeans &lt;tt&gt;main&lt;/tt&gt; Mercurial repository you need to clone the entire repository.
+(For modules in &lt;tt&gt;contrib&lt;/tt&gt;, you need &lt;tt&gt;contrib&lt;/tt&gt; cloned as a subdirectory of &lt;tt&gt;main&lt;/tt&gt;.)
+For people interested in just playing with patches to one or two modules this can be onerous, however.
+As an alternative, you can work on "orphan" modules from the netbeans.org source base ({{iz|143236}} has details).
+There are two issues to consider:
+# Mercurial [http://www.selenic.com/mercurial/bts/issue515 currently] does not let you clone or check out just a subdirectory of a repository, so you will need to get module sources some other way (we are still considering some possibilities).
+# Since "upstream" modules (that the module of interest depends on) are not available in source form, you need to have a recent development build of NetBeans available to compile against.
+
+====Quick usage guide====
+
+# Create an &lt;tt&gt;nb_all&lt;/tt&gt; dir wherever you like. It must have at least the &lt;tt&gt;nbbuild&lt;/tt&gt; dir from the netbeans.org source tree.
+# Create &lt;tt&gt;nbbuild/user.build.properties&lt;/tt&gt; and in it set the property &lt;tt&gt;netbeans.dest.dir&lt;/tt&gt; to the full path to a NetBeans IDE installation you would like to both compile against and build into (you should not use your real development IDE, rather a copy).
+# Run: &lt;tt&gt;ant -f nbbuild/build.xml bootstrap&lt;/tt&gt;
+# Add subdirs for any netbeans.org module projects you would like to work on. (The modules may be already present in the target platform. If they are not, you need to check out sources for any transitive dependencies not in the target platform too.)
+# Using the IDE, open the desired projects and work normally.
+
+====What works====
+
+Source projects should open without error and without displaying error badges, assuming all dependencies are available in either source or binary form.
+
+You can build the projects normally. The modules will be built into the target platform (overwriting any existing copy of the module).
+
+You can use Run and Debug to start the target platform with a test userdir after building the modules, set breakpoints etc.
+
+You can Test the source projects normally.
+
+Code completion should work against APIs present in other modules.
+If those modules are available in source form, you will get popup Javadoc automatically, and can navigate to sources.
+If not, you can still add popup Javadoc capability for all published APIs:
+# Download "NetBeans API Documentation" from AU.
+# Open NetBeans Platform Manager.
+# Select the "default" platform and note the location of &lt;tt&gt;NetBeansAPIDocs.zip&lt;/tt&gt; in the Javadoc tab.
+# Create a new platform; select the same dir as you specified for &lt;tt&gt;netbeans.dest.dir&lt;/tt&gt;.
+# In the new platform, add &lt;tt&gt;NetBeansAPIDocs.zip&lt;/tt&gt; to the Javadoc tab.
+
+====Caveats====
+
+* If you want to work on unit or functional tests, you need to have all test-to-test dependencies available as source projects, because we do not distribute test libraries. Sometimes the transitive dependency tree can get a bit big. For example, if the functional tests use &lt;tt&gt;org.netbeans.junit.ide.ProjectSupport&lt;/tt&gt;, then you need to check out &lt;tt&gt;java.j2seproject&lt;/tt&gt; (in whose unit test dir this class resides), then its dependencies in turn: &lt;tt&gt;projectapi&lt;/tt&gt;, &lt;tt&gt;projectui&lt;/tt&gt;, &lt;tt&gt;openide.filesystems&lt;/tt&gt;, and &lt;tt&gt;openide.util&lt;/tt&gt;. Test-to-module dependencies (e.g. &lt;tt&gt;nbjunit&lt;/tt&gt;, &lt;tt&gt;jellytools&lt;/tt&gt;, ...) can however be satisfied from the target platform's binaries.
+
+* If you add new source modules to the tree, you will need to both restart NetBeans and delete the &lt;tt&gt;nbbuild/nbproject/private/&lt;/tt&gt; dir in order to reset all caches and ensure that the new sources are recognized.
+
+* Various targets in &lt;tt&gt;nbbuild/build.xml&lt;/tt&gt; not used in the above scenarios may or may not work usefully, though this should not affect routine module development.
+
+* The target platform needs to be new enough to support any API calls you are making from source modules into binary modules. If the platform is older, you could see error badges. Besides getting a newer platform, this can be corrected by adding sources of the new version of the API module to the tree.
+
+* Note that the &lt;tt&gt;bootstrap&lt;/tt&gt; ant target will not work if you just copy &lt;tt&gt;nbbuild&lt;/tt&gt; from the netbeans.org source tree into &lt;tt&gt;nb_all&lt;/tt&gt;. Other than &lt;tt&gt;nbbuild&lt;/tt&gt; you also need to copy directories:
+*#&lt;tt&gt;ide/launcher&lt;/tt&gt;
+*#&lt;tt&gt;javahelp&lt;/tt&gt;
+*#&lt;tt&gt;apisupport.harness&lt;/tt&gt;
+----
+Applies to: NetBeans 6.8 and above</text>
+    </revision>
+  </page>
+</mediawiki>

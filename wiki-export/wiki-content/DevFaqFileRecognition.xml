@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqFileRecognition</title>
+    <id>7287</id>
+    <revision>
+      <id>34523</id>
+      <timestamp>2010-02-25T16:08:57Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <minor/>
+      <comment>/* How does NetBeans recognize files? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How does NetBeans recognize files?===
+
+A lot of applications show some UI that displays folders of files;  also a lot of NetBeans UI is created by showing virtual files in the [http://wiki.netbeans.org/DevFaqSystemFilesystem configuration filesystem].  When a folder is expanded in the UI, files of known types have their own icons, menu items, actions, properties, child nodes and behavior.
+
+The way NetBeans detects files is this:  
+* The "files" being shown are [http://wiki.netbeans.org/DevFaqFileObject &lt;tt&gt;FileObject&lt;/tt&gt;]s - wrappers around &lt;tt&gt;java.io.File&lt;/tt&gt;, or in the case of configuration files, typically wrappers around data stored in a ''virtual filesystem'', such as inside XML files in modules.  
+* What you're actually seeing is &lt;tt&gt;[http://wiki.netbeans.org/DevFaqWhatIsANode Node]&lt;/tt&gt;s, which are the things that provide actions, localized names, etc. to files or other things.
+
+* Between &lt;tt&gt;Node&lt;/tt&gt;s and &lt;tt&gt;FileObject&lt;/tt&gt;s are &lt;tt&gt;[http://wiki.netbeans.org/DevFaqDataObject DataObject]s&lt;/tt&gt;.  A DataObject is like a FileObject, except that it knows what ''kind of file'' is being shown.  There are different subclasses of DataObject for files with different file extensions, XML files with different DTDs, etc.
+
+* The various DataObject subclasses are provided by modules which implement support for particular file types (for example, the Image module makes it possible to recognize and open &lt;tt&gt;.gif&lt;/tt&gt; and &lt;tt&gt;.png&lt;/tt&gt; files), provides the icon for them, etc.
+
+* The "type" of a file is a [http://en.wikipedia.org/wiki/MIME MIME type], just as email attachments use - for example, a &lt;code&gt;.java&lt;/code&gt; file has the MIME type &lt;code&gt;text/x-java&lt;/code&gt; and a &lt;code&gt;.gif&lt;/code&gt; file has the MIME type &lt;code&gt;image/gif&lt;/code&gt;.
+
+* A module which wants to implement support for a file type registers a &lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/MIMEResolver.html MIMEResolver]&lt;/tt&gt; that is given a chance to claim a file the first time the system sees it (typically you do not write your own MIMEResolver, you just declaratively register a MIME type against a file extension or XML DTD).
+
+* That module (or some other one) also provides a &lt;tt&gt;[http://wiki.netbeans.org/DevFaqDataLoader DataLoader]&lt;/tt&gt; &amp;mdash; a factory for custom [http://wiki.netbeans.org/DevFaqDataObject DataObject]s that are specific to this file type.  The DataObject in turn provides the Node (icon, etc.) that you see in the user interface.
+
+So, to recap &amp;mdash; when you expand a folder, and the system goes about showing a tree of nodes representing files, what happens is:
+# The child FileObjects of the folder are listed
+# Each child FileObject is checked by extension (and DTD in the case of XML files) against registered MIME types / MIMEResolvers.
+# Once the MIME type is known, the DataLoader for that MIME type is found
+# The DataLoader is asked for a DataObject for the child FileObject
+# The DataObject is asked for its ''Node delegate''
+# That Node's icon and display name are shown in the UI
+
+The results of these operations are cached as long as they are in use.  For any file on disk, there is at most 1 FileObject.  For any FileObject there is at most one DataObject (one DataObject may represent 2 files, but that is another story).  Each DataObject has exactly one Node which presents that DataObject to the user.
+
+In other words:
+* FileObjects represent "dumb" files on disk or elsewhere - a path, input and output streams, but no concept of what the file represents beyond folder versus data.
+* MIMEResolvers know how to tell what MIME type a file is.  They have an order in which they are asked to claim a file.
+* DataLoaders are registered against various MIME types.  When a DataObject for a file is needed, the DataLoader for that MIME type is asked to make one.  What it will make is a DataObject subclass that understands something about the file, its data, etc.  For example, a DataObject for a &lt;code&gt;.properties&lt;/code&gt; file might provide a way to get a &lt;code&gt;java.util.Properties&lt;/code&gt; object representing the file's contents.
+* DataObjects are like FileObjects, except they ''understand'' what the file is, or its contents, and may provide ways to programmatically manipulate the file, such as opening a text or graphical editor.
+* DataObjects have Nodes.  
+* Nodes add human-friendly attributes such as localized names, popup menu items, properties, tooltips, etc. to the more programmer-friendly Nodes.
+
+''Note:  As of NetBeans 6.9, it is often not necessary to subclass DataLoader - a generic DataLoader can be created by the system, which knows the DataObject subclass to create.  Simply use '''New File &amp;gt; Module Development &amp;gt; File Type''' to generate such code.''</text>
+    </revision>
+  </page>
+</mediawiki>
