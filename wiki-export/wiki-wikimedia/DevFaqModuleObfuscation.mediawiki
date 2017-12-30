@@ -212,7 +212,7 @@ This is verified to work on NB 6.5 running Solaris or Windows using Proguard 4.1
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqModuleObfuscation , 
+that was last modified by NetBeans user Jglick 
 on 2010-06-14T22:35:31Z.
 

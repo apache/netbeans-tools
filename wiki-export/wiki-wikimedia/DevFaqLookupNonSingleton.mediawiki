@@ -36,7 +36,7 @@ In practice this is a non-problem - anything you are going to try to find in a <
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqLookupNonSingleton , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-02-19T00:39:45Z.
 

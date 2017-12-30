@@ -86,7 +86,7 @@ Inside the user.build.properties file put the following line.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqNetBeansPlatformManager , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T05:10:20Z.
 

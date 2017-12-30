@@ -216,7 +216,7 @@ Copied from  http://benkiew.wordpress.com/2013/01/24/netbeans-rcp-editable-diff-
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqEditorHowToAddDiffView , 
+that was last modified by NetBeans user Markiewb 
 on 2013-01-24T23:28:03Z.
 

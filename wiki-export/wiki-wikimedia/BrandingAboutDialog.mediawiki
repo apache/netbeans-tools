@@ -37,7 +37,7 @@ The second link shows the correct location:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tomwheeler 
+This page was exported from http://wiki.netbeans.org/BrandingAboutDialog , 
+that was last modified by NetBeans user Tomwheeler 
 on 2011-05-20T14:52:03Z.
 

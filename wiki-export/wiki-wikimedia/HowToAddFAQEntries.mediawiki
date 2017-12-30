@@ -82,7 +82,7 @@ Source: [http://blogs.sun.com/LongLiveThePepper/entry/adding_items_to_the_vwp JB
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/HowToAddFAQEntries , 
+that was last modified by NetBeans user Jkovalsky 
 on 2015-08-28T15:47:14Z.
 

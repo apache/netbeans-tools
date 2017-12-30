@@ -116,7 +116,7 @@ Applies to: NetBeans 6.5 and above
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqWhatIsNbm , 
+that was last modified by NetBeans user Jtulach 
 on 2010-07-16T08:13:22Z.
 

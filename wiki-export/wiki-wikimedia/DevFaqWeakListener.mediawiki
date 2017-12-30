@@ -44,7 +44,7 @@ in fact you ''are not listening'' on someObject for any amount of time - the ano
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqWeakListener , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T06:12:27Z.
 

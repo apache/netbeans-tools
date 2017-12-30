@@ -34,7 +34,7 @@ So the <tt>TopComponent</tt>'s <tt>Lookup</tt> is a way to provide your particul
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsTopComponentLookup , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T16:06:27Z.
 

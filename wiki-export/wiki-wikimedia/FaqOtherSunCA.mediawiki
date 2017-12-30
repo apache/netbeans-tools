@@ -29,7 +29,7 @@ contribute to any Oracle-sponsored project you should contact the Oracle lead fo
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqOtherSunCA , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-12-12T13:58:27Z.
 

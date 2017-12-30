@@ -55,7 +55,7 @@ If you want to write tests for a <tt>DataObject</tt> or <tt>DataLoader</tt>, you
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/TestingThingsThatUseFileObjectDataObjectDataFolder , 
+that was last modified by NetBeans user Geertjan 
 on 2011-05-13T13:08:00Z.
 

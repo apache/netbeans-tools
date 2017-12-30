@@ -88,7 +88,7 @@ if (result != NotifyDescriptor.OK_OPTION) {
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Maehem 
+This page was exported from http://wiki.netbeans.org/DevFaqDialogsApiIntro , 
+that was last modified by NetBeans user Maehem 
 on 2012-11-10T06:16:12Z.
 

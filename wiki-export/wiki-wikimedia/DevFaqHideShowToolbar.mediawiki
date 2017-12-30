@@ -92,7 +92,7 @@ ToolbarPool.getDefault().setConfiguration("Developing");
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tjansson 
+This page was exported from http://wiki.netbeans.org/DevFaqHideShowToolbar , 
+that was last modified by NetBeans user Tjansson 
 on 2010-11-04T19:40:00Z.
 

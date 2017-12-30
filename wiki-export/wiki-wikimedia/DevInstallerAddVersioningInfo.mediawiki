@@ -82,7 +82,7 @@ Provided in the platform-dev mailing list by Peter Hansson
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevInstallerAddVersioningInfo , 
+that was last modified by NetBeans user Markiewb 
 on 2014-12-28T20:56:56Z.
 

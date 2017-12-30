@@ -95,7 +95,7 @@ You can get more details along with code examples [http://wiki.netbeans.org/Book
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqAppLifecycleHooks , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2012-07-31T13:15:59Z.
 

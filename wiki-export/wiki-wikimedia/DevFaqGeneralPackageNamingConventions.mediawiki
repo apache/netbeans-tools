@@ -30,7 +30,7 @@ An official API uses the naming convention <tt>org.netbeans.api.something</tt>. 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Anebuzelsky 
+This page was exported from http://wiki.netbeans.org/DevFaqGeneralPackageNamingConventions , 
+that was last modified by NetBeans user Anebuzelsky 
 on 2010-06-11T14:40:26Z.
 

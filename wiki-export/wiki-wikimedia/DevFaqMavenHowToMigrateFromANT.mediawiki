@@ -88,7 +88,7 @@ Copied from [http://benkiew.wordpress.com/2013/10/21/how-convert-an-ant-based-ne
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqMavenHowToMigrateFromANT , 
+that was last modified by NetBeans user Markiewb 
 on 2013-10-22T19:52:24Z.
 

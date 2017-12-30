@@ -63,7 +63,7 @@ Platforms: all
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user LiborJelinek 
+This page was exported from http://wiki.netbeans.org/DevFaqNoClassDefFound , 
+that was last modified by NetBeans user LiborJelinek 
 on 2011-08-19T08:08:17Z.
 

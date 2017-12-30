@@ -35,7 +35,7 @@ More info: [[FitnessForNBMs]]
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Dlipin 
+This page was exported from http://wiki.netbeans.org/DevFaqNBMPack200 , 
+that was last modified by NetBeans user Dlipin 
 on 2010-06-15T12:07:10Z.
 

@@ -30,7 +30,7 @@ As of NetBeans 6.7, you can use [http://bits.netbeans.org/dev/javadoc/org-openid
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqListenForChangesInNonExistentFile , 
+that was last modified by NetBeans user Jtulach 
 on 2010-07-24T20:01:10Z.
 

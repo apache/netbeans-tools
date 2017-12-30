@@ -65,7 +65,7 @@ Thanks to Matteo Di Giovinazzo for sharing how to do this on the dev@openide lis
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Bruehlicke 
+This page was exported from http://wiki.netbeans.org/DevFaqAutoUpdateBranding , 
+that was last modified by NetBeans user Bruehlicke 
 on 2012-02-24T03:15:05Z.
 

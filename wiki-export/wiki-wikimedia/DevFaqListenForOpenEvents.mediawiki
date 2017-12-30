@@ -78,7 +78,7 @@ Taken from nbdev-mailing list - thanks to Geertjan.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqListenForOpenEvents , 
+that was last modified by NetBeans user Markiewb 
 on 2013-02-03T16:11:47Z.
 

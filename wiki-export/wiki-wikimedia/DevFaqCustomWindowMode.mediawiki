@@ -34,7 +34,7 @@ If you want a custom "mode" or location for a top component follow this blog fro
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Maehem 
+This page was exported from http://wiki.netbeans.org/DevFaqCustomWindowMode , 
+that was last modified by NetBeans user Maehem 
 on 2012-06-02T00:37:26Z.
 

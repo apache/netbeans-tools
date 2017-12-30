@@ -39,7 +39,7 @@ Go to the [http://wiki.netbeans.org/OpenProjectsProgramaticallyInNetBeansIDE lin
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqOpenProjectProgramatically , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2011-07-28T14:00:45Z.
 

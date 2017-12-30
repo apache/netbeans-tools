@@ -30,7 +30,7 @@ See "How to Sort Columns in a TreeTableView" in Geertjan's blog:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqSortableTTVColumns , 
+that was last modified by NetBeans user Markiewb 
 on 2012-10-10T20:09:50Z.
 

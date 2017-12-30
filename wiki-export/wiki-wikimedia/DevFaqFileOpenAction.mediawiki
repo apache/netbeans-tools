@@ -31,7 +31,7 @@ The '''User Utilities''' module also adds the '''Find in Files''' feature and su
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jirka x1 
+This page was exported from http://wiki.netbeans.org/DevFaqFileOpenAction , 
+that was last modified by NetBeans user Jirka x1 
 on 2010-12-14T07:11:30Z.
 

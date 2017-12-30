@@ -193,7 +193,7 @@ To make your application talk, see [[DevFaqMakeItTalk]]
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqUseSounds , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2011-09-19T21:46:28Z.
 

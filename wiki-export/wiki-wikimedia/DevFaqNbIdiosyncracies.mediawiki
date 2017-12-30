@@ -40,7 +40,7 @@ Applies to: NetBeans 6.8 and above
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user LiborJelinek 
+This page was exported from http://wiki.netbeans.org/DevFaqNbIdiosyncracies , 
+that was last modified by NetBeans user LiborJelinek 
 on 2011-08-14T15:48:03Z.
 

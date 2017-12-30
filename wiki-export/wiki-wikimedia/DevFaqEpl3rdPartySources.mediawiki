@@ -261,7 +261,7 @@ The following third-party components licensed under EPL license have the sources
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tstupka 
+This page was exported from http://wiki.netbeans.org/DevFaqEpl3rdPartySources , 
+that was last modified by NetBeans user Tstupka 
 on 2016-03-31T09:43:15Z.
 

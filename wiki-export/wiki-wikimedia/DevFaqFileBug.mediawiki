@@ -41,7 +41,7 @@ If you think you have found a bug in the NetBeans Platform or IDE which affects 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Anebuzelsky 
+This page was exported from http://wiki.netbeans.org/DevFaqFileBug , 
+that was last modified by NetBeans user Anebuzelsky 
 on 2011-12-27T16:23:44Z.
 

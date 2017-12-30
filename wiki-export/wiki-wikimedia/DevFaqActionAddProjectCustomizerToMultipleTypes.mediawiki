@@ -44,7 +44,7 @@ See http://platform.netbeans.org/tutorials/nbm-projecttype.html#projectcustomize
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqActionAddProjectCustomizerToMultipleTypes , 
+that was last modified by NetBeans user Markiewb 
 on 2012-10-07T13:56:52Z.
 

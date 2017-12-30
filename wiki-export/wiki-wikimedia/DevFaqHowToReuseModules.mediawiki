@@ -113,7 +113,7 @@ The easy way to create one such <code>AutoupdateClusterCreator</code> was for me
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqHowToReuseModules , 
+that was last modified by NetBeans user Markiewb 
 on 2017-01-04T22:22:30Z.
 

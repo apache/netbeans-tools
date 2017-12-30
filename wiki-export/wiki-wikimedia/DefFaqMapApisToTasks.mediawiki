@@ -71,7 +71,7 @@ Use the [http://bits.netbeans.org/dev/javadoc/org-netbeans-api-visual/overview-s
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Skygo 
+This page was exported from http://wiki.netbeans.org/DefFaqMapApisToTasks , 
+that was last modified by NetBeans user Skygo 
 on 2013-12-13T23:52:13Z.
 

@@ -35,7 +35,7 @@ Please write the complete setting in one line.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tusharvjoshi 
+This page was exported from http://wiki.netbeans.org/DevFaqRuntimeMemory , 
+that was last modified by NetBeans user Tusharvjoshi 
 on 2011-11-13T05:35:47Z.
 

@@ -89,7 +89,7 @@ Platforms: All
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Vstejskal 
+This page was exported from http://wiki.netbeans.org/DevFaqEditorCodeCompletionAnyJEditorPane , 
+that was last modified by NetBeans user Vstejskal 
 on 2010-06-16T14:25:10Z.
 

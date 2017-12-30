@@ -41,7 +41,7 @@ Note that the caveat about Swing includes creating components - it is probably n
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Braiam 
+This page was exported from http://wiki.netbeans.org/DevFaqBackgroundThread , 
+that was last modified by NetBeans user Braiam 
 on 2010-03-03T21:56:44Z.
 

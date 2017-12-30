@@ -62,7 +62,7 @@ myMode.dockInto(myTopComponent);
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Maehem 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsMode , 
+that was last modified by NetBeans user Maehem 
 on 2012-11-13T01:09:52Z.
 

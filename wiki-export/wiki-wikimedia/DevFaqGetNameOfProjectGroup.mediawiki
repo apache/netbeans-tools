@@ -75,7 +75,7 @@ Note: this is rather a hack. It is not guaranteed that this will work for newer 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqGetNameOfProjectGroup , 
+that was last modified by NetBeans user Markiewb 
 on 2013-01-12T17:40:12Z.
 

@@ -36,7 +36,7 @@ Related: [[DevFaqFileContextMenuAddition | DevFaqFileContextMenuAddition]]
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Vstejskal 
+This page was exported from http://wiki.netbeans.org/DevFaqFileEditorContextMenuAddition , 
+that was last modified by NetBeans user Vstejskal 
 on 2010-06-16T13:36:58Z.
 

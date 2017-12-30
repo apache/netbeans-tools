@@ -195,7 +195,7 @@ In this example, we register it in the <tt>Actions/Window</tt> folder and then c
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqMultipleTopComponentAction , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-03-11T15:01:05Z.
 

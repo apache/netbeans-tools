@@ -120,7 +120,7 @@ Do not hesitate to contact me on mailto:jrechtacek@netbeans.org if you have any 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqNbmPostInstall , 
+that was last modified by NetBeans user Jtulach 
 on 2011-07-14T09:51:25Z.
 

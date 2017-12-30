@@ -78,7 +78,7 @@ The solution was tested with nbm-maven-plugin 3.8 and JRebel 5.0.1
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Mkleint 
+This page was exported from http://wiki.netbeans.org/DevFaqMavenPlatformRebel , 
+that was last modified by NetBeans user Mkleint 
 on 2012-09-07T10:58:50Z.
 

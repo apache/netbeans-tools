@@ -36,7 +36,7 @@ Use @ActionReference.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqActionAddFolder , 
+that was last modified by NetBeans user Jglick 
 on 2011-12-14T00:15:37Z.
 

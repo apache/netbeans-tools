@@ -193,7 +193,7 @@ A: In the pre-3.5 window system, a component could be open in more than one tabb
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsInternals , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T16:05:52Z.
 

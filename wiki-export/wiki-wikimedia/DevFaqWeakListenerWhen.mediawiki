@@ -32,7 +32,7 @@ But in the case that you are adding a listener which is never explicitly removed
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqWeakListenerWhen , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T06:12:14Z.
 

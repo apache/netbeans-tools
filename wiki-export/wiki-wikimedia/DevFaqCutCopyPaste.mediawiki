@@ -30,7 +30,7 @@ The [http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/nodes/do
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqCutCopyPaste , 
+that was last modified by NetBeans user Jglick 
 on 2010-05-04T13:46:11Z.
 

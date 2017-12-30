@@ -63,7 +63,7 @@ When migrating a module suite application to use a newer version of the platform
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqMigratingToNewerPlatform , 
+that was last modified by NetBeans user Markiewb 
 on 2016-11-24T13:02:17Z.
 

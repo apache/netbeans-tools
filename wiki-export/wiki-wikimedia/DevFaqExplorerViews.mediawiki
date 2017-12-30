@@ -52,7 +52,7 @@ A common usage is to get a Node for some folder on disk or in the [[DevFaqSystem
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user LiborJelinek 
+This page was exported from http://wiki.netbeans.org/DevFaqExplorerViews , 
+that was last modified by NetBeans user LiborJelinek 
 on 2011-08-09T16:07:51Z.
 

@@ -64,7 +64,7 @@ The FileObject corresponding to a given ElementHandle<TypeElement> can be found 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jlahoda 
+This page was exported from http://wiki.netbeans.org/DevFaqScanForClasses , 
+that was last modified by NetBeans user Jlahoda 
 on 2011-12-15T08:29:15Z.
 

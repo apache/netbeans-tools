@@ -195,7 +195,7 @@ Platforms: all
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqImplementationDependency , 
+that was last modified by NetBeans user Jglick 
 on 2011-08-03T14:59:11Z.
 

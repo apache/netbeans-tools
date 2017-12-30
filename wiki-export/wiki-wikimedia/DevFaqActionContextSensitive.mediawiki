@@ -166,7 +166,7 @@ Use <code>ContextAction</code> instead of <code>Single</code> to create actions 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqActionContextSensitive , 
+that was last modified by NetBeans user Jglick 
 on 2011-12-14T00:08:16Z.
 

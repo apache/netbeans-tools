@@ -82,7 +82,7 @@ SampleInterface intf = Lookup.getDefault().lookup(SampleInterface.class);
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Silhanek 
+This page was exported from http://wiki.netbeans.org/DevFaqSysFsLookupRegistration , 
+that was last modified by NetBeans user Silhanek 
 on 2011-01-28T21:16:34Z.
 

@@ -97,7 +97,7 @@ The following third-party components licensed under LGPL license have the source
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Pjiricka 
+This page was exported from http://wiki.netbeans.org/DevFaqLgpl3rdPartySources , 
+that was last modified by NetBeans user Pjiricka 
 on 2013-11-06T10:37:17Z.
 

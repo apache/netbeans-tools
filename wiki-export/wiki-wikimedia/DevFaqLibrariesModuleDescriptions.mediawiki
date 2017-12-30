@@ -1659,7 +1659,7 @@ What are they all for? Here's the answer.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Golthiryus 
+This page was exported from http://wiki.netbeans.org/DevFaqLibrariesModuleDescriptions , 
+that was last modified by NetBeans user Golthiryus 
 on 2012-07-13T08:44:08Z.
 

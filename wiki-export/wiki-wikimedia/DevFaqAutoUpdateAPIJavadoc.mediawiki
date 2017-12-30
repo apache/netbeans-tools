@@ -41,7 +41,7 @@ Since NetBeans 6.0 there is a public '''API''' to use '''Autoupdate Services'''.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Skygo 
+This page was exported from http://wiki.netbeans.org/DevFaqAutoUpdateAPIJavadoc , 
+that was last modified by NetBeans user Skygo 
 on 2013-12-16T19:59:27Z.
 

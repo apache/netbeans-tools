@@ -53,7 +53,7 @@ See also: [http://www.netbeans.org/download/dev/javadoc/org-netbeans-modules-edi
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Vstejskal 
+This page was exported from http://wiki.netbeans.org/DevFaqEditorHowToGetMimeTypeFromDocumentOrJTextComponent , 
+that was last modified by NetBeans user Vstejskal 
 on 2010-06-16T14:07:23Z.
 

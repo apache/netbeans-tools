@@ -353,7 +353,7 @@ For more details about the JPDA debugging arguments, see [http://java.sun.com/ja
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Newacct 
+This page was exported from http://wiki.netbeans.org/DevFaqAppClientOnNbPlatformTut , 
+that was last modified by NetBeans user Newacct 
 on 2010-04-17T00:46:56Z.
 

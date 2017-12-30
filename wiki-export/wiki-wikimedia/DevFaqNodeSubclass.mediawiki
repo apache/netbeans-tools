@@ -45,7 +45,7 @@ Note that if you just want to write context sensitive code, not provide your own
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqNodeSubclass , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T05:48:37Z.
 

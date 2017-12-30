@@ -28,7 +28,7 @@ Yes, a company can sign a blanket CA that will apply to all its employees. In th
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqBlanketJCAForEmployees , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-12-12T14:49:24Z.
 

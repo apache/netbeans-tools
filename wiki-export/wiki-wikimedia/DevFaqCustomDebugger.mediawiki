@@ -28,7 +28,7 @@ Solution: Here is a tutorial on integrating a custom Debugger: http://netbeans.d
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Stefika 
+This page was exported from http://wiki.netbeans.org/DevFaqCustomDebugger , 
+that was last modified by NetBeans user Stefika 
 on 2010-10-01T19:56:28Z.
 

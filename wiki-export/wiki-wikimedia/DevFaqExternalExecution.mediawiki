@@ -34,7 +34,7 @@ For more details see https://netbeans.org/bugzilla/show_bug.cgi?id=244308
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqExternalExecution , 
+that was last modified by NetBeans user Markiewb 
 on 2016-08-21T11:34:42Z.
 

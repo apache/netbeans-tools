@@ -29,7 +29,7 @@ See [http://jira.codehaus.org/browse/MNBMODULE-120 MNBMODULE-120] for discussion
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqMavenSystemScope , 
+that was last modified by NetBeans user Jglick 
 on 2010-11-09T14:09:30Z.
 

@@ -74,7 +74,7 @@ https://bitbucket.org/jglick/dynamicmenudemo/ tries to automate this kind of tas
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqDynamicSystemFilesystem , 
+that was last modified by NetBeans user Jglick 
 on 2012-04-10T00:02:19Z.
 

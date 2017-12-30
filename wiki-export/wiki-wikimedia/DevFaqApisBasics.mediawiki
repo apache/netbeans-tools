@@ -55,7 +55,7 @@ There are [[DevFaqTutorialsIndex| various tutorials]], and the canonical referen
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqApisBasics , 
+that was last modified by NetBeans user Geertjan 
 on 2010-06-14T09:01:17Z.
 

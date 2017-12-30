@@ -75,7 +75,7 @@ Because we want to modify the source, we have to use runModificationTask (see it
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/JavaHT Modification , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-02-25T16:24:21Z.
 

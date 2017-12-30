@@ -29,7 +29,7 @@ There is an API in NetBeans which contains Swing components that can render [[De
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqExplorer , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T15:41:35Z.
 

@@ -217,7 +217,7 @@ A few things may be worth considering if you want to use code like this in a pro
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqEditorTopComponent , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-03-13T07:34:06Z.
 

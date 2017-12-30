@@ -42,7 +42,7 @@ They are listed at [[UIGesturesCollector | UIGesturesCollector]].
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Dsimonek 
+This page was exported from http://wiki.netbeans.org/DevFaqUIGestures , 
+that was last modified by NetBeans user Dsimonek 
 on 2009-12-03T16:04:18Z.
 

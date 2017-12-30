@@ -40,7 +40,7 @@ If one does not exist, [http://www.netbeans.org/issues/enter_bug.cgi file an enh
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqAddDoingEvilThingsToForeignNodes , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T15:36:02Z.
 

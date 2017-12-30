@@ -29,7 +29,7 @@ on it. Oracle cannot terminate its responsibilities under the OCA either.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqCanICancelCA , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-12-12T14:27:23Z.
 

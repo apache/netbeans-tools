@@ -54,7 +54,7 @@ There are a number of kinds of files which are treated (and can be transformed i
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqRegisterObjectsViaInstanceOrSettingsFiles , 
+that was last modified by NetBeans user Jglick 
 on 2010-06-14T22:30:44Z.
 

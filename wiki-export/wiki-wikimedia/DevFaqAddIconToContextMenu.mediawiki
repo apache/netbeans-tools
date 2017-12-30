@@ -95,7 +95,7 @@ public final class HelloIconAction extends AbstractAction implements Presenter.P
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jmborer 
+This page was exported from http://wiki.netbeans.org/DevFaqAddIconToContextMenu , 
+that was last modified by NetBeans user Jmborer 
 on 2013-10-17T13:27:02Z.
 

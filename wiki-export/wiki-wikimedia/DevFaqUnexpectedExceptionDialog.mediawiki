@@ -43,7 +43,7 @@ See http://forums.netbeans.org/ptopic16746.html for details on how to set proper
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqUnexpectedExceptionDialog , 
+that was last modified by NetBeans user Jglick 
 on 2011-08-29T14:59:19Z.
 

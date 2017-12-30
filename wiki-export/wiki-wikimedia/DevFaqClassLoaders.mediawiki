@@ -99,7 +99,7 @@ Applies to: NetBeans 6.8 and above
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Rmichalsky 
+This page was exported from http://wiki.netbeans.org/DevFaqClassLoaders , 
+that was last modified by NetBeans user Rmichalsky 
 on 2009-12-02T13:43:15Z.
 

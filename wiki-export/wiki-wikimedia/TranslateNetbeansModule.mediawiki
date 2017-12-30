@@ -117,7 +117,7 @@ If you have any problem or need help to translate into any other language, pleas
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/TranslateNetbeansModule , 
+that was last modified by NetBeans user Admin 
 on 2009-11-05T17:04:49Z.
 

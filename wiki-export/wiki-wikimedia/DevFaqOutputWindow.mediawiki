@@ -70,7 +70,7 @@ See [http://plugins.netbeans.org/plugin/39695/?show=true here] for a plugin that
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqOutputWindow , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2011-08-01T14:18:43Z.
 
