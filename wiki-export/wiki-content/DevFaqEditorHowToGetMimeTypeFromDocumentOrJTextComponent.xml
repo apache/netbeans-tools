@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqEditorHowToGetMimeTypeFromDocumentOrJTextComponent</title>
+    <id>7254</id>
+    <revision>
+      <id>39303</id>
+      <timestamp>2010-06-16T14:07:23Z</timestamp>
+      <contributor>
+        <username>Vstejskal</username>
+        <id>363</id>
+      </contributor>
+      <minor/>
+      <comment>/* How to get mime type from Document or JTextComponent? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How to get mime type from &lt;tt&gt;Document&lt;/tt&gt; or &lt;tt&gt;JTextComponent&lt;/tt&gt;?===
+
+WARNING: The API described here is not official! Check the javadoc for its
+stability level.
+
+&lt;pre&gt;
+    // Suppose you have javax.swing.text.Document
+    String mimeType = NbEditorUtilities.getMimeType(document);
+
+    // Suppose you have javax.swing.text.JTextComponent
+    String mimeType = NbEditorUtilities.getMimeType(component);
+&lt;/pre&gt;
+
+The method accepting &lt;tt&gt;JTextComponent&lt;/tt&gt; is generally more practical, because
+&lt;tt&gt;JTextComponent&lt;/tt&gt; or its subclasses is what you usually have to start with.
+Internally the method calls the &lt;tt&gt;Document&lt;/tt&gt; version of itself on the document
+loaded in the component and returns its mime type (if it has any assigned). If
+the document does not have mime type information attached (and non-Netbeans documents
+generally don't) the method will use the component's &lt;tt&gt;EditorKit&lt;/tt&gt; to get it.
+
+--------
+
+Applies to: NetBeans 6.x, the algorithm in &lt;tt&gt;NbEditorUtilities.getMimeType(JTextComponent)&lt;/tt&gt;
+works fine in 5.0 and 5.5, but the method is not public.
+
+Platforms: All
+
+See also: [http://www.netbeans.org/download/dev/javadoc/org-netbeans-modules-editor/index.html Editor Module API]</text>
+    </revision>
+  </page>
+</mediawiki>

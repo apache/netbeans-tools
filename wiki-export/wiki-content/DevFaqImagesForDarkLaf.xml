@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqImagesForDarkLaf</title>
+    <id>19209</id>
+    <revision>
+      <id>70045</id>
+      <timestamp>2016-12-19T22:06:17Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>HONOR_DISPLAY_PROPERTIES</comment>
+      <text xml:space="preserve">=How to provide non-inverted images for dark LookAndFeels like DarkMetal/Darcula?=
+
+==In short==
+* All images will be inverted, when using a DarkLaF with an image filter applied and ImageUtilities is used
+* If you don't like the inverted image/icon, then provide a image using "_dark" in its name. It will be used without any filter applied.
+
+==Details==
+
+LaFs like DarkMetal/Darcula "invert" the colors of all the images/icons via an image filter set like &lt;code&gt;UIManager.put("nb.imageicon.filter", new DarkIconFilter())&lt;/code&gt;
+
+This filter is used when loading images/icons via
+&lt;code&gt;org.openide.util.ImageUtilities#loadImageIcon&lt;/code&gt; and &lt;code&gt;org.openide.util.ImageUtilities#loadImage&lt;/code&gt;. 
+{{iz|262804}}
+
+
+===You do not like the inverted colors? Provide your own images!===
+But there are cases, you don't want to get your image inverted. 
+
+For example in the following screenshot you do not want the NB logo in the about dialog to be inverted!
+[[File:YouDontwantyourImageinverted.jpg]]
+
+In this case provide an image with a specific name scheme. Add "&lt;code&gt;_dark&lt;/code&gt;" to the name. This image is taken as it is and no filter will be applied.
+
+'''Scheme:'''
+* &lt;code&gt;about.png&lt;/code&gt; -&gt; &lt;code&gt;about_dark.png&lt;/code&gt;
+* But be aware of brandings! Then it must be &lt;code&gt;about_dark_BRANDING.png&lt;/code&gt;
+
+===It still does not work? Migrate from ImageIcon... ===
+Check that your code really loads the images via &lt;code&gt;org.openide.util.ImageUtilities#loadImageIcon&lt;/code&gt; and &lt;code&gt;org.openide.util.ImageUtilities#loadImage&lt;/code&gt;!
+
+Dialogs built using the Mantisse GUI Builder often use &lt;code&gt;new javax.swing.ImageIcon&lt;/code&gt; constructs.
+
+So here some replacements patterns to migrate such dialogs.
+&lt;pre&gt;
+
+// within *.java
+new javax\.swing\.ImageIcon\(getClass\(\)\.getResource\("(.+?)"\)\)
+// with
+org.openide.util.ImageUtilities.loadImageIcon\("$1", false\)
+
+// within *.form
+&lt;Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor"&gt;
+// with
+&lt;Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor"&gt;
+
+// within *.form
+&lt;Image iconType="3" name="(.*?)"/&gt;
+with
+&lt;Connection code="org.openide.util.ImageUtilities.loadImageIcon\(&amp;amp;quot;$1&amp;amp;quot;, false\)" type="code"/&gt;
+
+&lt;/pre&gt;
+
+===Examples===
+
+Without Invert: 
+
+[[File:LafWithoutInvert.png|800px]]
+
+With Invert enabled and *_dark.png for the logo and startpage images: 
+
+[[File:LafWithInvert.png|800px]]
+
+
+==Related issues==
+===Handling Branding===
+
+Platform applications using Dark Look And Feels require the following for branding-related image adjustments (as discussed in  http://forums.netbeans.org/topic66964.html):
+
+# For frame images, the images must be named using the _dark suffix (frame_dark.gif, frame32_dark.gif, and frame48_dark.gif).
+# For splash images, both a dark and non-dark version are required (splash.gif, splash_dark.gif).  
+
+These images are typically found in the branding/core/core.jar/org/netbeans/core/startup folder for the application. 
+
+As of Netbeans 8.2, the Branding dialog within the Netbeans IDE is not designed for these dark theme image requirements.  Users using a dark theme will want to make image name changes directly within the filesystem to meet these requirements.
+===Handling textareas/textfields===
+If you have displaying issues with your controls, try to set the &lt;code&gt;HONOR_DISPLAY_PROPERTIES&lt;/code&gt;-clientproperty.
+
+&lt;code&gt;
+&lt;pre&gt;
+pane.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+//and/or
+pane.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
+&lt;/pre&gt;
+&lt;/code&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

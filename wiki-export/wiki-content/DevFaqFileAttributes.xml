@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqFileAttributes</title>
+    <id>7271</id>
+    <revision>
+      <id>34312</id>
+      <timestamp>2010-02-19T01:50:59Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <minor/>
+      <comment>/* What are File Attributes? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===What are File Attributes?===
+[[DevFaqFileObject| FileObjects]] have ''attributes''.  These are ad-hoc key-value
+pairs which can be associated with a file and persist across shutdown and restart.
+
+Attributes are routinely used in the [[DevFaqModulesLayerFile| module XML files]] which define the initial contents of the [[DevFaqSystemFilesystem| system filesystem]].  They are used to providing additional configuration data for files, such as declaring sorting order or the path to an icon file.
+
+Attributes are perfectly safe to use freely in &lt;code&gt;layer.xml&lt;/code&gt; files.
+
+In pre-4.0 NetBeans, they were relatively commonly used for user files on disk.  They still may be used for user files, but this is now discouraged - the infrastructure has been changed to store all attributes in the [[DevFaqUserDir| userdir]] rather than sprinking &lt;tt&gt;.nbattrs&lt;/tt&gt; files in directories all over the user's disk.  Since they are now stored in a central location, the more attributes there are, the longer it takes to find attributes for any given file.  Using attributes for user files ''on disk'' has negative performance implications.
+
+See &lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileObject.html#getAttribute(java.lang.String) FileObject.getAttribute]&lt;/tt&gt; and
+&lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileObject.html#setAttribute(java.lang.String,%20java.lang.Object) FileObject.setAttribute]&lt;/tt&gt;.</text>
+    </revision>
+  </page>
+</mediawiki>

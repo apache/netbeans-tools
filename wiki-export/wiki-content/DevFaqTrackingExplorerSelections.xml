@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqTrackingExplorerSelections</title>
+    <id>7487</id>
+    <revision>
+      <id>26271</id>
+      <timestamp>2009-11-06T16:02:52Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How should I keep track of what the current nodeselection in the Explorer window is? Should I use the &lt;tt&gt;ExplorerManager&lt;/tt&gt; ?===
+
+You can use the &lt;tt&gt;ExplorerManager&lt;/tt&gt; if you created the explorer window, or you can programmatically get a reference to it.  If you can somehow find a class implementing &lt;tt&gt;ExplorerManager.Provider&lt;/tt&gt; then you can get the Explorer manager. This provider might in fact be a &lt;tt&gt;TopComponent&lt;/tt&gt; in the &lt;tt&gt;TopComponent.Registry&lt;/tt&gt;, if for example it was actually a &lt;tt&gt;ExplorerPanel&lt;/tt&gt;.  
+
+But this is bad style - for example, if someone wrote a &lt;tt&gt;TopComponent&lt;/tt&gt; that included a component implementing &lt;tt&gt;ExplorerManager.Provider&lt;/tt&gt;, but as a subcomponent, and manually managed the node selection, this trick would fail.
+
+Rather, if you know which top component you care about, you can just call &lt;tt&gt;TopComponent.getActivatedNodes()&lt;/tt&gt; and this will work correctly even for non-Explorer components with a node selection, such as Editor panes open on Java sources.
+
+Better still is to be agnostic about which top component should be providing the activated nodes, and just listen to changes in the &lt;tt&gt;TopComponent.Registry.PROP''ACTIVATED''NODES&lt;/tt&gt; (or &lt;tt&gt;TopComponent.Registry.PROP_CURRENT_NODES&lt;/tt&gt; as appropriate).
+
+But best of all is not to have to ever directly pay attention to
+the node selection. If you only need to know the node selection in
+order to make some user action enabled or not, you should simply
+extend &lt;tt&gt;NodeAction&lt;/tt&gt;;
+this class does all the dirty work for you of listening to changes
+in the node selection and updating its state automatically.
+
+If you just want to write some code that is sensitive to the global selection (not an action), you probably want to use [[DevFaqTrackGlobalSelection| Utilities.actionsGlobalContext()]].
+
+====Multiple nodes selection - gotcha====
+
+If you allow multiple nodes to be selected you also have to keep in mind that certain other Netbeans components may only operate on single nodes.
+
+One example is the [http://www.netbeans.org/download/dev/javadoc/org-netbeans-spi-navigator/overview-summary.html Navigator]. Let's suppose you have a navigator window associated with your selected node. What you will notice is that while your multiple selection is in focus, your [[DevFaqTrackGlobalSelection| code for acquiring]] the selected nodes returns all the selected nodes. If the focus is then switched to the Navigator window, only one node is retrieved, all that while the multiple selection is still there, in the un-focused window.
+
+The reason is because along with the focus change, the (single) node represented by the Navigator and stored in its lookup becomes the global selection which your retrieval code will then grab.</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqLookupLazyLoad</title>
+    <id>7379</id>
+    <revision>
+      <id>40177</id>
+      <timestamp>2010-07-24T20:19:40Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+====How do I lazy-load an item in the Lookup?====
+
+A node is typically used to represent some business object and it's a common idiom to place that business object in the node's lookup so that, for example, a context-sensitive action can operate on it.  Sometimes fully initializing that business object can involve an expensive operation that would be wasted effort if the user never invoked the action that used it anyway.  
+
+So how can you defer loading or initializing the business object until it is truly needed?
+
+There are probably several ways, but two common ones are:
+
+====Override the &lt;tt&gt;beforeLookup(Lookup.Template&lt;?&gt; template)&lt;/tt&gt; method====
+If you are using the &lt;tt&gt;AbstractLookup&lt;/tt&gt; class to create the lookup, you can override the &lt;tt&gt;beforeLookup(Lookup.Template&lt;?&gt; template)&lt;/tt&gt;.  By doing this, you will be notified just before a lookup query is processed and you could check to see if the template would match the objects for which you've deferred loading, giving you an opportunity to load them now and add them to the &lt;tt&gt;InstanceContent&lt;/tt&gt; used by the &lt;tt&gt;AbstractLookup&lt;/tt&gt;.
+
+====Use &lt;tt&gt;InstanceContent.Convertor&lt;/tt&gt; to create a placeholder object====
+The &lt;tt&gt;InstanceContent.Convertor&lt;/tt&gt; class can be registered in an &lt;tt&gt;AbstractLookup&lt;/tt&gt; such that it provides a typesafe placeholder until the actual object type is requested, and at that point, the convertor can create and return the actual object.
+
+Consider the following example in which you have a &lt;tt&gt;Token&lt;/tt&gt; class which represents a database record ID and a business object class &lt;tt&gt;AnExpensiveClass&lt;/tt&gt; which will be populated from the database based on the supplied token's ID.  
+
+&lt;source lang="java"&gt;
+public final class Token {
+      
+    private final long id;
+
+    public Token(long id) {
+        this.id = id;
+    }
+
+    public long getId() {
+       return id;
+    }
+}
+&lt;/source&gt;
+
+Now we will write a converter.  Until the first time something calls &lt;tt&gt;theLookup.lookup(AnExpensiveClass.class)&lt;/tt&gt;, only our quick-to-create &lt;tt&gt;Token&lt;/tt&gt; object is in memory.  On the first such lookup call, the following code is run:
+
+&lt;source lang="java"&gt;
+public class LazyLoadingDelegate implements InstanceContent.Convertor&lt;Token, AnExpensiveClass&gt; {
+
+    @Override
+    public AnExpensiveClass convert(Token token) {
+        // Return an instance based on the supplied token (i.e. assume that 
+        // the AnExpensiveClass constructor will load data from the database 
+        // and populate the instance we're returning).
+        return new AnExpensiveClass(token);
+    }
+
+    @Override
+    public Class&lt;? extends AnExpensiveClass&gt; type(Token token) {
+        return AnExpensiveClass.class;
+    }
+
+    @Override
+    public String id(Token token) {
+        return String.valueOf(token.getId());
+    }
+
+    @Override
+    public String displayName(Token token) {
+        return "my lazy loading delegate";
+    }
+}
+&lt;/source&gt;
+
+====Code that creates a Lookup and registers the InstanceContent:====
+&lt;source lang="java"&gt;
+    ic = new InstanceContent();
+    al = new AbstractLookup(ic);
+        
+    Token token = new Token(12345);
+    ic.add(token, new LazyLoadingDelegate());
+&lt;/source&gt;
+
+Your [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/Actions.html#context context-sensitive action] will behave normally&amp;mdash;it does not need to know about the lazy loading (code not relevant to lazy loading has been removed for the sake of brevity):
+
+&lt;source lang="java"&gt;
+public final class ExpensiveClassAction implements ActionListener {
+    private final AnExpensiveClass expensiveClass;
+    public ExpensiveClassAction(AnExpensiveClass a) {
+      this.expensiveClass = a;
+    }
+
+    public void actionPerformed(ActionEvent ev) {
+        // now you have the actual do AnExpensiveClass instance, 
+        // in variable expensiveClass
+        // so do something with it...
+    }
+}
+&lt;/source&gt;
+
+====Lifecycle With InstanceContent.Converter====
+Objects created using an InstanceContent.Converter are only weakly cached by default.  That means that, after AnExpensiveClass is instantiated, it can be garbage collected if no object holds a reference to it in a field.  If the object is going to be queried for repeatedly, you may want your InstanceContent.Converter to cache the last-created value, either for some period of time, or using a SoftReference or hard reference or other caching strategy.</text>
+    </revision>
+  </page>
+</mediawiki>

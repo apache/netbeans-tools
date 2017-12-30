@@ -1,0 +1,40 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+== How to create a custom window mode? ==
+From time to time the available options are not enough. The available options are displayed below:
+
+[[File:Netbeans Window Modes.jpg]]
+
+Here's the [http://www.yworks.com/en/products_yed_about.html yEd] file for the above image in case this is incorrect or needs to be modified: 
+
+[[File:Netbeans_Window_Modes.graphml]]
+
+If you want a custom "mode" or location for a top component follow this blog from Geertjan's Blog: [https://blogs.oracle.com/geertjan/entry/creating_a_new_mode_in Creating A New Mode In Your Application]
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Maehem 
+on 2012-06-02T00:37:26Z.
+

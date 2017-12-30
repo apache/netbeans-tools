@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqLookupForDataNode</title>
+    <id>7375</id>
+    <revision>
+      <id>40175</id>
+      <timestamp>2010-07-24T20:17:21Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How can I add support for &lt;tt&gt;Lookup&lt;/tt&gt;s on nodes representing my file type?===
+
+Any object you create can implement &lt;tt&gt;Lookup.Provider&lt;/tt&gt;. The simplest way to create a mutable lookup is by using &lt;tt&gt;InstanceContent&lt;/tt&gt; and &lt;tt&gt;AbstractLookup&lt;/tt&gt;.  Simplified typical usage:
+
+&lt;source lang="java"&gt;
+public SomeObject implements Lookup.Provider {
+   private InstanceContent content = new InstanceContent();
+   private final AbstractLookup lkp = new AbstractLookup(content);
+   
+   public someMethod() {
+      ic.set (someCollection...);
+   }
+
+   public Lookup getLookup() {
+      return lkp;
+   }
+}
+&lt;/source&gt;
+
+This is how you create a lookup with dynamic content of your choosing.  See also Tom Wheeler's  [http://www.tomwheeler.com/netbeans/ TodoListManager] for an example of some code that illustrates how to do this.
+
+If you are using &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/ProxyLookup.html ProxyLookup]&lt;/code&gt; to proxy another (or multiple) lookups, and you want to change the set of Lookups you are proxying on the fly, you will need to subclass &lt;tt&gt;ProxyLookup&lt;/tt&gt; and call the protected method [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/ProxyLookup.html#setLookups(org.openide.util.Lookup...) &lt;tt&gt;setLookups(Lookup... lookups)&lt;/tt&gt;].</text>
+    </revision>
+  </page>
+</mediawiki>

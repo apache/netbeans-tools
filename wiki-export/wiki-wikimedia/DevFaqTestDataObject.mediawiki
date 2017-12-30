@@ -1,0 +1,103 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Writing Tests For DataObjects and DataLoaders===
+
+Quite easy. At least in NetBeans 6.5 and newer. Everything shall work as 
+declarative MIME resolvers are loaded automatically from unit tests and 
+loaders are available from unit tests automatically.
+
+Example code is below:
+
+<pre>
+    private static final String BAD_MANIFEST_CONTENT =
+            "Manifest-Version: 1.0\n" +
+            "junk junk junk\n" +
+            "some more junk\n";
+    private static final String GOOD_MANIFEST_CONTENT =
+            "Manifest-Version: 1.0\n" +
+            "Java-Bean: true\n" +
+            "OpenIDE-Module-Name: com.foo.bar\n\n";
+
+    @Test public void checkContent() throws Exception {
+        FileSystem fs = FileUtil.createMemoryFileSystem();
+        FileObject good = fs.getRoot().createData("good.mf");
+        writeFile(GOOD_MANIFEST_CONTENT, good);
+        DataObject goodDob = DataObject.find(good);
+
+        FileObject bad = fs.getRoot().createData("bad.mf");
+        writeFile(BAD_MANIFEST_CONTENT, bad);
+        DataObject badDob = DataObject.find(bad);
+
+        YourInterface y = goodDob.getLookup().lookup(YourInterface.class);
+        y.doYourTest();
+    }
+
+    private void writeFile(String content, FileObject file) throws Exception {
+        OutputStream os = file.getOutputStream();
+        os.write(content.getBytes("UTF-8"));
+        os.close();
+    }
+</pre>
+
+In the somewhat unusual case in which your unit test resides in a different module from that which contains your file support code (DataLoader, DataObject, etc.), you will need to add a <tt><test /></tt> dependency on the module which contains the file support code.  Currently this can only be done by editing the <tt>project.xml</tt> file for the module containing your unit tests.  See the build harness' README for more information; you can find the relevant section by searching for <tt>test-dependencies</tt> in that file.
+
+
+
+====Older versions than 6.5====
+
+If you are writing a test for a <tt>DataObject</tt>,
+you need to set up enough of the <tt>DataLoader</tt> infrastructure
+that <tt>DataObject.find()</tt> will locate your <tt>DataLoader</tt>
+and call it to create your <tt>DataObject</tt> subtype.
+
+First, use the setup code described in
+[[TestingThingsThatUseFileObjectDataObjectDataFolder| Testing Things That Use File Objects]].
+Add to the test's <tt>setUp()</tt> method a call to <tt>FileUtil.setMIMEType()</tt>
+to manually assign the file extension to the MIME type of your <tt>DataLoader</tt>.
+
+<pre>
+FileUtil.setMIMEType("mf", "text/x-manifest");
+</pre>
+
+(<tt>setMIMEType()</tt> is deprecated with respect to usage from inside a module,
+but it is fine to use it in a unit test).
+
+(For XML file subtypes, <tt>FileUtil.setMIMEType()</tt> on <tt>*.xml</tt> is not likely to work.
+You can instead register a <tt>MIMEResolver</tt> in default lookup which does whatever you need.)
+
+
+Second, you need to make sure your <tt>DataLoader</tt> is registered in the
+[[DevFaqLookupDefault| default Lookup]]
+so that <tt>DataObject.find()</tt> will find it.
+In 6.0, the '''New File Type''' template will set this up automatically
+by creating the correct file in <tt>test/unit/META-INF/services</tt>.
+(Or you can get better control by using <tt>org.openide.util.test.MockLookup</tt>.)
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Admin 
+on 2009-11-06T16:02:09Z.
+

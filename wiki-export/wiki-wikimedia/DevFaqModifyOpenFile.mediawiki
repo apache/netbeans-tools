@@ -1,0 +1,42 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Is it safe to programmatically modify a file which is open in the editor?===
+
+It is not safe to modify a <tt>FileObject</tt> (via <tt>getOutputStream</tt>) which is open and ''modified'' in the editor. In fact, it is not possible: calling <tt>FileObject.lock()</tt> will fail. If you modify the <tt>java.io.File</tt> (bypassing the Filesystems API) you may cause a conflict.
+
+If the file is not modified in the editor (easily checkable via <tt>DataObject.isModified()</tt>) then after your output stream is closed the file will be reloaded with the new contents.
+
+If the file ''is'' modified you can make changes to the open editor buffer: use <tt>EditorCookie</tt> to acquire the Swing <tt>Document</tt> and make changes through that. It may be considered impolite to then save the file if it was modified before.
+
+-------
+
+Applies to: NetBeans 4.0 and newer
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Vstejskal 
+on 2010-06-16T13:28:10Z.
+

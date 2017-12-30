@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqModuleCCE</title>
+    <id>7391</id>
+    <revision>
+      <id>29816</id>
+      <timestamp>2009-12-03T14:11:30Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+==Why am I getting a &lt;tt&gt;ClassCastException&lt;/tt&gt; when the class is clearly of the right type?==
+
+Q: I am getting an exception when I run my module, such as
+
+&lt;pre&gt;
+java.lang.ClassCastException: Implementation cannot be cast to Interface
+        at Factory.newInstance (Factory.java:123)
+&lt;/pre&gt;
+
+But &lt;tt&gt;Implementation&lt;/tt&gt; implements &lt;tt&gt;Interface&lt;/tt&gt;, so why is this a CCE?
+
+A: Usually this is because the &lt;tt&gt;Interface&lt;/tt&gt; that &lt;tt&gt;Implementation&lt;/tt&gt; actually implements was loaded from a different class loader than what &lt;tt&gt;Factory&lt;/tt&gt; sees.
+
+That is very likely the immediate cause of the CCE. The root cause is not always obvious, but it is likely to be that some code uses &lt;tt&gt;Thread.currentThread().getContextClassLoader()&lt;/tt&gt; to load a class by name. In NB by default the context class loader just looks around in loaded modules (lacking any better information), so it is possible for the following situation to arise:
+
+&lt;pre&gt;
+module A: Interface, Factory
+module B &gt; A: Implementation implements Interface
+module C: Interface, Factory
+module D &gt; A: Implementation implements Interface
+&lt;/pre&gt;
+
+where &lt;tt&gt;Factory&lt;/tt&gt; does something like:
+
+&lt;pre&gt;
+Interface i = (Interface) Class.forName("Implementation", true,
+    Thread.currentThread().getContextClassLoader()).newInstance();
+&lt;/pre&gt;
+
+(This is a common design pattern for XML parsers, etc.)
+
+Now if A's &lt;tt&gt;Factory&lt;/tt&gt; happens to get D's &lt;tt&gt;Implementation&lt;/tt&gt; (or C's gets B's) then you get a CCE at runtime.
+
+An especially silly variant of this problem, known to occur at least in Xerces ({{iz|37994}}), is that &lt;tt&gt;Implementation&lt;/tt&gt; actually resides in the same JAR as &lt;tt&gt;Interface&lt;/tt&gt; and &lt;tt&gt;Factory&lt;/tt&gt;, and is the standard impl almost everyone uses unless overridden somehow - yet &lt;tt&gt;Factory&lt;/tt&gt; loads it by name from the CCL rather than simply loading it directly using e.g. &lt;tt&gt;new Implementation()&lt;/tt&gt;.
+
+The usual workaround is to wrap the problematic call(s) in a dynamic block:
+
+&lt;pre&gt;
+ClassLoader orig = Thread.currentThread().getContextClassLoader();
+Thread.currentThread().setContextClassLoader(SomeReferenceClass.class.getClassLoader());
+try {
+  Factory.load(...);
+} finally {
+  Thread.currentThread().setContextClassLoader(orig);
+}
+&lt;/pre&gt;
+
+Note: NetBeans forbids ambiguous delegations. ({{iz|118020}})
+If a class could be loaded from two (or more) places, it will not be loaded at all.
+This does not solve your problem but it at least ensures it gets reported more reliably
+and with a descriptive message rather than an odd &lt;tt&gt;ClassCastException&lt;/tt&gt;.
+
+----
+Applies to: NetBeans 6.5 and later</text>
+    </revision>
+  </page>
+</mediawiki>

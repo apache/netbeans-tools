@@ -1,0 +1,101 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===How is MimeLookup composed?===
+
+In order to get [[DevFaqEditorWhatIsMimeLookup| MimeLookup]] you have to supply
+[[DevFaqEditorWhatIsMimePath| MimePath]]. With the default <tt>MimeLookup</tt>
+implementation provided by Netbeans the contents of <tt>MimeLookup</tt> is defined by
+a hierarchical structure of folders on the system FileSystem. The structure
+starts in the <tt>Editors</tt> folder and then follows all the components of the <tt>MimePath</tt> you
+have supplied.
+
+For example if you ask for <tt>MimeLookup</tt> for the following <tt>MimePath</tt> of
+<tt>text/x-java</tt> you will get <tt>Lookup</tt> with contents from the following
+folders:
+
+<pre>
+    Editors/text/x-java
+    Editors
+</pre>
+
+As you can see <tt>MimeLookup</tt> for <tt>text/x-java</tt> contains not only editor
+features registered for the <tt>text/x-java</tt> mime type itself, but it also
+inherits general features registered for an empty <tt>MimePath</tt> (i.e. in the
+root of the hierarchy).
+
+The inheritence algorithm used for composing <tt>MimeLookup</tt> for a given
+<tt>MimePath</tt> supports more than just simple inheritance from the root. It also
+supports compound mime types such as <tt>text/x-ant+xml</tt> and embedded mime types
+such as <tt>text/x-jsp/text/x-java</tt>.
+
+====Compound mime types====
+
+Let's have a look at the <tt>MimeLookup</tt> composition for a compound mime type
+<tt>text/x-ant+xml</tt>. The resulting <tt>Lookup</tt> will contain things registered in
+the following folders:
+
+<pre>
+    Editors/text/x-ant+xml
+    Editors/text/xml
+    Editors
+</pre>
+
+That's the reason why editor features provided by XML modules for general
+XML files work also for specialized, but XML-based, files.
+
+====Embedded mime types====
+
+The inheritance hierarchy becomes even more complicated when dealing with embedded mime
+types. Let's use a java scriplet inside a JSP page as an example of language embedding.
+The <tt>MimePath</tt> for the scriplet is <tt>text/x-jsp/text/x-java</tt> and its <tt>MimeLookup</tt> will
+contain features registered in the following folders:
+
+<pre>
+    Editors/text/x-jsp/text/x-java
+    Editors/text/x-java
+    Editors
+</pre>
+
+The algorithm for computing the inheritance tree for a particular <tt>MimePath</tt>
+combines all the above cases together and works always the same way no matter what
+feature you are going to look for in the resulting <tt>MimeLookup</tt>.
+
+--------
+
+Applies to: NetBeans 6.x and with some exceptions also to 5.x
+
+Platforms: All
+
+See also:
+[[DevFaqEditorWhatIsMimeLookup| What is MimeLookup?]],
+[[DevFaqEditorWhatIsMimePath| What is MimePath?]],
+[http://www.netbeans.org/download/dev/javadoc/org-netbeans-modules-editor-mimelookup/index.html MimeLookup API]
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Vstejskal 
+on 2010-06-16T14:05:24Z.
+

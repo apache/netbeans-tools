@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqTrackGlobalSelection</title>
+    <id>7486</id>
+    <revision>
+      <id>58446</id>
+      <timestamp>2012-11-21T17:33:20Z</timestamp>
+      <contributor>
+        <username>Bdschubert</username>
+        <id>29</id>
+      </contributor>
+      <minor/>
+      <comment>Added link to DevFaqAddGlobalContext</comment>
+      <text xml:space="preserve">__NOTOC__
+===I need to write some code that tracks the global selection. What should I do?===
+
+If you are writing an action, consider using one of the 
+[[DevFaqActionContextSensitive| context sensitive action classes in the apis]].
+
+For other types of code, use &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt;.  This is a [[DevFaqLookup| Lookup ]] which shows the contents of whatever [[DevFaqWindowsTopComponent| TopComponent]] has focus.  When component A has focus, the Lookup returned by &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; contains whatever A.getLookup() contains.  When the user sends focus to component B, the contents change - and events are fired if you are listening for changes.
+
+Think of &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; as watching a news program on television.  If there is something exciting happening in Lichtenstein, you do not have to go to Lichtenstein to learn about it - the people in the studio show you their reporter in Lichtenstein.  Similarly, if you want to know what the user has selected, with &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; you do not have to pay attention to which component has focus, or even the fact that there is a component!  You can just tune to the sports channel (well, in NetBeans, more likely, the DataObject channel) and get all the news about what is happening.  Or, to use another metaphor, you are looking down one end of a hose.  The platform takes care of moving the other end of the hose around so that you are always looking at the place where the user is working.
+
+In practice, &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; returns a [[DevFaqLookup| Lookup ]] which proxies the Lookup of the active (focused) [[DevFaqWindowsTopComponent| TopComponent]]'s Lookup (which, if it is an [[DevFaqExplorerViews|explorer view]], is proxying the Lookup(s) of whatever Node(s) are selected).  Say that we are interested in what is happening with - whether the user has selected - objects of the type &lt;code&gt;SomeApiClass&lt;/code&gt;:
+
+&lt;source lang="java"&gt;
+//You must hold a reference to your Lookup.Result as long as you are interested 
+//in changes in it, or it will be garbage collected and you will stop getting 
+//notifications
+Lookup.Result res = Utilities.actionsGlobalContext().lookupResult (SomeApiClass.class);
+res.addLookupListener (new LookupListener() {
+   public void resultChanged (LookupEvent evt) {
+     Collection c = ((Lookup.Result) evt.getSource()).allInstances();
+     //do something with the collection of 0 or more instances - the collection has changed
+   }
+});
+&lt;/source&gt;
+
+The nice thing about this approach is that, unless your code specifically cares about Nodes, you don't need to depend on the Nodes API.
+
+The idea behind this is that every "logical window" in NetBeans has its own Lookup, whose contents represent the "selection" in that window (or whatever services it wants to expose).  &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; is a single point of entry - you don't have to track which window currently has focus - it is a Lookup which proxies the Lookup of whatever window does have focus.  When the focused window changes, the Lookup returned by &lt;tt&gt;Utilities.actionsGlobalContext()&lt;/tt&gt; will fire the appropriate changes.  So, for example, an Action can be written to be sensitive to a particular object type;  it does not need any code that relates to tracking window focus or similar.
+
+'''Please note''': Generally, keep a hard reference on the Lookup.Result (or make a closure on it with some final keyword and a reference from the anonymous listener). Because if you don't -- the garbage collector might kick in quite soon and your listener won't be called.
+Source: [http://emilian-bold.blogspot.com/2006/11/netbeans-platform-lookupresult-garbage.html Lookup.Result garbage collection trick]
+
+See also: [[DevFaqAddGlobalContext| How to Add Content to the Global Context]]</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAutoUpdateAPIJavadoc</title>
+    <id>7212</id>
+    <revision>
+      <id>65207</id>
+      <timestamp>2013-12-16T19:59:27Z</timestamp>
+      <contributor>
+        <username>Skygo</username>
+        <id>12034</id>
+      </contributor>
+      <comment>/* Related articles */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How can I find Javadoc of Autoupdate API with hints to use it?===
+
+Since NetBeans 6.0 there is a public '''API''' to use '''Autoupdate Services'''. Autoupdate API provides several services to applications built on NetBeans Platform: it allows users to download and install available updates of installed plugins, search and install new plugins from subscribed Update Centers, browsing and manipulating plugins already installed. To use these services NetBeans Platform supplies a GUI (''Plugin Manager'' in ''Tools-&gt;Plugins'' menu item) to easy call these services. AutoUpdate API also cares about registration of Update Centers.
+
+* Where to find Javadoc? http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/overview-summary.html
+* Which version of NetBeans should I use? This API was firstly introduced in NetBeans 6.0 Platform where the API was still in development. In NetBeans 6.1 Platform it was made official API, it means further changes should be backward compatible. Use [http://platform.netbeans.org/platform-get.html NetBeans Platform of the latest version] for the best performance.
+
+====Related articles====
+* [[DevFaqWhatIsNbm | What is an NBM?]]
+* [[FaqPluginManagerCustomization| How to customize Plugin Manager?]]
+* [[DevFaqNbmPostInstall | How to specify post-install code in NBM?]]
+* [[FaqDevComponentWithCustomInstaller| How to install components using its custom installers?]]
+
+====Other resources====
+* [https://blogs.oracle.com/rechtacek/ Rechtacek's Blog]
+* [https://blogs.oracle.com/geertjan/ Geertjan's Blog]</text>
+    </revision>
+  </page>
+</mediawiki>

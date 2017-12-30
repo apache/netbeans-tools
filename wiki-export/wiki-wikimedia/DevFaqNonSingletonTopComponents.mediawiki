@@ -1,0 +1,109 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===How can I change my TopComponent to not be a singleton (NB version up to 6.9)?===
+The "New Window Component" wizard in the NetBeans IDE generates a [http://en.wikipedia.org/wiki/Singleton_pattern singleton] TopComponent.  That's fine for windows that there should only be one of.  Particularly if you are [[DevFaqEditorTopComponent|creating some kind of editor]], you will want to create multiple instances of your TopComponent.
+====The really easy way====
+If you have not already used the '''New Window''' template to create your TopComponent subclass, don't.
+
+Instead, use ''New &gt; JPanel Form''.  Once the new JPanel is created, switch to the Code tab, and replace <tt>extends javax.swing.JPanel</tt> with <tt>extends TopComponent</tt>.  Then do the following things:
+* Override <tt>getPersistenceType()</tt>.  
+** If you ''do not'' want your components reopened on restart
+***return <tt>PERSISTENCE_NEVER</tt>&mdash;that is all you need to do to make sure they are not preserved across restarts.
+** If you ''do'' want your components reopened on restart, then
+*** return <tt>PERSISTENCE_ONLY_OPENED</tt> from <tt>getPersistenceType()</tt>
+*** Add the following slightly-cryptic annotation to the class: <tt>@ConvertAsProperties(dtd = "-//com.yourmodule.yourpackage//YourTopComponent//EN", autostore = false)</tt>, replacing the package and class name with your own.  This identifies a DTD.  You do not need to define the DTD.  You just need to give it a unique namespace that nothing else is using.  Package and class name work well for that.
+*** Add two additional methods (you are not overriding anything and they can be package-private, like serialization methods):
+**** <tt>void writeProperties(Properties p)</tt> - here we will call <tt>p.put()</tt> passing enough information to reconstruct your component on restart.  If we are editing a file, we might save the path to the file.  If we are viewing a URL, we might save the URL.  If we want to be particularly fastidious, we might save the scroll position, or what line the editor caret was on , or anything else useful to restore the state of our component.
+**** <tt>void readProperties(Properties p)</tt> - here we will reading whatever keys we wrote out in <tt>writeProperties</tt> and (re)initializing the component to its pre-shutdown state.  This method will be called on startup to restore our component to its pre-shutdown state as best can be done.  If we were, say, editing a file that no longer exists, the appropriate thing to do is throw an exception.  
+
+====If you already have a generated singleton TopComponent subclass====
+The good news is that you won't have to write any code -- you'll just have to delete some of the code that was generated for you.
+
+In your TopComponent's .java source file:
+* Delete the static <tt>instance</tt> variable, which ought to be declared a few lines above the constructor.
+* Make sure your TopComponent class is <tt>public</tt>
+* Make sure your TopComponent has a no-argument constructor which is <tt>public</tt>
+* Delete the <tt>getDefault()</tt> method (typically somewhere around the middle of the file)
+* Delete the <tt>findInstance()</tt> method (which typically follows the <tt>getDefault()</tt> method)
+* Update the persistence code which saves your component's state on shutdown and restores it on restart to reopen your component as follows
+** Locate the <tt>getPersistenceType</tt> method and change its return value to either <tt>[http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.html#PERSISTENCE_NEVER TopComponent.PERSISTENCE_NEVER]</tt> or <tt>[http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.html#PERSISTENCE_ONLY_OPENED TopComponent.PERSISTENCE_ONLY_OPENED]</tt> (see below for why).
+** If you have methods called <tt>writeReplace()</tt>and an inner class called <tt>ResolvableHelper</tt> (NetBeans 6.8 and earlier):
+*** Delete the <tt>writeReplace()</tt> method (typically towards the end of the file)
+*** Delete the <tt>ResolvableHelper</tt> inner class (typically towards the end of the file)
+** If you ''do not want persistence across restarts'' &mdash; you are returning PERSISTENCE_NEVER from <tt>getPersistenceType()</tt>
+*** If you have a <tt>@ConvertAsProperties</tt> annotation and <tt>readProperties(Properties)</tt> and <tt>writeProperties(Properties)</tt> methods, delete the annotation and both methods
+** If ''do want persistence across restarts'' &mdash; you are returning <tt>PERSISTENCE_ONLY_OPENED</tt> from<tt>getPersistenceType()</tt>
+*** If you already have the <tt>@ConvertAsProperties</tt> annotation and <tt>readProperties(Properties)</tt> and <tt>writeProperties(Properties)</tt> methods just leave them there
+*** If you do not have the annotation and those methods, implement them as described in the previous section
+
+Next we will need to delete the metadata that registers the component:
+* For version 6.9 of NetBeans:
+** Delete the settings XML file for your component.  If your component class is <tt>MyWindow</tt> then that file will be in the same folder and will be called <tt>MyWindowSettings.xml</tt>.
+** Delete the [[DevFaqWindowsWstcrefAndFriends| wstcrf]] (&quot;window system TopComponent reference&quot;) XML file in that folder.  If your component class is <tt>MyWindow</tt> then that file will be named <tt>MyWindowWstcrf.xml</tt>
+** Edit your module's [DevFaqModulesLayerFile| layer.xml file] to 
+*** Remove any references to either of these files (just use Ctrl-F to search for e.g. <tt>MyWindowSettings.xml</tt> and <tt>MyWindowWstcrf.xml</tt>).  They will be in <tt>&lt;file&gt;</tt> tags.
+*** If you have removed a <tt>&lt;file&gt;</tt> entry, and it was the only entry in that folder, you can remove the XML for parent folder (and its parent if it is now empty, and so forth)
+*** Find where an Action is registered for to open your (formerly) singleton TopComponent
+**** ''NetBeans 6.9 and later:''  
+***** Look for an <tt>&lt;file&gt;</tt> registered in <tt>Actions/Window</tt>in the XML file.  It will have an <tt>&lt;attr&gt;</tt> element that refers to your TopComponent class, e.g. <tt>&lt;attr name=&quot;component&quot; methodvalue=&quot;com.foo.MyWindow.findInstance&quot;/&gt;</tt>.  Delete the entire <tt>&lt;file&gt;</tt> entry.
+***** Look for <tt>&lt;file&gt;</tt> entry for a <tt>.shadow</tt> file in <tt>Actions/Menu</tt> in the XML, with its <tt>originalFile</tt> pointing to the file entry you just deleted.  Delete the <tt>.shadow</tt> <tt>&lt;file&gt;</tt> too.
+**** ''NetBeans 6.8 and earlier:''  
+***** There will be an <tt>Action</tt> class in your sources which is registered, e.g. <tt>MyWindowAction.java</tt>.  Delete the java source file.
+***** Look for an <tt>&lt;file&gt;</tt> registered in <tt>Actions/Window</tt>in the XML file.  It will be a <tt>&lt;file&gt;</tt> whose name is the munged fully-qualified class name of the <tt>Action</tt> you just deleted, e.g. <tt>com-foo-MyWindowAction.instance</tt>.  Delete the <tt>&lt;file&gt;</tt> entry for it
+***** Look for <tt>&lt;file&gt;</tt> entry for a <tt>.shadow</tt> file in <tt>Actions/Menu</tt> in the XML, with its <tt>originalFile</tt> pointing to the file entry you just deleted.  Delete the <tt>.shadow</tt> <tt>&lt;file&gt;</tt> too.
+
+====Creating And Opening Your TopComponents====
+
+Now that you have deleted the actions for your TopComponent, presumably they will be created some other way (for example, from a file's popup menu).  You can create new instances of your TopComponent, open them and give them focus as follows:
+ TopComponent win = new MyTopComponent();
+ win.open();
+ win.requestActive(); 
+If you wrote your persistence code correctly, your components will magically reopen on restart with no further work.
+
+====What About PERSISTENCE_ALWAYS?====
+There is one other value you can return from <tt>[http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.html#getPersistenceType() TopComponent.getPersistenceType()]</tt>.  That value is <tt>TopComponent.PERSISTENCE_ALWAYS</tt>.
+
+While it is ''legal'' to return this value from a non-singleton TopComponent, it is almost never what you want to do.  What will happen if you do this is:
+* Every instance of your component that is '''ever created''' will be persisted on shutdown, ''forever''
+** Even if it is closed
+** Even if nothing can use it, or it represents a file that was deleted, or is in some other way invalid
+** Even if no code will ever be able to find it and open it again
+* One every restart, ''forever''
+** Every instance of your component that has ''ever existed'' will be read back from disk
+*** Each one will slow down startup a little bit
+*** Each one will be wasting disk space
+
+<tt>PERSISTENCE_ALWAYS</tt> is for singleton components that need to be remembered forever across restarts. Don't use it for non-singletons.
+====If you do not have any persistence code, but your components are reopening on restart...====
+You are returning either <tt>PERSISTENCE_ONLY_OPENED</tt> or <tt>PERSISTENCE_ALWAYS</tt> from <tt>getPersistenceType()</tt>.  If there is no persistence code, but you ''are'' returning one of these values, NetBeans will use plain old Java serialization to store and reload your component.
+
+Either use <tt>PERSISTENCE_NEVER</tt> or write persistence code as described above.  Serialization is slower and more fragile than proper persistence, and is never a good option for production code.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Cvdenzen 
+on 2012-09-18T10:54:57Z.
+

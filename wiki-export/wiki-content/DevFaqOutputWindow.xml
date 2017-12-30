@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqOutputWindow</title>
+    <id>7438</id>
+    <revision>
+      <id>46426</id>
+      <timestamp>2011-08-01T14:18:43Z</timestamp>
+      <contributor>
+        <username>Javydreamercsw</username>
+        <id>2603</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+==How do I create my own tab in the output window and write to it?==
+NetBeans contains classes that make writing to the output window very simple - you don't have to worry about components, you just get an instance of a thing called &lt;tt&gt;InputOutput&lt;/tt&gt;, which has methods &lt;tt&gt;getOut()&lt;/tt&gt; and &lt;tt&gt;getErr()&lt;/tt&gt; that return &lt;tt&gt;OutputStream&lt;/tt&gt;s.  There is a utility class, &lt;tt&gt;IOProvider&lt;/tt&gt; that can supply &lt;tt&gt;InputOutput&lt;/tt&gt; objects - you pass it a string name that should be shown on the output tab, and a boolean (whether or not it should reuse an existing tab with the same name if there is one).  So, hello world code for the output window looks like this:
+
+&lt;pre&gt;
+InputOutput io = IOProvider.getDefault().getIO ("Hello", true);
+io.getOut().println ("Hello from standard out");
+io.getErr().println ("Hello from standard err");  //this text should appear in red
+io.getOut().close();
+io.getErr().close();
+&lt;/pre&gt;
+
+It is important to close the output streams when you are done with them - output is written to a memory mapped file, which cannot be deleted if the stream is still open - and the tab title will remain boldfaced until the streams are closed, which helps indicate to the user that the process has finished.
+
+-- Main.timboudreau - 10 Jun 2006
+
+Note: For platform based applications to correctly use InputOutput and IOProvider an Output Window implementation must be available and enabled.  Follow the below steps to be sure you include everything to allow the output window and tabs to be used and shown.
+
+# Open your module projects properties.  (Right click the project and select properties).
+# Select libraries
+# Check to see if 'I/O APIs' is in the dependency list.
+# If it is not it needs to be added.
+
+To add 'I/O APIs'
+# Choose 'Add'  from 'Module Dependencies'
+# Select 'I/O APIs' from the list
+# Press OK
+
+To force 'Output Window'  (the implementation of the tabbed output window) to be enabled,
+# Choose 'Add' from 'Required Tokens'
+# Pick =org.openide.windows.IOProvider=
+# Press OK
+Note: this shall not be necessary in the current 6.0 trunk version..
+
+Relevent to 6.0: If the dependencies do not show up in the selection list check the 'Module Suite' to make sure they have not been excluded from the platform.
+# Right click on the module suite
+# Click Properties
+# Go to Libraries
+# Locate the platform 'Clusters and Modules'
+# Make sure I/O API is checked
+# Make sure Output Window is checked
+# Click OK
+
+Hint: It is sometimes helpful to call InputOutput.select() to make sure the tab is made visible in the output window.
+
+See [http://plugins.netbeans.org/plugin/39695/?show=true here] for a plugin that has a convenient class for all output purposes.</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqUserDir</title>
+    <id>7504</id>
+    <revision>
+      <id>58101</id>
+      <timestamp>2012-11-01T17:21:20Z</timestamp>
+      <contributor>
+        <username>Frederic.deniger</username>
+        <id>15790</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===What is the user directory, what is in it, and why do I need one?===
+
+The userdir is a directory passed to NetBeans on startup by the launch script.
+You can specify it on the command line, e.g.:
+&lt;pre&gt;
+--userdir /tmp/some/folder/that/need/not/exist/yet
+&lt;/pre&gt;
+
+It contains configuration data that allows NetBeans to restore its state after shutdown;
+it also contains log files and other miscellaneous artifacts of running NetBeans.
+The &lt;tt&gt;config/&lt;/tt&gt; subfolder of the userdir
+is where changes made at runtime to the system filesystem ([[DevFaqSystemFilesystem]])
+are written.
+
+Some new modules installed by Plugin Manager will also be installed here, as if it were a "cluster" directory (such as &lt;tt&gt;platform&lt;/tt&gt; or similar in a NetBeans IDE or Platform installation). NBMs which specify a particular cluster name will not be placed in the user directory, however.
+
+It is expected that applications built on the NetBeans platform
+will provide a custom launch script which will specify the userdir
+such that it does not overlap with any other platform-based application.
+This is done for you if you use the stock launchers created by "suite" projects in the IDE.
+
+Only one running copy of NetBeans may use a single userdir at a time;
+during startup, the platform checks a lock file and if it is present,
+tries to contact the running instance via a socket,
+to determine if the lock file is stale or not.
+If it does not make contact, it will display a warning
+and ask the user if startup should continue.
+This same protocol also supports [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-sendopts/overview-summary.html command-line options].
+
+You can find the path to the userdir at runtime if you need to,
+using the system property &lt;tt&gt;netbeans.user&lt;/tt&gt;.
+Most modules should not do this;
+use &lt;tt&gt;Places.getUserDirectory&lt;/tt&gt; to find the userdir or use &lt;tt&gt;FileUtil.getConfigFile&lt;/tt&gt;
+to work with the &lt;tt&gt;config/&lt;/tt&gt; subdirectory.
+
+----
+Applies to: NetBeans 6.7 and later</text>
+    </revision>
+  </page>
+</mediawiki>

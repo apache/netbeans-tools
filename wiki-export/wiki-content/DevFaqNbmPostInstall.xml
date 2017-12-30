@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNbmPostInstall</title>
+    <id>7406</id>
+    <revision>
+      <id>45984</id>
+      <timestamp>2011-07-14T09:51:25Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How to specify post-install code in [[NBM]]===
+
+[[NBM]] allows to declare its own custom code in [[NBM]] archive. This code is called-back by &lt;tt&gt;Autoupdate/Updater&lt;/tt&gt; at the end of installation of [[NBM]] into IDE.
+
+&lt;pre&gt;
+
+your_module.nbm
+     |   
+     +- Info
+     |   |
+     |   +--- info.xml
+     |
+    +- netbeans
+        |
+        +--- modules...
+    |
+    +-main
+        |
+        +--- main.properties
+        +--- &lt;custom code&gt;
+
+&lt;/pre&gt;
+
+If Autoupdate/Updater detects &lt;tt&gt;main&lt;/tt&gt; directory in the NBM archive then &lt;tt&gt;main.properties&lt;/tt&gt; descriptor contains information about the own code. &lt;tt&gt;Updater&lt;/tt&gt; runs specified Java code according to these properties.
+
+The properties expected in ''main.properties'' are:
+{| border=1 class="simple"
+!Property
+!Value
+|- 
+| mainClass
+| name of the main class, run after module installation from the NBM
+|- 
+| relativeClassPath
+| classpath elements, may contain more elements
+|- 
+| jvm.parameters
+| properties for JVM, arguments inserted before the main class name
+|- 
+| mainClass.arguments
+| more arguments for the main class, added after the main class name
+|}
+
+
+The run command is built on top of properties above.
+
+[[#1 | #1]] '''Problem''': There was a bug: variable &lt;tt&gt;%IDE_USER%&lt;/tt&gt; contained as same value as &lt;tt&gt;%IDE_HOME%&lt;/tt&gt; i.e. both links to the platform cluster directory and %IDE_HOME% '''didn't''' contain user directory as should be. It was fixed in NetBeans 6.5 platform.
+
+The properties can contain several special variables which &lt;tt&gt;Autoupdate&lt;/tt&gt; replaces by real values:
+{| border=1 class="simple"
+!Variable
+!Value
+|- 
+| %IDE_HOME%
+| platform directory
+|- 
+| %IDE_USER%
+| user directory [[1 | 1]]
+|- 
+| %FS%
+| file separator char
+|- 
+| %PS%
+| path separator char
+|- 
+| %JAVA_HOME%
+| the current Java home
+|}
+
+
+====Example====
+* Download and unzip a project [[Media:samplepostinstall_DevFaqNbmPostInstall.zip| samplepostinstall_DevFaqNbmPostInstall.zip]]
+* Go into &lt;tt&gt;samplepostinstall/main&lt;/tt&gt; directory
+* In &lt;tt&gt;main&lt;/tt&gt; directory is main class &lt;tt&gt;Hello&lt;/tt&gt; which should use most of possibilities of ''post-install'' hooks
+:* Using properties &lt;tt&gt;mainClass&lt;/tt&gt;, &lt;tt&gt;relativeClassPath&lt;/tt&gt;, &lt;tt&gt;jvm.parameters&lt;/tt&gt; etc.
+:* Reads all special variables like &lt;tt&gt;%IDE_HOME%&lt;/tt&gt;, &lt;tt&gt;%JAVA_HOME%&lt;/tt&gt; etc.
+:* Opens some GUI
+:* Runs a JDK demo
+
+To see that &lt;tt&gt;samplepostinstall&lt;/tt&gt; project in action
+# download [[Media:org-netbeans-samplepostinstall_DevFaqNbmPostInstall.nbm| NBM]]
+# run NetBeans IDE (6.0 or newer)
+# invoke ''Tools|Plugins'' and switch to ''Download'' tab
+# add the downloaded NBM
+# install it and then watch post-install hook what will be executed while installing that plugin
+
+
+-------------------------------------------
+
+''I'm not author of this feature, it's only my investigation.''
+
+Do not hesitate to contact me on mailto:jrechtacek@netbeans.org if you have any question.
+{{attachments|
+* [[Media:org-netbeans-samplepostinstall_DevFaqNbmPostInstall.nbm]]
+* [[Media:samplepostinstall_DevFaqNbmPostInstall.zip]]}}</text>
+    </revision>
+  </page>
+</mediawiki>

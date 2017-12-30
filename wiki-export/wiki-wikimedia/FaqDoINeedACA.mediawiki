@@ -1,0 +1,45 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Do I have to fill out a Contributor Agreement?===
+
+Yes, you ''must'' fill out a Contributor Agreement, if
+* you intend to contribute '''source code or other materials including IDE localizations,''' regardless of the size of the contribution, which are intended to be ''compiled or otherwise integrated with the NetBeans product''. 
+
+All contributors to the '''NetBeans.org website''' ''should'' fill out the CA, as it makes it easier to keep track of contributions. 
+* If you contribute web content to netbeans.org such as '''web page translations, tech tips, etc,''' which will ''not be included in the product itself'', then the NetBeans Terms of use govern and no Contributor Agreement is needed. 
+* If you contribute web content to netbeans.org such as '''complete articles, presentations, flash demos, etc''', which will ''not be included in the product itself'', then we would prefer you to sign the CA agreement. If you don't, the Terms of Use automatically apply.
+
+[http://oss.oracle.com/oca.pdf Oracle Contributor Agreement]
+
+[http://www.netbeans.org/about/legal/terms-of-use.html Read the Terms of Use]
+
+[http://www.netbeans.org/community/contribute/web-content.html Contribute web content -- what and how]
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jkovalsky 
+on 2011-12-12T13:38:34Z.
+

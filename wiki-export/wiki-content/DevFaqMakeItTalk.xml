@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqMakeItTalk</title>
+    <id>16514</id>
+    <revision>
+      <id>47559</id>
+      <timestamp>2011-09-19T18:21:04Z</timestamp>
+      <contributor>
+        <username>Javydreamercsw</username>
+        <id>2603</id>
+      </contributor>
+      <text xml:space="preserve">First add a dependency to [https://sourceforge.net/projects/phonemic/ Phonemic], the library that does the magic, which is conveniently wrapped within the SodBeans modules. Here's the [http://sodbeans.sourceforge.net/downloads/updates/sappy/updates.xml update center for SodBeans].
+
+The only thing you need is two lines of code:
+&lt;pre&gt;
+TextToSpeech speech = TextToSpeechFactory.getDefaultTextToSpeech();
+speech.speak("Hello, World!");
+&lt;/pre&gt;
+This call also already handles making your calls thread safe and is efficient enough to handle thousands of TTS "requests" in rapid succession.
+
+Although this is the only import you will need in your code a screen reader needs to be installed in the client running the code. To overcome this just make sure to add the following modules so they are available in your application:
+
+[[File:Dependencies.jpg]]
+
+If you want your application to be blind accessible just include Sappy dependencies. This is not magic but does a great work on common things in the IDE. Some dependencies like Text to Speech Options are really optional but they provide option panes to customize Sappy (i.e. selecting voice, etc).
+
+And your application talks. Since [https://sourceforge.net/projects/phonemic/ Phonemic] is a plain jar you can use it out of the platform as well.
+
+You can read more about Phonemic [https://sourceforge.net/apps/trac/phonemic/ here].</text>
+    </revision>
+  </page>
+</mediawiki>

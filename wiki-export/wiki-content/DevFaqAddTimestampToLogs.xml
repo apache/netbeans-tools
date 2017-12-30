@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAddTimestampToLogs</title>
+    <id>18672</id>
+    <revision>
+      <id>66803</id>
+      <timestamp>2014-06-21T13:31:08Z</timestamp>
+      <contributor>
+        <username>Bdschubert</username>
+        <id>29</id>
+      </contributor>
+      <minor/>
+      <text xml:space="preserve">==How Do I Add a Timestamp to the Logs?==
+
+This FAQ entry demonstrates how to prepend a timestamp to your log file entries. For example:
+
+&lt;pre&gt;
+05:42:51.210 CONFIG [com.emxsys.wmt.core.project.GlobalActionContextProxy]: Creating a proxy ....
+05:42:51.295 WARNING [org.openide.filesystems.Ordering]: Not all children in ....
+05:42:52.151 INFO [org.netbeans.core.startup.NbEvents]: Turning on modules: ....
+&lt;/pre&gt;
+
+===Caveats===
+The NetBeans Platform includes its own logging mechanism.  If you customize the logging through the use of the ''java.util.logging.config.file'' or ''java.util.logging.config.class'' property settings, then the native NetBeans logging mechanism is completely disabled, and either the default Java logging or your custom logging class is used instead.
+
+===Solution===
+
+This solution shows how to customize the output from the native NetBeans log formatter (''NbFormatter'') by creating a new custom formatter that by prepends a timestamp to the log messages.  Note, using ''NbFormatter'' requires a private package reference to the ''org-netbeans-core-startup'' module.  This FAQ will also show how to establish the private package access.
+
+==== Step 1. Establish Project Dependencies====
+ 
+Include the a dependency on '''org-netbeans-core-startup''' in the project that will implement the custom formatter. In Maven, add following entry to the project POM:
+
+&lt;source lang="xml"&gt;
+&lt;dependency&gt;
+    &lt;!--Private Package References: see maven plugin dependencies ...--&gt;
+    &lt;artifactId&gt;org-netbeans-core-startup&lt;/artifactId&gt;
+    &lt;groupId&gt;org.netbeans.modules&lt;/groupId&gt;
+    &lt;version&gt;${netbeans.version}&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;/source&gt;
+
+==== Step 2. Create the Custom Log Formatter====
+
+Here's an example of a custom ''Formatter''.  It uses the NetBeans ''NbFormatter'' instance to obtain a formatted message from the ''LogRecord''.  NbFormatter is a final class that exposes itself via a public static ''FORMATTER'' property. This solution simply prepends a timestamp, extracted from the LogRecord, to the formatted log message. 
+
+&lt;source lang="java"&gt;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+import org.netbeans.core.startup.logging.NbFormatter; // Private Package Referenced: See POM notes.
+
+public class LogFormatter extends Formatter {
+
+    @Override
+    public String format(LogRecord record) {
+        String logMsg = NbFormatter.FORMATTER.format(record);
+        StringBuilder sb = new StringBuilder();
+
+        // Prepend a timestamp
+        Instant instant = Instant.ofEpochMilli(record.getMillis());
+        ZonedDateTime timestamp = ZonedDateTime.ofInstant(instant, ZoneId.systemDefault());
+        sb.append(timestamp.toLocalTime.toString());
+        sb.append(' ');
+        sb.append(logMsg);
+        
+        return sb.toString();
+    }
+}
+&lt;/source&gt;
+
+====Step 3. Override the Default Formatters====
+
+In a module ''Installer'' class, include the following code block in the restored method to replace the default formatters with the custom formatter:
+
+&lt;source lang="java"&gt;
+public class Installer extends ModuleInstall {
+
+    @Override
+    public void restored() {
+
+        // Override the default formatters with the custom formatter
+        LogFormatter formatter = new LogFormatter(); // Custom formatter
+        Logger logger = Logger.getLogger ("");       // Root logger
+        Handler[] handlers = logger.getHandlers();
+        for (Handler handler : handlers) {
+            handler.setFormatter(formatter);
+        }
+    }
+} 
+&lt;/source&gt;
+
+====Step 4. Configure Access to Private Package====
+
+In the project's POM, edit the '''nbm-maven-plugin''' configuration to allow  private package access to '''org.netbeans.modules:org-netbeans-core-startup''' via an '''impl''' module dependency, for example:
+
+&lt;source lang="xml"&gt;
+&lt;plugin&gt;
+    &lt;artifactId&gt;nbm-maven-plugin&lt;/artifactId&gt;
+    &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+    &lt;extensions&gt;true&lt;/extensions&gt;
+    &lt;configuration&gt;
+        &lt;moduleDependencies&gt;
+            &lt;dependency&gt;
+                &lt;!--Private Package Reference--&gt;
+                &lt;id&gt;org.netbeans.modules:org-netbeans-core-startup&lt;/id&gt;
+                &lt;type&gt;impl&lt;/type&gt;
+            &lt;/dependency&gt;
+        &lt;/moduleDependencies&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+&lt;/source&gt;
+
+===Final Notes===
+
+To leverage the NetBeans logging, you must disable any ''java.util.logging.config.file'' or ''java.util.logging.config.class'' property settings.  Check your application's .conf file, and, in the application's POM, check the ''additionalArguments'' entry.
+
+----
+
+This example was tested with NetBeans 8.0 and JDK 8.</text>
+    </revision>
+  </page>
+</mediawiki>

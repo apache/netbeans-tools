@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqSpecifyJdkVersion</title>
+    <id>7463</id>
+    <revision>
+      <id>26247</id>
+      <timestamp>2009-11-06T16:00:17Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+==My module requires JDK 6; how do I keep it from being loaded in JDK 5?==
+
+Add a line to your manifest, specifying which version of Java you need. E.g. to only run on JDK 6 and higher, not 5:
+
+&lt;pre&gt;
+OpenIDE-Module-Java-Dependencies: Java &gt; 1.6
+&lt;/pre&gt;
+
+Note that &lt;tt&gt;&gt;&lt;/tt&gt; really means &lt;tt&gt;&gt;=&lt;/tt&gt;, and that the traditional "internal" version numbers like "1.5", "1.6", etc. must be used despite the new Java naming scheme (JDK 5, JDK 6, ...).
+
+Requesting 5+ is pointless since no recent version of NetBeans runs on JDK 1.4 anyway.
+
+There is also a syntax for requesting a particular version of the virtual machine
+(as opposed to Java platform APIs) but this is seldom if ever used.
+
+By default, your module will depend on the same Java version as you specify for &lt;tt&gt;javac.source&lt;/tt&gt;,
+i.e. the version of the Java language your module requires.
+
+The NetBeans module development support permits you to pick a JDK to use for compiling
+(and running) a module or suite.
+Obviously you must specify a JDK at least as new as what your dependency requests;
+it is unwise to specify a newer JDK than that:
+you might accidentally use some newer APIs without realizing it,
+making your code not actually run on the declared minimum version.
+
+----------
+Applies to: NetBeans 6.x
+
+Platforms: all</text>
+    </revision>
+  </page>
+</mediawiki>

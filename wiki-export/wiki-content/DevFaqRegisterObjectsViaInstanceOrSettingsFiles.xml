@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqRegisterObjectsViaInstanceOrSettingsFiles</title>
+    <id>14581</id>
+    <revision>
+      <id>39141</id>
+      <timestamp>2010-06-14T22:30:44Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* Should I register an object in my layer file using .instance or .settings files? What about .shadow files or serialization? */</comment>
+      <text xml:space="preserve">==Should I register an object in my layer file using .instance or .settings files? What about .shadow files or serialization?==
+
+There are a number of kinds of files which are treated (and can be transformed into) instances of objects.
+
+{|- border=1 class="simple" cellpadding="7" cellspacing="0" style="background-color:#FFF9EF;"
+! What
+! When to Use It
+! How
+|-valign="top"
+| &lt;code&gt;.instance&lt;/code&gt; files
+| Almost all the time
+| Create a file whose name is the fully qualified name of the class you want to register, with the . characters replaced with - characters and the extension &lt;code&gt;.instance&lt;/code&gt; - e.g. &lt;code&gt;&amp;lt;file name=&amp;quot;com-foo-mymodule-MyStatusBarElementProvider.instance&amp;quot;/&amp;gt;&lt;/code&gt;.  You can also give the file a different name and instead declare the type using a [[DevFaqFileAttributes|FileObject attribute]], e.g. &lt;blockquote&gt;&lt;code&gt;&amp;lt;file name=&amp;quot;x.instance&amp;quot;&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;lt;attr name=&amp;quot;instanceClass&amp;quot; stringvalue=&amp;quot;com.foo.mymodule.MyStatusBarElementProvider&amp;quot;/&amp;gt;&lt;br/&gt;&amp;lt;/file&amp;gt; &lt;/code&gt;&lt;/blockquote&gt;
+  If you want to use a factory method and set up some configuration of the object using your own [[DevFaqFileAttributes|FileObject attributes]], you can instead &lt;ul&gt;&lt;li&gt;Create a public static method on some class, which takes a &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileObject.html FileObject]&lt;/code&gt; as an argument, e.g.&lt;br/&gt;&lt;blockquote&gt;&lt;code&gt;&amp;lt;file name=&amp;quot;x.instance&amp;quot;&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;lt;attr name=&amp;quot;instanceClass&amp;quot; stringvalue=&amp;quot;com.foo.mymodule.MyStatusBarElementProvider&amp;quot;/&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;lt;attr name=&amp;quot;instanceCreate&amp;quot; methodvalue=&amp;quot;com.foo.mymodule.MyStatusBarElementProvider.factoryMethod&amp;quot;/&amp;gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;attr name=&amp;quot;yourCustomAttribute&amp;quot; stringvalue=&amp;quot;someValueYouCareAbout&amp;quot;/&amp;gt;&lt;br/&gt;&amp;lt;/file&amp;gt;&lt;/code&gt;&lt;/blockquote&gt;
+|-valign="top"
+| &lt;code&gt;.settings&lt;/code&gt; files
+| In specialized situations when the object may be saved back to disk with changed state at runtime and you cannot simply use &lt;code&gt;NbPreferences&lt;/code&gt;
+| Create an XML file in your module for your settings file, populated as described in [[DevFaqDotSettingsFiles|the .settings file FAQ]].  Register that file in some folder by specifying the XML file as the URL of the &lt;code&gt;&amp;lt;file&amp;gt;&lt;/code&gt; entry in your layer, e.g. &lt;code&gt;&amp;lt;file name=&amp;quot;MyObject.settings&amp;quot; url=&amp;quot;theActualFile.xml&amp;quot;/&amp;gt;&lt;/code&gt; (in this case, the layer.xml file and the settings file are in the same Java package in your sources).
+|-valign="top"
+| &lt;code&gt;.shadow&lt;/code&gt; files
+| If you want your object to be a pseudo-singleton, but it will be registered in multiple folders, or the user may delete the shadow file and you need to provide a way for the user to recover it (i.e. a way to create a new &lt;code&gt;.shadow&lt;/code&gt; file)
+| &lt;code&gt;[[DevFaqDotShadowFiles| .shadow]]&lt;/code&gt; files are like unix symbolic links - they point to another file somewhere else in the [[DevFaqSystemFilesystem| system filesystem]] or on disk, and behave as if they were really that file.  Use one of the other registration mechanisms described here to register your object in some folder.  Then create a shadow file as [[DevFaqDotShadowFiles| described here]] which points to it.&lt;br/&gt; An example of this is Menu and Toolbar actions &amp;mdash; all actions are registered in subfolders of the &lt;code&gt;Actions/&lt;/code&gt; folder in the system filesystem.  The user might manually delete or rearrange them;  the UI that allows this can also show all available actions, so that the user can replace accidentally deleted actions.
+|-valign="top"
+| &lt;code&gt;.ser&lt;/code&gt; (serialized object) files
+| Basically never
+| Write a serialized object out to disk in a file with the extension &lt;code&gt;.ser&lt;/code&gt;, either on the fly at runtime into some folder under &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileUtil.html#getConfigFile(java.lang.String) FileUtil.getConfigFile()]&lt;/code&gt;, or serialize an object ahead of time somehow, copy it into your module sources, and register something like &lt;code&gt;&amp;lt;file name="foo.ser" url="relative/path/in/module/sources/from/layer/dot/xml/to/foo.ser"/&amp;gt;&lt;/code&gt;.  Remember that if you use serialization, ''any'' change to the class you serialized is likely to break loading of existing &lt;code&gt;.ser&lt;/code&gt; files - this is almost never a good idea.
+|-valign="top"
+| Your own file type
+| Basically never
+| Any [[DevFaqDataObject| DataObject]] type which contains an &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/cookies/InstanceCookie.html InstanceCookie]&lt;/code&gt; (and ideally also an &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/cookies/InstanceCookie.Of.html InstanceCookie.Of]&lt;/code&gt;) can be registered in some folder. If this is done &lt;code&gt; [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/Lookups.html#forPath(java.lang.String) Lookups.forPath(&amp;quot;path/to/parent/folder&amp;quot;)] &lt;/code&gt; can be used to find it and any other objects registered in that folder (whatever their file type).  So you could create your own file type which provides these objects.  &lt;br/&gt;Unless you are doing something very, very unusual, one of the existing registration mechanisms will almost always be sufficient.  &lt;br/&gt;This mechanism may be useful if you have existing code which reads and writes files in some format, and you cannot change that code.
+|}</text>
+    </revision>
+  </page>
+</mediawiki>

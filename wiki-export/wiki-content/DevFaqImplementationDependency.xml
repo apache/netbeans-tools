@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqImplementationDependency</title>
+    <id>7318</id>
+    <revision>
+      <id>46492</id>
+      <timestamp>2011-08-03T14:59:11Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* What is an implementation dependency and when should I use one? */</comment>
+      <text xml:space="preserve">===What is an implementation dependency and when should I use one?===
+
+Normally modules interact with one another using ''public packages'': a module can (indeed, must) declare which, if any, of its Java packages are intended to be visible to other modules. When you declare a specification dependency on another module, you only get access to the public packages. This kind of dependency looks like this in the JAR manifest (which is normally constructed from &lt;tt&gt;nbproject/project.xml&lt;/tt&gt; in sources):
+
+&lt;pre&gt;
+OpenIDE-Module-Module-Dependencies: some.other.module &gt; 1.5
+&lt;/pre&gt;
+
+(requesting version 1.5 or greater of &lt;tt&gt;some.other.module&lt;/tt&gt;) or like this:
+
+&lt;pre&gt;
+OpenIDE-Module-Module-Dependencies: some.other.module
+&lt;/pre&gt;
+
+(requesting any version; not recommended).
+
+Occasionally you may find that the author of a module neglected to expose certain classes in public packages which you know (from reading the source code) that you need to use and know how to use properly. The classes are public but not in declared public packages. It is ''possible'' to access these classes if you really have to. But you need to declare a dependency on that ''exact'' version of the other module, since such classes might change incompatibly without notice in a newer copy of that module.  Since such a change could break your module, the NB module system requires that you declare the implementation dependency so that it can verify ''before'' loading your module that it matches the other module.  The general idea is that if module B has an implementation dependency on module A, the system should not be able to load B unless it has the exact same version of A that B was compiled against.  To make an implementation dependency in the manifest, use
+
+&lt;pre&gt;
+OpenIDE-Module-Module-Dependencies: some.other.module = 3
+&lt;/pre&gt;
+
+where the "3" is what that other module declared as its current implementation version:
+
+&lt;pre&gt;
+OpenIDE-Module-Implementation-Version: 3
+&lt;/pre&gt;
+
+In order to add an implementation dependency, first add the dependency to the project (e.g. click on "Add Module Dependency" from the "Libraries" node or by click the "Add Dependency..." button in Project-&gt;Properties-&gt;Libraries panel). Make sure you've checked the "Show Non-API Modules" checkbox when you're looking for the non-API module, otherwise you're not going to find it. Then, after you've added the module as a dependency, edit the dependency (either Project-&gt;Properties-&gt;Libraries-&gt;Select Dependency-&gt;Edit or Project-&gt;Right click on dependency Libraries node-&gt;Edit) and just select the "Implementation Version" radio box in the Edit dependency dialog. If you don't want to "see" all packages within the module, but only a subset, uncheck the "Include Packages in Classpath" checkbox and select the packages you want to see. This works best if the other module uses a nonnegative integer for the implementation version, and if you also check '''Append Implementation Versions Automatically''' in the properties dialog.
+
+Implementation dependencies are to be avoided unless you ''really'' need access to all the classes in another module, for the following reason:  If your module has an implementation dependency on module A, and module A is upgraded, your module probably must be upgraded as well, or the system will not load it (assuming module A's implementation version has changed with the upgrade - it should have).  It is a particularly bad idea to use implementation dependencies if you do not know what the other module's author's intentions are for keeping the classes you use available and compatible.  It is always possible to make an enhancement request asking for the other module to make the classes you want to use available publicly.  Do not use implementation dependencies just to have access to one or two some convenience or utility classes in another module - copy them instead, and file a bug report asking for an API for doing what you're trying to do.
+
+====Friend dependencies====
+
+''Friend dependencies'' are a little different. A module may have an API which its author is not yet comfortable exposing to just anyone - it might not be fully stabilized yet. In this case, the module with the API can declare some public packages, but also stipulate that only a predefined list of "friend modules" are permitted to use them. The friend modules just declare a regular specification version dependency, but unknown modules are not permitted to use any packages from the API module without an implementation dependency.
+
+(Look at the '''Versioning''' panel in the API module's project '''Properties''' dialog.)
+
+''Always prefer friend APIs to implementation dependencies where there is a choice.''
+
+====Implementation dependencies, Auto Update, and &lt;verifyupdatecenter&gt;====
+
+Implementation dependencies cause special problems for Auto Update. (Some background information is available in [http://openide.netbeans.org/versioning-policy.html#3 NetBeans API &amp;amp; Module Versioning Policy / Numbering Scheme for Updates].)
+
+The problem is that when an implementation version of a module published to an update server changes, any modules declaring implementation dependencies on it must also be published, with dependencies on the new version of the base module. Furthermore, the Auto Update client has just one method for deciding whether an NBM on a server is an "update" relative to what you already have installed: if its specification version is larger. So consider the following snapshot of an update center. (The syntax is not what the actual XML file looks like, just an abbreviated version that shows parts relevant to this example.)
+
+&lt;pre&gt;
+[Monday]
+
+OpenIDE-Module: infrastructure
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Implementation-Version: 070120
+
+OpenIDE-Module: guifeature
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Implementation-Version: 070120
+OpenIDE-Module-Module-Dependencies: infrastructure = 070120
+&lt;/pre&gt;
+
+These two modules were built at the same time and could be installed together into a NetBeans instance. So far so good.
+
+Now consider what happens when the developer of &lt;tt&gt;guifeature&lt;/tt&gt; adds a major new feature and decides to publish a new version, &lt;tt&gt;1.1&lt;/tt&gt;. The next day's build produces
+
+&lt;pre&gt;
+[Tuesday]
+
+OpenIDE-Module: infrastructure
+OpenIDE-Module-Specification-Version: 1.0
+OpenIDE-Module-Implementation-Version: 070121
+
+OpenIDE-Module: guifeature
+OpenIDE-Module-Specification-Version: 1.1
+OpenIDE-Module-Implementation-Version: 070121
+OpenIDE-Module-Module-Dependencies: infrastructure = 070121
+&lt;/pre&gt;
+
+Again, these two modules could be installed together.
+
+But what if a user connected to the update center on Monday and downloaded both modules, and then connects again on Tuesday looking for updates? &lt;tt&gt;infrastructure&lt;/tt&gt; is still listed as &lt;tt&gt;1.0&lt;/tt&gt; so Auto Update ignores it (&lt;tt&gt;1.0&lt;/tt&gt; is "already installed", after all). &lt;tt&gt;guifeature 1.1&lt;/tt&gt; is however a possible update. What if you install this update? The module system will refuse to enable &lt;tt&gt;guifeature&lt;/tt&gt; because it requests &lt;tt&gt;infrastructure = 070121&lt;/tt&gt;, whereas you have &lt;tt&gt;infrastructure = 070120&lt;/tt&gt;. Oops!
+
+The solution (short of not using implementation dependencies at all) is to use the NetBeans build harness to compute a specification version. The developer removes &lt;tt&gt;OpenIDE-Module-Specification-Version&lt;/tt&gt; from &lt;tt&gt;manifest.mf&lt;/tt&gt; in the source projects for ''both'' modules. &lt;tt&gt;manifest.mf&lt;/tt&gt; for &lt;tt&gt;infrastructure&lt;/tt&gt; instead will get
+
+&lt;pre&gt;
+OpenIDE-Module-Implementation-Version: 1
+&lt;/pre&gt;
+
+(only positive integers 1, 2, ... are supported!). And &lt;tt&gt;nbproject/project.properties&lt;/tt&gt; for both modules will get the specification version in a new form:
+
+&lt;pre&gt;
+spec.version.base=1.0.0
+&lt;/pre&gt;
+
+The IDE's GUI for module projects lets you do all this without editing metadata files manually; just click the option '''Append Implementation Versions Automatically''' in the '''Versioning''' panel of the '''Properties''' dialog.
+
+(The extra &lt;tt&gt;.0&lt;/tt&gt; is required for modules in the NetBeans distribution. When sources are branched for a release, &lt;tt&gt;spec.version.base&lt;/tt&gt; is incremented to &lt;tt&gt;1.0.1&lt;/tt&gt;, &lt;tt&gt;1.0.2&lt;/tt&gt;, ... for each release on the branch. "Trunk" (development) changes increment the first or second digits, e.g. &lt;tt&gt;1.1.0&lt;/tt&gt;, &lt;tt&gt;1.2.0&lt;/tt&gt;, ...)
+
+The effect of using &lt;tt&gt;spec.version.base&lt;/tt&gt; is that our AU snapshots now look like this instead:
+
+&lt;pre&gt;
+[Monday]
+
+OpenIDE-Module: infrastructure
+OpenIDE-Module-Specification-Version: 1.0.0.1
+OpenIDE-Module-Build-Version: 070120
+OpenIDE-Module-Implementation-Version: 1
+
+OpenIDE-Module: guifeature
+OpenIDE-Module-Specification-Version: 1.0.0.1
+OpenIDE-Module-Implementation-Version: 070120
+OpenIDE-Module-Module-Dependencies: infrastructure = 1
+
+[Tuesday]
+
+OpenIDE-Module: infrastructure
+OpenIDE-Module-Specification-Version: 1.0.0.1
+OpenIDE-Module-Build-Version: 070121
+OpenIDE-Module-Implementation-Version: 1
+
+OpenIDE-Module: guifeature
+OpenIDE-Module-Specification-Version: 1.1.0.1
+OpenIDE-Module-Implementation-Version: 070121
+OpenIDE-Module-Module-Dependencies: infrastructure = 1
+&lt;/pre&gt;
+
+The update to &lt;tt&gt;guifeature&lt;/tt&gt; is now safe; it can still use &lt;tt&gt;infrastructure&lt;/tt&gt; from Monday. Note the new "build version" tag which is used only for diagnostics, not for dependencies.
+
+If there is actually a change in the signature of anything in &lt;tt&gt;infrastructure&lt;/tt&gt; that might affect &lt;tt&gt;guifeature&lt;/tt&gt;, then the developer merely needs to increment the implementation version in &lt;tt&gt;infrastructure/manifest.mf&lt;/tt&gt;:
+
+&lt;pre&gt;
+[Wednesday]
+
+OpenIDE-Module: infrastructure
+OpenIDE-Module-Specification-Version: 1.0.0.2
+OpenIDE-Module-Build-Version: 070122
+OpenIDE-Module-Implementation-Version: 2
+
+OpenIDE-Module: guifeature
+OpenIDE-Module-Specification-Version: 1.1.0.2
+OpenIDE-Module-Implementation-Version: 070122
+OpenIDE-Module-Module-Dependencies: infrastructure = 2
+&lt;/pre&gt;
+
+If the user connects to the update center on Wednesday, the wizard will display both modules as needing to be updated - which is exactly what you want.
+
+How is this system enforced? For one thing, attempts to use inherently unsafe implementation dependencies, or incorrect uses of &lt;tt&gt;spec.version.base&lt;/tt&gt;, should produce warnings during the module build process. So look at the output of Ant once in a while and see if the build harness is telling you something.
+
+There is also a continuous builder at http://deadlock.netbeans.org/hudson/job/nbms-and-javadoc/ which (among other things) tries to build NBMs for all modules in the NetBeans standard distribution plus those experimental "alpha" modules normally published on the update center for development builds. If you commit changes to experimental modules this build will be triggered; failures are mailed to &lt;tt&gt;broken_builds@netbeans.org&lt;/tt&gt;, which all developers of modules in netbeans.org ought to subscribe to.
+
+This builder uses an Ant task &lt;tt&gt;&lt;verifyupdatecenter&gt;&lt;/tt&gt; to detect dependency problems among NBMs. There are two checks:
+
+# Can the NBMs just built all be enabled together? (''synchronic consistency'')
+# Suppose I had connected to the update center produced by the previous successful build and installed everything, and now I connected again to this build's update center and asked for all updates. Would any updated modules be broken, due to dependencies on new versions of other modules which were not updated? (''diachronic consistency'')
+
+The second check is what will catch a lot of mistakes in usage of implementation dependencies as described above. Unfortunately it is not feasible to run the second check as part of an offline build process in your own source checkout, as it depends on a build of older sources; so you will need to commit changes and wait for the next build to verify them.
+
+Generally there are two possible solutions to a
+[http://deadlock.netbeans.org/hudson/job/nbms-and-javadoc/lastSuccessfulBuild/testReport/org.netbeans.nbbuild/VerifyUpdateCenter/ test failure]
+from this stage:
+
+# Remove the implementation dependencies; switch to friend dependencies or public APIs.
+# Ensure that all implementation dependencies are against positive integers (not dates), and that &lt;tt&gt;spec.version.base&lt;/tt&gt; is used on ''both'' sides of the dependency, as described above.
+
+In either case, to fix a test failure
+you will generally also need to increment the specification versions
+of modules on ''both'' sides of the dependency.
+
+----
+
+Applies to: NetBeans 5.x, 6.x
+
+Platforms: all</text>
+    </revision>
+  </page>
+</mediawiki>

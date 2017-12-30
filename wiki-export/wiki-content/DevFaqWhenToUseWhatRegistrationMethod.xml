@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWhenToUseWhatRegistrationMethod</title>
+    <id>7514</id>
+    <revision>
+      <id>39139</id>
+      <timestamp>2010-06-14T22:27:08Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===When do I use which registration method?===
+
+As described in [[DevFaqModulesGeneral]], there are several different declarative registration mechanisms:
+* Use the &lt;tt&gt;@ServiceProvider&lt;/tt&gt; annotation (or one of the [[DevFaqWaysToRegisterInDefaultLookup|other registration mechanisms]]) to register objects in the [[DevFaqLookupDefault|default Lookup]]
+* Add files to folders in the [[DevFaqSystemFilesystem|system filesystem]] 
+* Run some code on startup by implementing &lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/ModuleInstall.html\ ModuleInstall]&lt;/tt&gt; and declaring your &lt;code&gt;ModuleInstall&lt;/code&gt; subclass in your module's &lt;code&gt;manifest.mf&lt;/code&gt;
+
+If you are implementing some API from another module, that module should tell you what to do.  If it tells you something should be in the [[DevFaqLookupDefault| default lookup]], that means to use [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/ServiceProvider.html &lt;tt&gt;@ServiceProvider&lt;/tt&gt;] (see caveats in [[DevFaqWaysToRegisterInDefaultLookup]]).
+
+====Deciding On A Registration Mechanism For Clients Of Your Module====
+
+If you are defining an [[DevFaqApiSpi|SPI]] in your module, and other modules will implement it and provide their own classes, provide a declarative (plain text, no code) way to register them.
+
+Define interfaces or abstract classes, and document where subclasses can be registered (typically the [[DevFaqLookupDefault|default Lookup]] or some folder in the [[DevFaqSystemFilesystem|system filesystem]]).
+
+Starting with NetBeans 6.7, you can [[DeclarativeRegistrationUsingAnnotations|provide annotations]] which other modules can use to register their objects - so registration is declarative, but it is visible in the Java source file.
+
+If you can possibly avoid it, don't require your module (or modules that implement your [[DevFaqApiSpi|SPI]]) to run code on startup to [[DevFaqModulesDeclarativeVsProgrammatic|programmatically register]] their functionality.  That slows startup time and does not scale.
+
+Below are typical registration mechanisms and patterns, and when each is useful:
+
+{|- border=1 class="simple" cellpadding="7" cellspacing="0" style="background-color:#FFF9EF;"
+! What
+! When to Use It
+! How
+! Examples
+|-valign="top"
+| Define a singleton service class (there should be only one) that should be global to the application
+| You are defining a service, but another module will provide an implementation of that service
+| &lt;ul&gt;&lt;li&gt;Define your service-provider class.  Typically in NetBeans it will have a static method &lt;code&gt;getDefault()&lt;/code&gt; which tries to find an instance of itself in the default Lookup, and if that fails, returns some sort of non-null mock implementation (which may not really do anything, but is useful in unit test that call code which calls your module)&lt;/li&gt;&lt;li&gt;Document that it should be registered in the default Lookup and that it is expected to be a singleton.&lt;/li&gt;&lt;li&gt;Define and document a unique string token which modules can "provide" if they provide an implementation of your API - for example &lt;code&gt;com.mymodule.MyService&lt;/code&gt; (it can be any string)&lt;/li&gt;&lt;li&gt;Modify your module's &lt;code&gt;manifest.mf&lt;/code&gt; file to use that token as follows:&lt;ul&gt;&lt;li&gt;'''If you provide no implementation of your service, but one is needed at runtime for proper functioning''' add the line &lt;br/&gt;&lt;code&gt;OpenIDE-Module-Requires: com.mymodule.MyService&lt;/code&gt;&lt;br/&gt; to the manifest.  If no module is present which ''provides'' this token, your module will not be loaded on startup - the user will be offered an option of exiting or disabling your module.&lt;/li&gt;&lt;li&gt;'''If you do provide some mock implementation of your service which is available in the case no other module is providing one''' then add the line &lt;br/&gt;&lt;code&gt;OpenIDE-Module-Recommends: com.mymodule.MyService&lt;/code&gt;&lt;br/&gt; to the manifest.  Your module will be loaded, no matter what.  If no other module ''provides'' this token, a warning will be logged.&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;li&gt;Document that modules which implement your service should include &lt;code&gt;OpenIDE-Module-Provides: com.mymodule.MyService&lt;/code&gt; in their manifest(s).
+| &lt;ul&gt;&lt;li&gt;The [http://bits.netbeans.org/dev/javadoc/org-openide-awt/overview-summary.html UI Utilities API] defines &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/StatusDisplayer.html StatusDisplayer]&lt;/code&gt;.  You can call &lt;code&gt;StatusDisplayer.getDefault().setStatusText("Hello world")&lt;/code&gt; to change the text in the status bar of the main window. &lt;br/&gt;  But the UI Utilities API does not provide the subclass of &lt;code&gt;StatusDisplayer&lt;/code&gt; which is being called.&lt;br/&gt;  In fact, the module &lt;code&gt;core.windows&lt;/code&gt;, which is responsible for creating NetBeans' main window ''injects'' its own subclass into the default lookup, and that is what actually changes the status bar you see on the screen.  It is that subclass which you are actually calling when you set the main window's status text. But your module only depends on the API, not the windowing system. Your code doesn't have to care whose subclass of &lt;code&gt;StatusDisplayer&lt;/code&gt; it is calling.  If a new version is created that displays status, say, in a translucent fading popup window, your code will work perfectly with that as well, without any changes or recompiling.&lt;/li&gt;&lt;li&gt;The [http://bits.netbeans.org/dev/javadoc/org-openide-io/overview-summary.html IO API] provides a way to write to the output window.  In fact, there are two different output window implementations available for NetBeans - the default one, and a terminal emulator.  The I/O API does not care which one is present, but it recommends that one should be, and provides a mock implementation that writes to &lt;code&gt;System.out&lt;/code&gt; if none is present.&lt;/li&gt;&lt;/ul&gt;
+|-valign="top"
+| Define an interface or abstract class and look for multiple instances of it in the [[DevFaqLookupDefault|default Lookup]] and do something with those objects
+| The objects modules will register is are implementations/subclasses of a simple interface or class.  Your module only needs to find all such registered objects and use them.  Your module will need all of them at the same time.
+| &lt;ul&gt;&lt;li&gt;Define an interface or class for others to implement.&lt;/li&gt; &lt;li&gt; Document that there can be multiple ones registered and that they should be registered in the [[DevFaqLookupDefault| default Lookup]].&lt;/li&gt; &lt;li&gt;In ''your'' module, use &lt;code&gt;Lookup.getDefault().lookup(MyClass.class).allInstances()&lt;/code&gt; to find all registered instances.&lt;/li&gt;&lt;/ul&gt;
+| &lt;tt&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/StatusLineElementProvider.html StatusLineElementProvider]&lt;/tt&gt; allows modules to contribute components to the status bar in the main window.  All components are needed in order to show the status bar.
+|-valign="top"
+| Define an interface or abstract class, and document your strategy for locating these objects in folders in the [[DevFaqModulesLayerFile|system filesystem]]
+| The objects modules will register is are implementations/subclasses of a simple interface or class, '''but''' not all objects are needed at any given time. At any time, some may be needed, based on what the user is doing (for example, the MIME type of the file the user is editing - MIME types map easily to folder paths, e.g. &lt;code&gt;Editors/text/x-java/&lt;/code&gt;).
+| &lt;ul&gt;&lt;li&gt;Figure out from context what folder to look in&lt;/li&gt;&lt;li&gt;Use &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/Lookups.html#forPath(java.lang.String) Lookups.forPath("path/to/folder").lookupAll(MyType.class)]&lt;/code&gt; to find all registered objects of your type.&lt;/li&gt;&lt;li&gt;Describe the lookup strategy in the documentation of your [[DevFaqApiSpi|SPI]].&lt;/li&gt;&lt;/ul&gt;
+| If you want to add an action to the popup menu that appears when you right-click in the text editor for a &lt;code&gt;.java&lt;/code&gt; file, but not other kinds of files, you [[DevFaqRegisterObjectsViaInstanceOrSettingsFiles| register an instance of &lt;tt&gt;javax.swing.Action&lt;/tt&gt;]] in the system filesystem (via your module's [[DevFaqModulesLayerFile|layer file]]) folder &lt;code&gt;Editors/text/x-java/Actions&lt;/code&gt;.  If the user never actually opens a Java file and right-clicks the editor, your Action will never be created, nor its class loaded.
+|-valign="top"
+| Define a single folder in the [[DevFaqModulesLayerFile|system filesystem]] where objects should be registered, and optionally a factory method which will create the object. 
+| &lt;ol&gt;&lt;li&gt;Other modules are not really registering their own subclasses, they are registering files.  You want to read the files and create the objects in your code.&lt;/li&gt;&lt;li&gt;Other modules are registering objects;  however, there is useful metadata that can be used without ever creating the object.&lt;/li&gt;&lt;li&gt;Other modules are registering objects.  Creating those objects requires additional metadata which can be specified declaratively using [[DevFaqFileAttributes|file attributes]]&lt;/li&gt;&lt;/ol&gt;
+| &lt;ul&gt;&lt;li&gt;Define a static, public factory method which takes a &lt;code&gt;Map&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Document that all registered files should list this factory method as their &lt;code&gt;instanceCreate&lt;/code&gt; attribute (e.g. &lt;code&gt;&amp;lt;attr name=&amp;quot;instanceCreate&amp;quot; methodvalue=&amp;quot;com.XClass.factoryMethod&amp;quot; /&amp;gt;&lt;/code&gt;.&lt;/li&gt;&lt;li&gt;Find registered objects using &lt;code&gt;Lookups.forPath("path/to/my/folder")&lt;/code&gt;).&lt;/li&gt;&lt;/ul&gt;  
+| Examples for the cases defined under ''When To Use It'': &lt;ol&gt;&lt;li&gt;The &lt;code&gt;simple.project.templates&lt;/code&gt; module defines a spec for using &lt;code&gt;.properties&lt;/code&gt; files to list everything that should be created when the user wants a new project.  It does not need a special file type or object instances - it will read the file and make the object it needs.&lt;/li&gt;&lt;li&gt;The Services tab in the IDE allows objects to be registered, which are shown as nodes in its UI.  The icon and localized display name of these nodes can be declaratively specified as file attributes, so no classes need to be loaded until the first time the user selects one of these nodes.&lt;/li&gt;&lt;li&gt;As mentioned in 1., &lt;code&gt;simple.project.templates&lt;/code&gt; defines a spec for describing a project template inside a regular &lt;code&gt;.properties&lt;/code&gt; file.  The &lt;code&gt;javacard.project&lt;/code&gt; module reads defines several template files. But ''it also needs to know what "flavor" of project (applet, web, library, etc.) each file defines, so that it will ask the user the right questions in the New Project Wizard.  It defines an additional file attribute to indicate what "flavor" of project a template represents.&lt;/li&gt;&lt;/ol&gt;
+|}
+
+====Why Declarative Registration and Lazy Loading Is Important====
+
+For best performance and scalability, avoid actually instantiating the objects other modules register until the first time your code needs to call them. Avoid programmatic registration mechanisms, and delay instantiating declaratively registered objects until they really need to be used. This is for several reasons:
+* Object take up memory.  Your application will use less memory and be faster if you do not create objects that you do not ''know'' you will call.
+* Java class loading happens the first time a class is needed, and loading one class can trigger loading many others.  It means file I/O happens, blocking whatever thread first needs to load the class.
+* If you create objects only when your code really is going to call them, class loading and object creation still happens, but it happens in small chunks of time as things are needed, rather than causing long pauses
+
+If there will potentially be a large number of subclasses of your interface, try to find a way to divide them into context-appropriate categories and use folders in the system filesystem to partition contexts.
+
+====Why Declarative Icon and Display Name Registration Is Particularly Important====
+
+Many pieces of user interface in NetBeans &amp;mdash; almost any tree view &amp;mdash; is a view of a folder on disk, or a folder in the system filesystem.  The Services tab is such a view;  the Projects tab composes several such views;  the left and right sides of the first pages of the New File and New Project wizards are such views.
+
+The need to simply show an icon and a name should not ever be the trigger for loading hundreds or even thousands of classes (bear in mind that loading your class may mean loading many other classes &amp;mdash; and the [http://www.securingjava.com/chapter-two/chapter-two-6.html Java Bytecode Verifier] may trigger loading many more classes than you expect).
+
+You can handle this very simply with &lt;code&gt;.instance&lt;/code&gt; files:
+ &lt;filesystem&gt;
+   &lt;folder name="UI"&gt;
+     &lt;folder name="Runtime"&gt;
+       &lt;file name="MyNode.instance"&gt;
+         &lt;attr name="instanceClass" stringvalue=
+           "org.netbeans.modules.stuff.MyNode"/&gt;
+         &lt;attr name="iconBase" stringvalue=
+           "org/netbeans/modules/stuff/root.png"/&gt;
+         &lt;attr name="displayName" bundlevalue=
+           "org.netbeans.modules.stuff.Bundle#MyNode"/&gt;
+         &lt;attr name="position" intvalue="152"/&gt;
+       &lt;/file&gt;
+     &lt;/folder&gt;
+   &lt;/folder&gt;
+ &lt;/filesystem&gt;
+and in your resource bundle file, define
+ MyNode=My Node
+
+This was a serious problem in older versions of the NetBeans IDE - for example, opening the Options dialog (which used to be a tree of Nodes and a property sheet - modules that had settings provided their own Node, and you changed settings by changing properties) - simply trying to paint it for the first time originally triggered loading, literally, thousands of classes from many different JAR files.</text>
+    </revision>
+  </page>
+</mediawiki>

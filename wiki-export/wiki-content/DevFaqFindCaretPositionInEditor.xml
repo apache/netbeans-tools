@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqFindCaretPositionInEditor</title>
+    <id>7293</id>
+    <revision>
+      <id>69151</id>
+      <timestamp>2016-03-05T13:25:27Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>/* How can I get the position of the caret in the currently selected editor window? */ other simple approach</comment>
+      <text xml:space="preserve">__NOTOC__
+===How can I get the position of the caret in the currently selected editor window?===
+
+You need to first get the selected node (which if the Editor is selected, should correspond to the file being edited); get the most recent editor pane open on it; and then access the caret:
+
+&lt;pre&gt;
+Node[] n = TopComponent.getRegistry().getActivatedNodes();
+if (n.length == 1) {
+    EditorCookie ec = (EditorCookie) n[0].getCookie(EditorCookie.class);
+    if (ec != null) {
+        JEditorPane[] panes = ec.getOpenedPanes();
+        if (panes.length &gt; 0) {
+            int cursor = panes[0].getCaret().getDot();
+            String selection = panes[0].getSelectedText();
+            // USE selection
+        }
+    }
+}
+&lt;/pre&gt;
+Or
+&lt;pre&gt;
+org.netbeans.api.editor.EditorRegistry.lastFocusedComponent().getCaretPosition()
+&lt;/pre&gt;
+
+===How can I get the linenumber/column of the currently selected editor?===
+
+&lt;pre&gt;
+        JTextComponent editor = org.netbeans.api.editor.EditorRegistry.lastFocusedComponent();
+
+        //using StyledDocument
+        {
+            StyledDocument sdocument = (StyledDocument) editor.getDocument();
+
+            int line = NbDocument.findLineNumber(sdocument, editor.getCaretPosition());
+            int column = NbDocument.findLineColumn(sdocument, editor.getCaretPosition());
+        }
+        //using BaseDocument
+        {
+            try {
+                BaseDocument bdocument = Utilities.getDocument(editor);
+                int line = Utilities.getLineOffset(bdocument, editor.getCaretPosition());
+            } catch (BadLocationException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+
+&lt;/pre&gt;
+--------
+
+Applies to: NetBeans 4.0 and newer</text>
+    </revision>
+  </page>
+</mediawiki>

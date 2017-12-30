@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqMavenPlatformRebel</title>
+    <id>17525</id>
+    <revision>
+      <id>56602</id>
+      <timestamp>2012-09-07T10:58:50Z</timestamp>
+      <contributor>
+        <username>Mkleint</username>
+        <id>1211</id>
+      </contributor>
+      <comment>/* Can I use JRebel to speed up development? */</comment>
+      <text xml:space="preserve">==Can I use JRebel to speed up development?==
+
+Yes, you can. Once you have obtained JRebel and installed it locally, paste the following snippet into your application's root pom (parent of both the NetBeans application project and any NetBeans module projects you want to have reloaded upon change).
+
+&lt;pre&gt;
+        &lt;profile&gt;
+            &lt;id&gt;rebel&lt;/id&gt;
+            &lt;activation&gt;
+                &lt;file&gt;
+                    &lt;exists&gt;/Users/mkleint/jrebel/jrebel.jar&lt;/exists&gt;
+                &lt;/file&gt;
+            &lt;/activation&gt;
+            &lt;build&gt;
+                &lt;plugins&gt;
+                    &lt;plugin&gt;
+                        &lt;groupId&gt;org.zeroturnaround&lt;/groupId&gt;
+                        &lt;artifactId&gt;jrebel-maven-plugin&lt;/artifactId&gt;
+                        &lt;version&gt;1.1.1&lt;/version&gt;
+                        &lt;executions&gt;
+                            &lt;execution&gt;
+                                &lt;id&gt;generate-rebel-xml&lt;/id&gt;
+                                &lt;phase&gt;process-resources&lt;/phase&gt;
+                                &lt;goals&gt;
+                                    &lt;goal&gt;generate&lt;/goal&gt;
+                                &lt;/goals&gt;
+                            &lt;/execution&gt;
+                        &lt;/executions&gt;
+                    &lt;/plugin&gt;
+                &lt;/plugins&gt;
+                
+                &lt;pluginManagement&gt;
+                    &lt;plugins&gt;
+                        &lt;plugin&gt;
+                            &lt;groupId&gt;org.codehaus.mojo&lt;/groupId&gt;
+                            &lt;artifactId&gt;nbm-maven-plugin&lt;/artifactId&gt;
+                            &lt;configuration&gt;
+                                &lt;!-- only works if additionalArguments not defined in the application's pom --&gt;
+                                &lt;additionalArguments&gt;-J-javaagent:/Users/mkleint/jrebel/jrebel.jar=org.netbeans.JarClassLoader,org.netbeans.StandardModule.OneModuleClassLoader&lt;/additionalArguments&gt;
+                            &lt;/configuration&gt;
+                        &lt;/plugin&gt;
+                    &lt;/plugins&gt;
+                &lt;/pluginManagement&gt;
+            &lt;/build&gt;
+            &lt;properties&gt;
+                &lt;netbeans.compile.on.save&gt;app&lt;/netbeans.compile.on.save&gt;
+            &lt;/properties&gt;
+        &lt;/profile&gt;
+&lt;/pre&gt;
+
+You will have to edit the path to your jrebel.jar you have locally. if multiple people are going to work on the project use an expression and define the path property in your settings.xml file.
+
+Please note that any layer or manifest registrations are not likely to be reloaded as JRebel doesn't have any special knowledge about NetBeans internals.
+
+The solution was tested with nbm-maven-plugin 3.8 and JRebel 5.0.1</text>
+    </revision>
+  </page>
+</mediawiki>

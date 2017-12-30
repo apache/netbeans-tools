@@ -1,0 +1,44 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Why use this strange convention - wouldn't a Map be good enough?===
+
+Other platforms do use string-keyed maps for this sort of thing, but there are some weaknesses with that approach:
+# it is impossible to enforce [[DevFaqModuleDependencies| dependencies]].  With <tt>[[DevFaqLookup| Lookup]]</tt>, a module's code cannot request an object of type X unless it can load/access the <code>X.class</code>. The module trying to look up an X will not be able to see <code>X.class</code> unless it [[DevFaqModuleDependencies|declares a dependency]] on the module that defines X ''and'' the module which defines X says that it allows access to the Java package X lives in. (A <tt>Map&lt;Class&lt;T&gt;,T&gt;</tt> would do the same job as <tt>Lookup</tt>.)
+# The class of values in a map can change without notice - so if you have <tt>(SomeIface) foo = (SomeIface) globalMap.get("foo")</tt>, some new version of the module that provides "foo" can change the return type, causing <tt>ClassCastException</tt> s;  with <tt>Lookup</tt>, you cannot ever get an object that is not of the type you passed in the request - so Lookup's approach is more robust.
+# <tt>Lookup</tt> supports listening to changes in the result.
+# <tt>Lookup</tt> supports multiple instances for one key - if you call <code>lookup(X.class)</code> you get one instance.  If you call <code>lookupAll(X.class)</code> you get a <code>Collection&lt;? extends X&gt;</code> (so with <code>lookupAll()</code> it is more like a <tt>Map&lt;Class&lt;T&gt;,List&lt;T&gt;&gt;</tt>)
+
+There are some other capabilities of <tt>Lookup</tt> (such as getting the specific type or number of results without actually creating objects, and providing named result items) but these are rarely used in practice.
+
+<tt>Lookup</tt> is very powerful, yet simple and generic;  people quickly learn to love it, once they realize what it can do.
+
+See also the javadoc: [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/Lookup.html <tt>org.openide.util.Lookup</tt>]
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Tboudreau 
+on 2010-02-18T23:58:49Z.
+

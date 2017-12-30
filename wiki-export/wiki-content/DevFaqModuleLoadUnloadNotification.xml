@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqModuleLoadUnloadNotification</title>
+    <id>7394</id>
+    <revision>
+      <id>29819</id>
+      <timestamp>2009-12-03T14:18:59Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How can code in one module be notified when other modules are loaded or unloaded?===
+
+Let's begin by stating that you probably do not ''need'' to know when other modules are loaded or unloaded.
+The module system takes care of dependency management for you,
+so your module should never be loaded unless all of its stated dependencies are loaded too.
+
+The normal means of communicating between modules about available services
+(which you could consider ''indirect dependencies'') is using the Lookup API.
+If what you really wanted was to know when a ''service'' became available,
+you do not need to listen to module load or unload events as such;
+which module hosts the service is not of direct interest.
+Instead:
+# Define a service &lt;tt&gt;some.Interface&lt;/tt&gt; in some module.
+# Implement that interface using &lt;tt&gt;some.Implementation&lt;/tt&gt; in some other module. Register it with &lt;tt&gt;@ServiceProvider(service=Interface.class)&lt;/tt&gt;.
+# In some module consuming the service, use
+  import some.Interface;
+  // ...
+  private static final Lookup.Result&lt;Interface&gt; services =
+      Lookup.getDefault().lookupResult(Interface.class);
+  static {
+      services.addLookupListener(new LookupListener() {
+          public void resultChanged(LookupEvent ev) {
+              // some module was loaded or unloaded!
+          }
+      });
+  }
+  // ...
+  for (Interface service : services.allInstances()) {
+      // use a currently available service
+  } 
+
+If you simply want to run some code when ''your'' module loads or unloads,
+registering an instance of
+[http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/ModuleInstall.html ModuleInstall]
+will do the trick.
+There is even a wizard in the IDE for setting this up.
+
+But in the very rare case that you want to be notified when ''other'' modules are loaded or unloaded,
+it is possible because:
+# You can use [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/Lookup.Result.html Lookup.Result] to listen to changes in the contents of a &lt;tt&gt;Lookup&lt;/tt&gt;, even the global lookup.
+# Every module installs an instance of [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/ModuleInfo.html ModuleInfo] into the default &lt;tt&gt;Lookup&lt;/tt&gt; so the module system (or other code) can find out details about the module including its code name base, version numbers and display name.
+
+By using these two facts together, it is possible to listen to changes in the installed modules by running code like this at some point in the application's lifecycle ([[DevFaqAppLifecycleHooks]]):
+
+  final Lookup.Result&lt;ModuleInfo&gt; result =
+      Lookup.getDefault().lookupResult(ModuleInfo.class);
+  result.addLookupListener(new LookupListener() {
+      public void resultChanged(LookupEvent event) {
+          // it seems a module was installed or removed
+      }
+  });
+
+Once you detect that a module has been created you may also want to register a &lt;tt&gt;PropertyChangeListener&lt;/tt&gt; and listen to &lt;tt&gt;ModuleInfo.PROP_ENABLED&lt;/tt&gt;.
+(A module present in the installation will provide a &lt;tt&gt;ModuleInfo&lt;/tt&gt; but &lt;tt&gt;isEnabled&lt;/tt&gt; might be false if it is not currently loaded.)
+
+----
+Applies to: NetBeans 6.7 and later</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqPropertySheetTabs</title>
+    <id>7447</id>
+    <revision>
+      <id>26231</id>
+      <timestamp>2009-11-06T15:58:53Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+==How do I display different groups of properties on buttons in the property sheet the way Matisse does?==
+
+This is only really useful if you have a '''lot''' of properties - and having lots of properties is usually not a great idea, as the user has to search for the things they want to change.
+
+Nonetheless, if you want to group different sets of properties on different buttons, it is quite simple.  &lt;tt&gt;Node.PropertySet&lt;/tt&gt; extends &lt;tt&gt;java.beans.FeatureDescriptor&lt;/tt&gt;.  It inherits the methods &lt;tt&gt;putValue (key, value)&lt;/tt&gt; and &lt;tt&gt;getValue(key, value)&lt;/tt&gt; which allow you to add ad-hoc key/value pairs to any &lt;tt&gt;PropertySet&lt;/tt&gt;.  What you do is pass a String with the text that should be on the button, assigned to the key "tabName":
+
+&lt;pre&gt;
+somePropertySet.putValue ("tabName", NbBundle.getMessage (getClass(), "KEY_Something"));
+&lt;/pre&gt;
+(the above code gets you a localized string - you can also pass a hard-coded one if you are sure your UI will never need to be translated).
+
+All &lt;tt&gt;PropertySet&lt;/tt&gt;s that have the same value will be included under the same button/tab in the property sheet.</text>
+    </revision>
+  </page>
+</mediawiki>

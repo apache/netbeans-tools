@@ -1,0 +1,86 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Can I work on just one or two modules from the NetBeans source base by themselves?===
+
+====Introduction====
+
+Normally to work on modules versioned in the NetBeans <tt>main</tt> Mercurial repository you need to clone the entire repository.
+(For modules in <tt>contrib</tt>, you need <tt>contrib</tt> cloned as a subdirectory of <tt>main</tt>.)
+For people interested in just playing with patches to one or two modules this can be onerous, however.
+As an alternative, you can work on "orphan" modules from the netbeans.org source base ({{iz|143236}} has details).
+There are two issues to consider:
+# Mercurial [http://www.selenic.com/mercurial/bts/issue515 currently] does not let you clone or check out just a subdirectory of a repository, so you will need to get module sources some other way (we are still considering some possibilities).
+# Since "upstream" modules (that the module of interest depends on) are not available in source form, you need to have a recent development build of NetBeans available to compile against.
+
+====Quick usage guide====
+
+# Create an <tt>nb_all</tt> dir wherever you like. It must have at least the <tt>nbbuild</tt> dir from the netbeans.org source tree.
+# Create <tt>nbbuild/user.build.properties</tt> and in it set the property <tt>netbeans.dest.dir</tt> to the full path to a NetBeans IDE installation you would like to both compile against and build into (you should not use your real development IDE, rather a copy).
+# Run: <tt>ant -f nbbuild/build.xml bootstrap</tt>
+# Add subdirs for any netbeans.org module projects you would like to work on. (The modules may be already present in the target platform. If they are not, you need to check out sources for any transitive dependencies not in the target platform too.)
+# Using the IDE, open the desired projects and work normally.
+
+====What works====
+
+Source projects should open without error and without displaying error badges, assuming all dependencies are available in either source or binary form.
+
+You can build the projects normally. The modules will be built into the target platform (overwriting any existing copy of the module).
+
+You can use Run and Debug to start the target platform with a test userdir after building the modules, set breakpoints etc.
+
+You can Test the source projects normally.
+
+Code completion should work against APIs present in other modules.
+If those modules are available in source form, you will get popup Javadoc automatically, and can navigate to sources.
+If not, you can still add popup Javadoc capability for all published APIs:
+# Download "NetBeans API Documentation" from AU.
+# Open NetBeans Platform Manager.
+# Select the "default" platform and note the location of <tt>NetBeansAPIDocs.zip</tt> in the Javadoc tab.
+# Create a new platform; select the same dir as you specified for <tt>netbeans.dest.dir</tt>.
+# In the new platform, add <tt>NetBeansAPIDocs.zip</tt> to the Javadoc tab.
+
+====Caveats====
+
+* If you want to work on unit or functional tests, you need to have all test-to-test dependencies available as source projects, because we do not distribute test libraries. Sometimes the transitive dependency tree can get a bit big. For example, if the functional tests use <tt>org.netbeans.junit.ide.ProjectSupport</tt>, then you need to check out <tt>java.j2seproject</tt> (in whose unit test dir this class resides), then its dependencies in turn: <tt>projectapi</tt>, <tt>projectui</tt>, <tt>openide.filesystems</tt>, and <tt>openide.util</tt>. Test-to-module dependencies (e.g. <tt>nbjunit</tt>, <tt>jellytools</tt>, ...) can however be satisfied from the target platform's binaries.
+
+* If you add new source modules to the tree, you will need to both restart NetBeans and delete the <tt>nbbuild/nbproject/private/</tt> dir in order to reset all caches and ensure that the new sources are recognized.
+
+* Various targets in <tt>nbbuild/build.xml</tt> not used in the above scenarios may or may not work usefully, though this should not affect routine module development.
+
+* The target platform needs to be new enough to support any API calls you are making from source modules into binary modules. If the platform is older, you could see error badges. Besides getting a newer platform, this can be corrected by adding sources of the new version of the API module to the tree.
+
+* Note that the <tt>bootstrap</tt> ant target will not work if you just copy <tt>nbbuild</tt> from the netbeans.org source tree into <tt>nb_all</tt>. Other than <tt>nbbuild</tt> you also need to copy directories:
+*#<tt>ide/launcher</tt>
+*#<tt>javahelp</tt>
+*#<tt>apisupport.harness</tt>
+----
+Applies to: NetBeans 6.8 and above
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jglick 
+on 2010-06-14T20:10:34Z.
+

@@ -1,0 +1,72 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===How do I use Java Generics with Lookup?===
+
+As of NetBeans 6, a number of convenience methods have been added to lookup, and support for Java generics has been added to Lookup.  The following are differences (assume that <code>lkp</code> is a [[DevFaqLookup| <tt>Lookup</tt>]]):
+
+{| border=1 class="simple" cellpadding="20" cellspacing="0" style="background-color:#FFF9EF;"
+! NB 5.x Code 
+! NB 6 Code
+|-
+| <tt>DataObject dob = (DataObject) lkp.lookup(DataObject.class)</tt>
+| <tt>DataObject dob = lkp.lookup(DataObject.class)</tt>
+|- 
+| <tt>Lookup.Result r = lkp.lookup(new Lookup.Template(X.class))</tt>
+| <tt>Lookup.Result<? extends X> r = lkp.lookupResult(X.class)</tt>
+|-
+|<tt>Collection c = r.allInstances()</tt>
+|<tt>Collection<? extends X> c = r.allInstances()</tt>
+|-
+| <tt>Lookup.Template t = new Lookup.Template(X.class);
+Lookup.Result r = lkp.lookup(t);<br/>
+Collection c = r.allInstances();</tt>
+| <tt>Collection<? extends X> c = lkp.lookupAll(X.class);</tt>
+|-
+|<tt>Lookup.Template t = new Lookup.Template(X.class);<br/>
+Lookup.Result r = lkp.lookup(t);<br/>
+Collection c = r.allInstances(); <br/></tt>
+<tt>for (Iterator it=c.iterator(); it.hasNext();) {
+&nbsp;&nbsp;X x = (X) it.next();<br/>
+&nbsp;&nbsp;//do something with x<br/>
+}</tt>
+|<tt>for (X x : lkp.lookupAll(X.class)) {
+&nbsp;&nbsp;//do something with x<br/>
+}</tt>
+|}
+<br/>
+Generics work well with JDK-5-style for-loops:
+
+<pre>
+for (SomeService s : Lookup.getDefault().lookupAll(SomeService.class)) {
+    // ...
+}
+</pre>
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Tboudreau 
+on 2010-02-19T00:29:05Z.
+

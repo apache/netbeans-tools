@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>JavaHT Modification</title>
+    <id>9418</id>
+    <revision>
+      <id>34533</id>
+      <timestamp>2010-02-25T16:24:21Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <comment>/* How do I modify a source file? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===How can I programmatically modify a Java source file?===
+
+Most modifications are done through the API. Direct document changes are not recommended. Editing source through the API has many advantages, for instance it respects formatting settings. 
+
+This part will show you typical steps to make a modification to your source. There can be found different usecases, but this is the most common:
+* Find the JavaSource you want to work with,
+* create a task that contains code for source modification,
+* post the task to the JavaSource and commit the changes at the end.
+
+TODO: link to example, describe what the example does.
+
+====Find the JavaSource====
+There are more ways to do it. For our demonstration, we use a straightforward solution, often used in tests. We omit the details of getting fileObject and we expect successful behaviour of called methods.
+&lt;pre&gt;
+    File tutorialFile = getFile(getSourceDir(), "/org/netbeans/test/codegen/Tutorial1.java");
+    JavaSource tutorialSource = JavaSource.forFileObject(FileUtil.toFileObject(tutorialFile));
+&lt;/pre&gt;
+
+The JavaSource represents the file &lt;tt&gt;Tutorial1.java&lt;/tt&gt; in package &lt;tt&gt;org.netbeans.test.codegen&lt;/tt&gt;.
+
+====Create a 'modify' task====
+&lt;tt&gt;Task&lt;/tt&gt; is a parameterized interface with type parameter &lt;tt&gt;WorkingCopy&lt;/tt&gt;. This type is requested in the next step. This next code snippet shows how to create an anonymous &lt;tt&gt;Task&lt;/tt&gt;:
+
+&lt;pre&gt;
+    Task task = new Task&lt;WorkingCopy&gt;() {
+        ...
+    }
+&lt;/pre&gt;
+
+The interface contains run method that contains code for modifying our javaSource.
+
+&lt;pre&gt;
+    Task task = new Task&lt;WorkingCopy&gt;() {
+
+        public void run(WorkingCopy workingCopy) throws Exception {
+            ... our modification code
+        }
+
+    };
+&lt;/pre&gt;
+
+The run method contains all staff describing modification and we will dive in to the details later.
+
+====Post the task to process and commit the changes====
+Because we want to modify the source, we have to use runModificationTask (see its javadoc). At the end, we have to commit changes to propagate all the work to the source file - our &lt;tt&gt;Tutorial1.java&lt;/tt&gt; file. This can fail, so ensure you correctly handle exceptions. The method &lt;tt&gt;runModificationTask()&lt;/tt&gt; returns the modification result. This class contains all the prepared changes which haven't been propagated yet. This is good especially when someone wants to review the details of modification and decide about propagating changes to the source on the basis of &lt;tt&gt;result&lt;/tt&gt;. For our demonstration, we will omit it. When &lt;tt&gt;result&lt;/tt&gt; is collected, we have to call the &lt;tt&gt;commit()&lt;/tt&gt; method to propagate the changes to the source code:
+
+&lt;pre&gt;
+    ModificationResult result = tutorialSource.runModificationTask(task);
+    result.commit();
+&lt;/pre&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

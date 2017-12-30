@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqAutomaticPlatformDownload</title>
+    <id>17443</id>
+    <revision>
+      <id>65219</id>
+      <timestamp>2013-12-17T22:37:38Z</timestamp>
+      <contributor>
+        <username>Skygo</username>
+        <id>12034</id>
+      </contributor>
+      <comment>title needed for faq crawling</comment>
+      <text xml:space="preserve">== How can I have my application compiled in a specific version of the platform ? ==
+
+Now the platform can be downloaded on demand! Just update your platform.properties files as follows:
+
+&lt;pre&gt;
+# NOTE: You must remove the nbplatform.default line which might already exist in this file.
+# Also note that editing the properties of your suite via the suite customizer (dialog)
+# can add that line back in, so you'll need to watch for this and delete it again in this case.
+nbplatform.active=custom
+nbplatform=7.2
+
+# Where the suite is located; you don't need to change this.  It exists
+# to allow us to use relative paths for the other values
+suite.dir=${basedir}
+
+# Classpath-like list of absolute or relative paths to individual clusters
+# against which you want your suite to build; Note that you can use
+# "bare", i.e. not numbered cluster names, which simplifies later transitions
+# to newer version of the platform. E.g: ${nbplatform.active.dir}/nb
+cluster.path=\
+    ${nbplatform.active.dir}/extra:\
+    ${nbplatform.active.dir}/ide:\
+    ${nbplatform.active.dir}/nb:\
+    ${nbplatform.active.dir}/platform:\
+    ${nbplatform.active.dir}/sappy
+# Path to the build harness you want to use. This is typically in the
+# harness subdirectory of your platform, but you could point to a directory
+# containing customized build scripts if you want to.
+harness.dir=${nbplatform.custom.netbeans.dest.dir}/harness
+
+nbplatform.custom.netbeans.dest.dir=${suite.dir}/netbeans_platform_${nbplatform}
+bootstrap.url=http://deadlock.netbeans.org/hudson/job/nbms-and-javadoc/lastSuccessfulBuild/artifact/nbbuild/netbeans/harness/tasks.jar
+autoupdate.catalog.url=http://updates.netbeans.org/netbeans/updates/${nbplatform}/uc/final/distribution/catalog.xml.gz
+&lt;/pre&gt;
+
+All the magic is done by the new platform.xml file that has been recently added. In cases where you need to get updates from other URL's I made the following changes to the platform.xml file:
+
+&lt;pre&gt;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="platform" default="download" basedir=".."&gt;
+    &lt;import file="../preparation.xml"/&gt;
+    
+    &lt;fileset dir="${nbplatform.custom.netbeans.dest.dir}" id="platform.path"/&gt;
+    &lt;mkdir dir="${nbplatform.custom.netbeans.dest.dir}"/&gt;
+    &lt;pathconvert refid="platform.path"
+                 property="platform.notempty"
+                 setonempty="false"/&gt;
+                 
+    &lt;condition property="download.enabled"&gt;
+        &lt;and&gt;
+            &lt;isset property="bootstrap.url"/&gt;
+            &lt;isset property="autoupdate.catalog.url"/&gt;
+            &lt;not&gt;
+                &lt;isset property="platform.notempty"/&gt;
+            &lt;/not&gt;
+        &lt;/and&gt;
+    &lt;/condition&gt;
+    
+    &lt;condition property="download.harness.required"&gt;
+        &lt;and&gt;
+            &lt;not&gt;
+                &lt;available file="${harness.dir}/suite.xml"/&gt;
+            &lt;/not&gt;
+            &lt;isset property="download.enabled"/&gt;
+        &lt;/and&gt;
+    &lt;/condition&gt;
+    
+    &lt;target name="download-harness" if="download.harness.required"&gt;
+        &lt;mkdir dir="${harness.dir}"/&gt;
+        &lt;autoupdate installdir="${nbplatform.active.dir}" updatecenter="${autoupdate.catalog.url}"&gt;
+            &lt;modules includes="org[.]netbeans[.]modules[.]apisupport[.]harness" clusters="harness"/&gt;
+        &lt;/autoupdate&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="download" depends="-init-netbeans, -init-hudson" if="download.enabled"&gt;
+        &lt;pathconvert pathsep="|" property="download.clusters"&gt;
+            &lt;mapper type="flatten"/&gt;
+            &lt;path path="${cluster.path}"/&gt;
+        &lt;/pathconvert&gt;
+        &lt;property name="disabled.modules" value=""/&gt;
+        &lt;pathconvert property="module.includes" pathsep=""&gt;
+            &lt;mapper type="glob" from="${basedir}${file.separator}*" to="(?!\Q*\E)"/&gt;
+            &lt;path&gt;
+                &lt;filelist files="${disabled.modules}" dir="."/&gt;
+            &lt;/path&gt;
+        &lt;/pathconvert&gt;
+        &lt;property file="nbproject/platform.properties" prefix="urls."/&gt;
+        &lt;propertyselector property="urls" match="urls.autoupdate.catalog\.(.*)" select="\1"/&gt;
+
+        &lt;property file="nbproject/platform.properties"/&gt;
+        &lt;echo message="Downloading clusters ${download.clusters}"/&gt;
+        &lt;property name="tasks.jar" location="${java.io.tmpdir}/tasks.jar"/&gt;
+        &lt;get src="${bootstrap.url}" dest="${tasks.jar}" usetimestamp="true" verbose="true"/&gt;
+        &lt;taskdef name="autoupdate" classname="org.netbeans.nbbuild.AutoUpdate" classpath="${tasks.jar}"/&gt;
+        &lt;antcall target="download-harness"/&gt;
+        &lt;for list="${urls}" param="url"&gt;
+            &lt;sequential&gt;
+                &lt;echo message="Attempting to download plug-ins from ${autoupdate.catalog.@{url}}" /&gt;
+                &lt;download-platform url="${autoupdate.catalog.@{url}}"/&gt;
+            &lt;/sequential&gt;
+        &lt;/for&gt;
+        &lt;echo&gt;Installing plug-ins from ../netbeans&lt;/echo&gt;
+        &lt;mkdir dir="${nbplatform.active.dir}/extra"/&gt;
+        &lt;autoupdate todir="${nbplatform.active.dir}/extra"&gt;
+            &lt;nbms dir="../netbeans"&gt;
+                &lt;include name="*.nbm"/&gt;
+            &lt;/nbms&gt;
+            &lt;modules includes=".+"/&gt;
+        &lt;/autoupdate&gt;
+    &lt;/target&gt;
+    
+    &lt;macrodef name="download-platform"&gt;
+        &lt;attribute name="url"/&gt;
+        &lt;sequential&gt;
+            &lt;autoupdate installdir="${nbplatform.active.dir}" updatecenter="@{url}"&gt;
+                &lt;modules includes="${module.includes}.*" clusters="${download.clusters}"/&gt;
+                &lt;modules includes="org[.]netbeans[.]modules[.]apisupport[.]harness" clusters="harness"/&gt;
+            &lt;/autoupdate&gt;
+        &lt;/sequential&gt;
+    &lt;/macrodef&gt;
+&lt;/project&gt;
+&lt;/pre&gt;
+
+Here's the imported preparation.xml:
+
+&lt;pre&gt;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="MSM-Preparation" basedir="."&gt;
+    &lt;description&gt;Prepares the environment to build the module suite MSM.&lt;/description&gt;
+    &lt;!--Don't modify this file unless you know what you are doing--&gt;
+    &lt;property name="ant-contrib-filename" value="ant-contrib-1.0b3.jar"/&gt;
+    &lt;property file="nbproject/project.properties"/&gt;
+    &lt;property file="nbproject/platform.properties"/&gt;
+    &lt;property name="platform.dir" value="../netbeans/"/&gt;
+    &lt;property name="lib.dir" value="${suite.dir}/../Simple Libs/tools"/&gt;
+    
+    &lt;scriptdef name="substring" language="javascript"&gt;
+        &lt;attribute name="text" /&gt;
+        &lt;attribute name="start" /&gt;
+        &lt;attribute name="end" /&gt;
+        &lt;attribute name="property" /&gt;
+     &lt;![CDATA[
+       var text = attributes.get("text");
+       var start = attributes.get("start");
+       var end = attributes.get("end") || text.length;
+       project.setProperty(attributes.get("property"), text.substring(start, end));
+     ]]&gt;
+    &lt;/scriptdef&gt;
+
+    &lt;target name="-check-env" depends="-getAntContribJar"&gt;
+        &lt;condition property="isNetbeans"&gt;
+            &lt;not&gt;
+                &lt;isset property="Hudson"/&gt;
+            &lt;/not&gt;
+        &lt;/condition&gt;
+        &lt;property name="xmltasks-loc" value="${lib.dir}/xmltask.jar"/&gt;
+        &lt;available file="${xmltasks-loc}" property="xmltasks.present"/&gt;
+        &lt;fail unless="xmltasks.present" message="The xmltasks jar doesn't exist at: ${xmltasks-loc}, can't build. Check your settings!" /&gt;
+        &lt;taskdef name="xmltask" 
+                 classname="com.oopsconsultancy.xmltask.ant.XmlTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${xmltasks-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+    &lt;/target&gt;
+
+    &lt;target name="-getAntContribJar"&gt;
+        &lt;fileset id="ant-contrib-jar" dir="${lib.dir}"&gt;
+            &lt;include name="ant-contrib-*.jar" /&gt;
+        &lt;/fileset&gt;
+        &lt;pathconvert property="ant-contrib-jar" refid="ant-contrib-jar" pathsep="," /&gt;
+        &lt;basename property="ant-contrib-filename" file="${ant-contrib-jar}"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="-init-netbeans" depends="-check-env" if="isNetbeans"&gt;
+        &lt;echo&gt;Configuring ant-contrib for Netbeans use...&lt;/echo&gt;
+        &lt;property name="ant-contrib-loc" value="${lib.dir}/${ant-contrib-filename}"/&gt;
+        &lt;available file="${ant-contrib-loc}" property="ant-contrib.present"/&gt;
+        &lt;fail unless="ant-contrib.present" message="The ant-contrib jar doesn't exist at: ${ant-contrib-loc}, can't build. Check your settings!" /&gt;
+        &lt;!--We are in not Hudson--&gt;
+        &lt;taskdef resource="net/sf/antcontrib/antcontrib.properties"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+    &lt;/target&gt;
+
+    &lt;target name="-init-hudson" depends="-check-env" unless="isNetbeans"&gt;
+        &lt;echo&gt;Configuring ant-contrib for Hudson use...&lt;/echo&gt;
+        &lt;!--Import Hudson environment variables--&gt;
+        &lt;property environment="env"/&gt;
+        &lt;property name="ant-contrib-loc" value="${env.ANT_HOME}/lib/${ant-contrib-filename}"/&gt;
+        &lt;available file="${ant-contrib-loc}" property="ant-contrib.present"/&gt;
+        &lt;fail unless="ant-contrib.present" message="The ant-contrib jar doesn't exist at: ${ant-contrib-loc}, can't build. Check your settings!" /&gt;
+        &lt;!--Define it. For some reason the approach in -init-netbeans doesn't work in Hudson.--&gt;
+        &lt;taskdef name="for" classname="net.sf.antcontrib.logic.ForTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="propertyregex" classname="net.sf.antcontrib.property.RegexTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="if" classname="net.sf.antcontrib.logic.IfTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="math" classname="net.sf.antcontrib.math.MathTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="var" classname="net.sf.antcontrib.property.Variable"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+    &lt;/target&gt;
+    
+    &lt;target name="module-fix-dependencies"&gt;
+        &lt;ant antfile= "${suite.dir}/versions.xml" target="fix"/&gt;
+    &lt;/target&gt;
+    
+    &lt;!-- iterate finds all build files, excluding this one and invokes the named target --&gt;
+    &lt;macrodef name="iterate"&gt;
+        &lt;attribute name="target"/&gt;
+        &lt;sequential&gt;
+            &lt;subant target="@{target}"&gt;
+                &lt;fileset dir="." 
+                         includes="**/*/build.xml"
+                         excludes="build.xml"/&gt;
+            &lt;/subant&gt;
+        &lt;/sequential&gt;
+    &lt;/macrodef&gt;
+&lt;/project&gt;
+&lt;/pre&gt;
+
+After this you can add alternate update centers and it'll look for nbms on those sites as well. Just add the additional URLS in the platform.properties as follows:
+
+&lt;pre&gt;
+autoupdate.catalog.url1=url1
+autoupdate.catalog.url2=url2
+.
+.
+.
+autoupdate.catalog.urlx=urlx
+&lt;/pre&gt;</text>
+    </revision>
+  </page>
+</mediawiki>

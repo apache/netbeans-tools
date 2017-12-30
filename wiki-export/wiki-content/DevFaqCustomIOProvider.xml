@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqCustomIOProvider</title>
+    <id>7227</id>
+    <revision>
+      <id>50117</id>
+      <timestamp>2011-12-12T13:12:12Z</timestamp>
+      <contributor>
+        <username>Jhavlin</username>
+        <id>11208</id>
+      </contributor>
+      <minor/>
+      <comment>/* How do I implement a custom IOProvider? */</comment>
+      <text xml:space="preserve">__NOTOC__
+==How do I implement a custom IOProvider?==
+
+''Note: You will only do this if you are writing a replacement for the NetBeans output window, which is a fairly unusual activity.''
+
+You need to extend &lt;tt&gt;IOProvider&lt;/tt&gt; and override/implement following methods:
+&lt;pre&gt;
+import javax.swing.Action;
+import org.openide.windows.IOContainer;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
+
+// registration, you can change default instance returned by IOProvider.getDefault() by adjusting position
+@org.openide.util.lookup.ServiceProvider(service=org.openide.windows.IOProvider.class, position=200)
+public final class MyIOProvider extends IOProvider {
+
+    // unique name of your provider
+    private static final String NAME = "My IO provider"; // NOI18N
+
+    public OutputWriter getStdOut() {
+        // implement
+    }
+
+    public InputOutput getIO(String name, boolean newIO) {
+        // implement
+    }
+        
+    @Override
+    public InputOutput getIO(String name, Action[] toolbarActions) {
+        // override
+    }
+
+    @Override
+    public InputOutput getIO(String name, Action[] additionalActions, IOContainer ioContainer) {
+        // override
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+}
+&lt;/pre&gt;
+Add "OpenIDE-Module-Provides: org.openide.windows.IOProvider" to your module manifest (manifest.mf file) to inform that your module provides IOProvider service.
+Then instance of your provider could be obtained by &lt;tt&gt;IOProvider.get("My IO provider")&lt;/tt&gt;
+----
+Applies to: NetBeans 6.7 or higher</text>
+    </revision>
+  </page>
+</mediawiki>

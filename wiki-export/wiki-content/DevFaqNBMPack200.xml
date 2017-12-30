@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNBMPack200</title>
+    <id>15653</id>
+    <revision>
+      <id>39201</id>
+      <timestamp>2010-06-15T12:07:10Z</timestamp>
+      <contributor>
+        <username>Dlipin</username>
+        <id>13</id>
+      </contributor>
+      <comment>/* Using pack200 compression for NBM files */</comment>
+      <text xml:space="preserve">== Using pack200 compression for NBM files ==
+
+
+Starting with NetBeans 6.9 we have possibility to significantly decrease NBM file size by using pack200 compression. By default, all modules are now compressed during the build. 
+There are several options to override that behaviour :
+
+* Set ''use.pack200=false'' in module's project.properties if you want to completely disable using pack200 compression for the module. This can be used e.g. if you create module using 6.9 (and above) harness and need to have ability to install this module in older NetBeans versions (e.g. 6.8).
+
+* Set ''pack200.excludes=modules/somecodename.jar'' (supports standard Ant's patterns) to exclude particular module jar files. This can be used to disable compression for some jars in case pack200 cause troubles for there jars after installation.
+
+More info: [[FitnessForNBMs]]</text>
+    </revision>
+  </page>
+</mediawiki>

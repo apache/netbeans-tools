@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqClassLoaders</title>
+    <id>7221</id>
+    <revision>
+      <id>29545</id>
+      <timestamp>2009-12-02T13:43:15Z</timestamp>
+      <contributor>
+        <username>Rmichalsky</username>
+        <id>384</id>
+      </contributor>
+      <minor/>
+      <text xml:space="preserve">__NOTOC__
+===What class loaders are created by the module system?===
+
+====Overview====
+
+This FAQ item should be a companion to the main [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/classpath.html classpath documentation]. Please refer to the original document for additional details.
+
+====Class loaders in the NetBeans platform====
+
+There are basically three main class loader types used in the platform.
+Most code is loaded by module class loaders.
+In special cases the "system" class loader can be used,
+when you need access to resources from unknown modules.
+Resources directly on the classpath from the launch script (mainly &lt;tt&gt;platform*/lib/*.jar&lt;/tt&gt;)
+are loaded by the application loader.
+(There are also bootstrap and extension loaders in the JRE,
+and the platform has a special loader for a couple of JARs in &lt;tt&gt;platform*/core/*.jar&lt;/tt&gt;.)
+
+Most of the class loaders in the NetBeans platform are multi-parented class loaders.
+This means that the class loader can have zero or more parents.
+&lt;tt&gt;org.netbeans.ProxyClassLoader&lt;/tt&gt; implements the search across multiple parents.
+
+====Module class loader====
+
+Every module loaded by the module system has its own class loader.
+This loader loads resources primarily from the module's JAR.
+The application loader is an implicit parent of each module loader.
+
+The module loader is able to load from additional JARs (besides delegating to various parents):
+* extensions - anything listed in the manifest attribute &lt;tt&gt;Class-Path&lt;/tt&gt; of the module JAR
+* locale extensions - JARs placed in a subdirectory &lt;tt&gt;locale&lt;/tt&gt; relative to the original module JAR position, named by appending a locale suffix to the original name
+* patches - JARs placed in a subdirectory &lt;tt&gt;patches/code-name-base&lt;/tt&gt; relative to the original JAR position (can override module classes)
+
+The implementation class is &lt;tt&gt;[http://hg.netbeans.org/main/file/tip/o.n.bootstrap/src/org/netbeans/StandardModule.java org.netbeans.StandardModule$OneModuleClassLoader]&lt;/tt&gt;.
+
+====System class loader====
+
+The "system" loader loads no resources on its own,
+but has as its parents all enabled module's class loaders.
+It is accessible via &lt;tt&gt;Lookup.getDefault().lookup(ClassLoader.class)&lt;/tt&gt;
+or by using the fact that it is the context loader on all threads by default: &lt;tt&gt;Thread.currentThread().getContextClassLoader()&lt;/tt&gt;
+
+====Application class loader====
+
+This class loader is set up by the launch script (or by &lt;tt&gt;javaws&lt;/tt&gt; if running in JNLP mode).
+It can load classes from &lt;tt&gt;lib/*.jar&lt;/tt&gt; in specified clusters.
+It is generally discouraged to use this loader for your own classes,
+but it is sometimes needed e.g. for Look &amp; Feel classes
+(which must be loaded very early during the startup sequence).
+
+====Example====
+
+Take a very simple module &lt;tt&gt;a&lt;/tt&gt;:
+
+&lt;pre&gt;
+Manifest-Version: 1.0
+OpenIDE-Module: org.netbeans.modules.a
+&lt;/pre&gt;
+
+and module &lt;tt&gt;b&lt;/tt&gt; depending on &lt;tt&gt;a&lt;/tt&gt;:
+
+&lt;pre&gt;
+Manifest-Version: 1.0
+OpenIDE-Module: org.netbeans.modules.b
+OpenIDE-Module-Module-Dependencies: org.netbeans.modules.a
+Class-Path: ext/library-b-1.1.jar
+&lt;/pre&gt;
+
+Classes in &lt;tt&gt;org-netbeans-modules-a.jar&lt;/tt&gt; will be loaded in &lt;tt&gt;a&lt;/tt&gt;'s module class loader.
+Classes in both &lt;tt&gt;org-netbeans-modules-b.jar&lt;/tt&gt; and &lt;tt&gt;library-b-1.1.jar&lt;/tt&gt;
+will be loaded in &lt;tt&gt;b&lt;/tt&gt;'s module loader,
+and can refer to classes in &lt;tt&gt;org-netbeans-modules-a.jar&lt;/tt&gt;.
+
+----
+Applies to: NetBeans 6.8 and above</text>
+    </revision>
+  </page>
+</mediawiki>

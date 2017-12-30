@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqDependOnCore</title>
+    <id>7241</id>
+    <revision>
+      <id>39118</id>
+      <timestamp>2010-06-14T20:12:01Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* There is a class under org.netbeans.core that does what I need. Can I call/use/depend on it? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===There is a class under org.netbeans.core that does what I need. Can I call/use/depend on it?===
+
+No.  Not if you want your module to work in the future.  Copy the code instead.  If it is a thing that seems generally useful, [http://www.netbeans.org/issues/enter_bug.cgi file an enhancement request] requesting an API for the thing you need to do (and make sure there isn't already a supported way to do it).
+
+Anything under &lt;tt&gt;org.netbeans.core&lt;/tt&gt; is non-public, not an API, and subject to change without notice.  An API is a contract - an agreement about compatibility.  There is no such contract for this namespace, under any circumstances.  The class or method you are using may not even exist in the future.  Depend on it at your peril.
+
+A perfect example of why not to do this is JProfiler's plugin for NetBeans - it broke very badly across releases because it needlessly depended on the ''implementation'' of &lt;tt&gt;DialogDisplayer&lt;/tt&gt; rather than on the API class - so when that class moved, it could no longer link, so the module didn't work.
+
+If you really must use some non-API classes to do what you need to do, use an implementation dependency ([[DevFaqImplementationDependency]]) - your module probably won't load in any version except the one it was built against, but at least your users won't get nasty surprises.  And ideally, notify the maintainer of the thing you're depending on - they can give you a heads-up if they think they're about to make a change that will break your module.
+
+----
+
+Applies to: NetBeans 6.8 and above</text>
+    </revision>
+  </page>
+</mediawiki>

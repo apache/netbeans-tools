@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqWizardPanelError</title>
+    <id>7528</id>
+    <revision>
+      <id>31784</id>
+      <timestamp>2009-12-15T14:23:16Z</timestamp>
+      <contributor>
+        <username>Jrechtacek</username>
+        <id>412</id>
+      </contributor>
+      <comment>/* Update in NetBeans 6.8 */</comment>
+      <text xml:space="preserve">__NOTOC__
+====Q: How do I show that a user has filled an invalid input into my wizard?====
+
+A: Set the &lt;tt&gt;WizardPanel_errorMessage&lt;/tt&gt; property in the WizardPanel instance that is related to the displayed panel. 
+
+Example:
+
+&lt;tt&gt;wizardDescriptor.putProperty("WizardPanel_errorMessage", NbBundle.getMessage(MyPanel1.class, "key"));&lt;/tt&gt;
+
+'''''Note''''': Since WizardDescritor, spec.version 7.8 (i.e.since [http://www.netbeans.org/downloads/index.html NetBeans 6.5 Platform])
+* you can use &lt;tt&gt;WizardDescriptor.PROP_ERROR_MESSAGE&lt;/tt&gt; instead of "WizardPanel_errorMessage".
+* beside &lt;tt&gt;WizardDescriptor.PROP_ERROR_MESSAGE&lt;/tt&gt; you can also use &lt;tt&gt;WizardDescriptor.PROP_WARNING_MESSAGE&lt;/tt&gt; for warning messages or &lt;tt&gt;WizardDescriptor.PROP_INFO_MESSAGE&lt;/tt&gt; for information messages.
+* All kind of messages will be badged with appropriate icons: error [[File:Error.gif]], warning [[File:Warning.gif]], info [[File:info.png]]
+* To clean the message just call &lt;tt&gt;wizardDescriptor.putProperty(WizardDescriptor.PROP_ERROR_MESSAGE, null);&lt;/tt&gt;
+
+You can obtain the instance of &lt;tt&gt;WizardDescriptor&lt;/tt&gt; in the &lt;tt&gt;WizardDescriptor.Panel.readSettings&lt;/tt&gt; as &lt;tt&gt;settings&lt;/tt&gt; parameter method.
+
+==Update in NetBeans 6.8==
+Two new methods in &lt;tt&gt;NotifyDescriptor&lt;/tt&gt; were added to allow API client to create [http://bits.nbextras.org/dev/javadoc/org-openide-dialogs/org/openide/NotificationLineSupport.html NotificationLineSupport] which allow handling error/warning/info messages in dialogs. If a dialog descriptor creates this support, &lt;tt&gt;DialogDisplayer&lt;/tt&gt;  allocates necessary space at the bottom of dialog where API clients can set info/warning/error messages with appropriate icons.</text>
+    </revision>
+  </page>
+</mediawiki>

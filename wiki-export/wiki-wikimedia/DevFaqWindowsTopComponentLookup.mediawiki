@@ -1,0 +1,40 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Why does <tt>TopComponent</tt> have a <tt>getLookup()</tt> method? What is it for?===
+
+The windowing system is what manages [[DevFaqTrackGlobalSelection| global selection]].  In olden times, selection meant the activated [[DevFaqWhatIsANode| Node]].
+
+In modern NetBeans, the global selection is really whatever objects are in the focused  <tt>[[DevFaqWindowsTopComponent| TopComponent]]</tt>'s [[DevFaqLookup| Lookup]].  It so happens that most standard TopComponents display <tt>[[DevFaqWhatIsANode| Node]]</tt>s - so for most <tt>TopComponent</tt>s, the component's <tt>Lookup</tt> is just proxying the <tt>Lookup</tt> of the selected Node.
+
+Rather than thinking of the selection as some specific object or Node, it is more useful to think of it as a grab bag of stuff provided by whatever component happens to have focus.  If you use <tt>[[DevFaqTrackGlobalSelection| Utilities.actionsGlobalContext()]]</tt>, you do not have to track all the different grab-bags of stuff provided by different components - you can get one grab bag of stuff which whose content will simply change (notifying you in the process) when focus moves to a different component.
+
+So the <tt>TopComponent</tt>'s <tt>Lookup</tt> is a way to provide your particular grab bag of stuff - it can be the lookup of a <tt>Node</tt> if you want, or it can be/contain whatever else or in addition you'd like to put there.
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Admin 
+on 2009-11-06T16:06:27Z.
+

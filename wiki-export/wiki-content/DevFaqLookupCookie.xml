@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqLookupCookie</title>
+    <id>7372</id>
+    <revision>
+      <id>26156</id>
+      <timestamp>2009-11-06T15:51:49Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===What is the difference between getCookie(Class), SharedClassObject.get(Class) and Lookup.lookup(Class)?===
+
+All of these are really historical variations on the same theme.  In all cases, you pass a &lt;tt&gt;Class&lt;/tt&gt; object and get back null or an instance of that class.  You can see the progression in genericness:
+
+&lt;tt&gt;SharedClassObject&lt;/tt&gt; is the oldest version of the Lookup pattern in NetBeans APIs, dating to circa 1997 (because of various performance issues, eventually all usages of &lt;tt&gt;SharedClassObject&lt;/tt&gt; should be deprecated and removed from the APIs).  You'll see that form used in &lt;tt&gt;SystemOption&lt;/tt&gt; for storing settings, and most of the singleton Action objects in the actions API.  All objects returned by it will be instances of &lt;tt&gt;SharedClassObject&lt;/tt&gt;.
+
+&lt;tt&gt;getCookie()&lt;/tt&gt; (circa 1999) is specific to [[DevFaqWhatIsANode| Node]]s and [[DevFaqDataObject| DataObject]]s.  It uses the same pattern, but all objects returned by it will implement the empty &lt;tt&gt;Node.Cookie&lt;/tt&gt; marker interface.
+
+The down-side to both of the above is that they specify the return type.  In the case of &lt;tt&gt;Node.Cookie&lt;/tt&gt;, in practice, this meant that anything that might possibly need to be provided by a &lt;tt&gt;DataObject&lt;/tt&gt; or &lt;tt&gt;Node&lt;/tt&gt; needed to implement this silly marker interface, forcing it to have a dependency on the Nodes API, or a wrapper Cookie class had to be created to provide the underlying object, which just added useless classes and noise.
+
+[[DevFaqLookup| Lookup]] is the most modern and generic version of this pattern, and probably the final one.  It offers two advantages:
+# Its return type is &lt;tt&gt;java.lang.Object&lt;/tt&gt;, so it can be used directly with anything
+# Having objects ''own'' a lookup rather than directly providing a &lt;tt&gt;lookup(Class c)&lt;/tt&gt; method makes it easier to replace or proxy the Lookup of some object</text>
+    </revision>
+  </page>
+</mediawiki>

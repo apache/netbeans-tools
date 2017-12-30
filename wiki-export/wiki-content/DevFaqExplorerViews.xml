@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqExplorerViews</title>
+    <id>7267</id>
+    <revision>
+      <id>46587</id>
+      <timestamp>2011-08-09T16:07:51Z</timestamp>
+      <contributor>
+        <username>LiborJelinek</username>
+        <id>10431</id>
+      </contributor>
+      <minor/>
+      <comment>Added TableView</comment>
+      <text xml:space="preserve">__NOTOC__
+===What is an Explorer view?===
+
+An explorer view is a GUI component which can display a [[DevFaqWhatIsANode| Node ]] and (optionally) its child nodes.  While Nodes are, by definition, a tree structure, explorer views are much more than just JTrees.  Here is a list of the components available:
+
+* BeanTreeView - the classic tree view, as seen in the Projects and Files tabs in the IDE
+* ListView - a JList based node view component - you can see it in the right hand list in
+* ChoiceView - a ComboBox based explorer view - older versions of the NetBeans IDE used this to display a list of methods in the editor toolbar
+* ContextTreeView - like a BeanTreeView, but sets its manager's explorered context.  The "master" part of a master-detail component that uses two views.
+* MenuView - a JMenu view of a Node and its children
+* TableView - an Explorer view displaying nodes in a table.
+* TreeTableView - a TreeTable view of a Node and its children, in which the left column of the table is a tree of nodes, and the other columns display/edit a specified set of properties of those nodes
+* OutlineView - replacement for TreeTableView
+* IconView - a view similar to that of the left pane in Windows Explorer - a table of equidistant icons.  Not currently used anywhere in the IDE's UI.
+* PropertySheetView - doesn't show Nodes per-se at all, but rather, shows a property sheet for editing a Node's properties
+&lt;!--   * ListTableView - similar to a TreeTable, but with a list, not a tree (unused and long unmaintained - may not be working) --&gt;
+
+With the exception of PropertySheetView, all of these classes live in the package &lt;tt&gt;org.openide.explorer.view&lt;/tt&gt; (sources in openide/explorer in [[DevFaqAccessSourcesUsingCvs| NetBeans' CVS]]).
+
+An explorer view's content is controlled by its [[DevFaqExplorerManager| ExplorerManager]] - you don't set the root node directly on the view component, you use its manager.  This is so that more than one view can share a single manager, to do master-detail views (for example, the first page of the New Project wizard is one such view - the right hand panel displays children of the left hand panel's selection).
+
+There are a number of advantages to using Nodes and Explorer Views
+* it is possible to create a rich UI with very little UI code
+* they integrate well with standard menu/toolbar actions that are sensitive to selection
+* they contain convenient and well tested features (start randomly typing in a tree or list view - a little popup will appear and search for a matching node)
+* there is a lot of logic built into NetBeans for creating Nodes simply and easily, for example, from [http://www.netbeans.org/download/dev/javadoc/org-openide-nodes/org/openide/nodes/BeanNode.html any POJO JavaBean] and persisting the things they represent, so you can do a lot with very little code by using Nodes and Explorer Views
+
+A common usage is to get a Node for some folder on disk or in the [[DevFaqSystemFilesystem| configuration filesystem]], optionally create a &lt;tt&gt;FilterNode&lt;/tt&gt; to filter out some child nodes of it or its children, and display that.</text>
+    </revision>
+  </page>
+</mediawiki>

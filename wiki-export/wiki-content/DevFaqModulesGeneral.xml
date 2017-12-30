@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqModulesGeneral</title>
+    <id>7399</id>
+    <revision>
+      <id>50342</id>
+      <timestamp>2011-12-13T23:55:02Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* Registering objects in the System Filesystem */</comment>
+      <text xml:space="preserve">__NOTOC__
+===What are the ways a module can influence the system?===
+
+There are four basic ways a module can install configuration data or objects.
+Three of the ways are
+declarative ([[DevFaqModulesDeclarativeVsProgrammatic]]); these mechanisms are preferred.
+
+If you are writing a module that has an API you want other modules to plug in to, you probably want to read [[DevFaqWhenToUseWhatRegistrationMethod]].
+
+====&lt;tt&gt;@ServiceProvider&lt;/tt&gt;====
+
+For global services, singletons and such, using this annotation is the preferred technique.
+
+What exactly you register is a contract between you and whatever module is providing the interface and will, presumably, do something with what you put there.
+What's really happening is that you are adding your implementation of this interface to the [[DevFaqLookupDefault| default Lookup]]. At build-time, registration files are generated into &lt;code&gt;META-INF/services&lt;/code&gt; in your module's JAR file.  The default lookup (or JDK 6's [http://java.sun.com/javase/6/docs/api/java/util/ServiceLoader.html ServiceLoader]) knows how to read such files.  Typically the classes need to be public and have a public no-argument constructor.
+
+Any module can specify interfaces or classes that it would like other modules to implement and register instances of.  For example, the Project API module asks that each module that implements a ''project type'' (the things you see in the New Project wizard in NetBeans) register their &lt;tt&gt;ProjectFactory&lt;/tt&gt;s in default lookup.
+
+To get an instance of something registered this way, call
+&lt;pre&gt;
+TheInterface i = Lookup.getDefault().lookup(TheInterface.class);
+&lt;/pre&gt;
+
+If there might be more than one registered object of this type, you can get them all as follows:
+&lt;pre&gt;
+for (TheInterface i : Lookup.getDefault().lookupAll(TheInterface.class)) {...}
+&lt;/pre&gt;
+
+====Registering objects in the System Filesystem====
+
+The system filesystem (see [[DevFaqSystemFilesystem]]) allows for more detailed configuration when registering objects.
+It is a virtual filesystem composed of XML fragments (see [[DevFaqModulesLayerFile]])
+from modules in the system.
+The top layer of the system filesystem is &lt;tt&gt;$USERDIR/config&lt;/tt&gt; which is where changes that are written at runtime are put.
+
+The system filesystem is composed of folders.  Some folders have special meanings to the system; which folders exist and are meaningful depends on which modules you have installed.
+For example, the core window system defines the folder &lt;tt&gt;Menu/&lt;/tt&gt;, which contains one subfolder for each menu in the main window's menu bar.
+If you add a file to the folder &lt;tt&gt;Menu/File&lt;/tt&gt; called &lt;tt&gt;com-foo-mymodule-MyAction.instance&lt;/tt&gt;,
+an instance of &lt;tt&gt;com.foo.mymodule.MyAction&lt;/tt&gt; will be created, and a menu item will be put on the menu for it.
+
+For more details on registering objects, defining an order in which they should appear, etc., see [[DevFaqModulesLayerFile]].
+In the short form, a module registers a layer by including a line in its manifest:
+&lt;pre&gt;
+OpenIDE-Module-Layer: com/foo/mymodule/resources/layer.xml
+&lt;/pre&gt;
+which points to an actual XML file by that name inside the module JAR file.  A layer file is an XML file defining a mini-filesystem:
+&lt;pre&gt;
+&lt;filesystem&gt;
+    &lt;folder name="SomeFolder"&gt;
+        &lt;file name="SomeFile"/&gt;
+    &lt;/folder&gt;
+&lt;/filesystem&gt;
+&lt;/pre&gt;
+
+More and more layer registrations can be made by using various source code annotations.
+If you use these exclusively, you will not need to declare a layer in your module's sources at all.
+
+====Registering objects in the module's manifest====
+
+Some types of objects used to be installed by adding a section to the module manifest.
+This is now deprecated.
+
+====Programmatic registration - &lt;tt&gt;ModuleInstall&lt;/tt&gt; classes====
+
+The module system allows you to provide a &lt;tt&gt;ModuleInstall&lt;/tt&gt; class, which runs some code during startup or when the module is loaded, and can run cleanup code when it is uninstalled or disabled.  This is the least desirable way to do things, because running code on startup means slowing down startup.
+Before you use such a class, be sure there is no declarative way to do what you're trying to do;
+see: [[DevFaqModulesDeclarativeVsProgrammatic]]
+
+To have some code run on startup/installation/uninstallation/etc., add a line like the following to your module's manifest file:
+&lt;pre&gt;
+OpenIDE-Module-Install: org/netbeans/modules/paintcatcher/PaintCatcherModule.class
+&lt;/pre&gt;
+This line should be part of the group of lines at the top of the manifest, with no blank lines before it.  It is a pointer to a class file inside the module.  The class file must extend the class &lt;tt&gt;org.openide.modules.ModuleInstall&lt;/tt&gt;.
+There is a wizard in the development support to create and register such a class for you.
+
+----
+Applies to: NetBeans 6.7 and later</text>
+    </revision>
+  </page>
+</mediawiki>

@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqModuleObfuscation</title>
+    <id>7395</id>
+    <revision>
+      <id>39142</id>
+      <timestamp>2010-06-14T22:35:31Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Can I obfuscate a module?===
+
+If you want to protect a NetBeans module from disassembly, you can obfuscate it.
+For example you can use [http://proguard.sourceforge.net/ ProGuard], an open-source obfuscator.
+
+1. Copy &lt;tt&gt;proguard.jar&lt;/tt&gt; somewhere on disk, referenced by &lt;tt&gt;proguard.jar.path&lt;/tt&gt;. You can do this for example by creating a &lt;tt&gt;build.properties&lt;/tt&gt; in the module directory and reference it in the &lt;tt&gt;build.xml&lt;/tt&gt; like
+
+&lt;pre&gt;
+    &lt;!-- Load project's default properties --&gt;   
+    &lt;property file="${basedir}/build.properties"/&gt;
+    
+    &lt;import file="nbproject/build-impl.xml"/&gt;
+    
+&lt;!-- ### BEGIN OBFUSCATION TARGETS ###--&gt;
+
+&lt;/pre&gt;
+
+This example is assuming that you have created a directory called &lt;tt&gt;tools&lt;/tt&gt; parallel to your module. Under that &lt;tt&gt;tools&lt;/tt&gt; directory have you copied the proguard jar file into &lt;pre&gt;tools/obfuscating/jar/proguard.jar&lt;/pre&gt;
+
+The &lt;tt&gt;build.properties&lt;/tt&gt; could look like the following example.
+
+&lt;pre&gt;
+tools.dir=../tools
+proguard.jar.path=${tools.dir}/obfuscating/jar/proguard.jar
+&lt;/pre&gt;
+
+
+2. Edit the &lt;tt&gt;build.xml&lt;/tt&gt; of your module and override some targets as in the following excerpt:
+&lt;pre&gt;
+&lt;!-- Replace the non-obfuscated jar with the obfuscated one when compiling --&gt;
+&lt;target name="netbeans-extra" depends="obfuscate"&gt;
+    &lt;copy file="${suite.dir}/build/obfuscated/${module.jar}"
+          tofile="${cluster}/${module.jar}"/&gt;
+&lt;/target&gt;
+
+&lt;!-- Overridden debug target that depends on netbeans-debug --&gt;
+&lt;target name="debug" depends="netbeans-debug,-jdk-presetdef-nbjpdastart"&gt;
+    &lt;ant antfile="${harness.dir}/run.xml" target="debug"/&gt;
+&lt;/target&gt;
+
+&lt;!-- netbeans-debug DOES NOT depends on netbeans-extra
+     (then DOES NOT depends on obfuscate) --&gt;
+&lt;target name="netbeans-debug"
+        depends="init,jar,module-xml-regular,module-xml-autoload,
+      module-xml-eager,javahelp,module-auto-deps,release,verify-class-linkage"&gt;
+    &lt;genlist outputfiledir="${cluster}" module="${module.jar}"&gt;
+        &lt;fileset dir="${cluster}"&gt;
+            &lt;patternset refid="module.files"/&gt;
+        &lt;/fileset&gt;
+    &lt;/genlist&gt;
+&lt;/target&gt;
+
+&lt;!-- Overridden to delete also the obfuscated jar --&gt;
+&lt;target name="clean" depends="files-init,testuserdir-delete"&gt;
+    &lt;delete failonerror="false" includeemptydirs="true"&gt;
+        &lt;fileset dir="build"&gt;
+            &lt;exclude name="testuserdir/"/&gt;
+        &lt;/fileset&gt;
+    &lt;/delete&gt;
+    &lt;delete dir="${netbeans.javadoc.dir}/${code.name.base.dashes}"/&gt;
+    &lt;delete file="${netbeans.javadoc.dir}/${code.name.base.dashes}.zip"/&gt;
+    &lt;delete failonerror="false"&gt; &lt;!-- #59457: OK if cluster does not exist currently --&gt;
+        &lt;fileset dir="${cluster}"&gt;
+            &lt;patternset refid="module.files"/&gt;
+        &lt;/fileset&gt;
+    &lt;/delete&gt;
+    &lt;delete file="${cluster}/update_tracking/${code.name.base.dashes}.xml"/&gt;
+    &lt;delete file="${suite.dir}/build/obfuscated/${module.jar}"/&gt;
+&lt;/target&gt;
+
+&lt;!--  Just a cut and paste of how the proguard obfuscator works.
+      This is not supposed to work below.  In fact, this seems to work
+      on jars, not .class files, so it will have to be placed in a
+      post jar target, which I haven't identified yet --&gt;
+&lt;target name="obfuscate" depends="init"&gt;
+    &lt;taskdef resource="proguard/ant/task.properties"
+             classpath="${proguard.jar.path}" /&gt;
+
+    &lt;echo message="Obfuscating ${cluster}/${module.jar}..."/&gt;
+    &lt;mkdir dir="${suite.dir}/build/obfuscated"/&gt;
+    &lt;proguard printmapping="${suite.dir}/build/obfuscated/${code.name.base.dashes}.map"
+              renamesourcefileattribute="SourceFile" ignorewarnings="true"&gt;
+
+        &lt;!-- Specify the input jars, output jars, and library jars. --&gt;
+        &lt;injar  file="${cluster}/${module.jar}" /&gt;
+        &lt;outjar file="${suite.dir}/build/obfuscated/${module.jar}" /&gt;
+
+        &lt;libraryjar path="${module.run.classpath}" /&gt;
+        &lt;libraryjar file="${nbjdk.home}/jre/lib/rt.jar" /&gt;
+
+        &lt;!-- Keep some useful attributes. --&gt;
+
+        &lt;keepattribute name="InnerClasses" /&gt;
+        &lt;keepattribute name="SourceFile" /&gt;
+        &lt;keepattribute name="LineNumberTable" /&gt;
+        &lt;keepattribute name="Deprecated" /&gt;
+        &lt;keepattribute name="*Annotation*" /&gt;
+        &lt;keepattribute name="Signature" /&gt;
+
+        &lt;!-- Preserve all public classes,
+             and their public and protected fields and methods. --&gt;
+
+        &lt;keep access="public"&gt;
+            &lt;field  access="public protected" /&gt;
+            &lt;method access="public protected" /&gt;
+        &lt;/keep&gt;
+
+
+        &lt;!-- Preserve all .class method names. --&gt;
+
+        &lt;keepclassmembernames access="public"&gt;
+            &lt;method type      ="java.lang.Class"
+                    name      ="class$"
+                    parameters="java.lang.String" /&gt;
+            &lt;method type      ="java.lang.Class"
+                    name      ="class$"
+                    parameters="java.lang.String,boolean" /&gt;
+        &lt;/keepclassmembernames&gt;
+
+        &lt;!-- Preserve all native method names and the names of their classes. --&gt;
+
+        &lt;keepclasseswithmembernames&gt;
+            &lt;method access="native" /&gt;
+        &lt;/keepclasseswithmembernames&gt;
+
+        &lt;!-- Preserve the methods that are required in all enumeration classes. --&gt;
+
+        &lt;keepclassmembers extends="java.lang.Enum"&gt;
+            &lt;method access="public static"
+                    type="**[]"
+                    name="values"
+                    parameters="" /&gt;
+            &lt;method access="public static"
+                    type="**"
+                    name="valueOf"
+                    parameters="java.lang.String" /&gt;
+        &lt;/keepclassmembers&gt;
+
+        &lt;!-- Explicitly preserve all serialization members. The Serializable
+             interface is only a marker interface, so it wouldn't save them.
+             You can comment this out if your library doesn't use serialization.
+             With this code serializable classes will be backward compatible --&gt;
+
+        &lt;keepnames implements="java.io.Serializable"/&gt;
+        &lt;keepclassmembers implements="java.io.Serializable"&gt;
+            &lt;field  access    ="final"
+                    type      ="long"
+                    name      ="serialVersionUID" /&gt;
+            &lt;field  access    ="!static !transient"
+                    name      ="**"/&gt;
+            &lt;field  access    ="!private"
+                    name      ="**"/&gt;
+            &lt;method access    ="!private"
+                    name      ="**"/&gt;
+            &lt;method access    ="private"
+                    type      ="void"
+                    name      ="writeObject"
+                    parameters="java.io.ObjectOutputStream" /&gt;
+            &lt;method access    ="private"
+                    type      ="void"
+                    name      ="readObject"
+                    parameters="java.io.ObjectOutputStream" /&gt;
+            &lt;method type      ="java.lang.Object"
+                    name      ="writeReplace"
+                    parameters="" /&gt;
+            &lt;method type      ="java.lang.Object"
+                    name      ="readResolve"
+                    parameters="" /&gt;
+        &lt;/keepclassmembers&gt;
+
+        &lt;!-- Your application may contain more items that need to be preserved;
+             typically classes that are dynamically created using Class.forName --&gt;
+
+    &lt;/proguard&gt;
+&lt;/target&gt;
+&lt;/pre&gt;
+
+In this way when running and when creating the NBM (as well from a suite) the module will be obfuscated.
+When debugging your module you use the non-obfuscated JAR, so you can step through source as well.
+
+NOTE: This example will obfuscate all your private classes and methods only. This approach should protect you against problems which a full obfuscation could create as &lt;tt&gt;layer.xml&lt;/tt&gt; references to classes will not be found and other lookup/services mechanism would fail. Design your code accordingly. 
+
+NOTE2: As a practical suggestion you could also decide not to overwrite the &lt;tt&gt;debug&lt;/tt&gt; target and simply comment out the &lt;tt&gt;netbeans-extra&lt;/tt&gt; target as long as you develop. Only activate the &lt;tt&gt;netbeans-extra&lt;/tt&gt; target when you do a release build or create new &lt;tt&gt;NBM's&lt;/tt&gt; for an update.
+
+----
+
+This is verified to work on NB 6.5 running Solaris or Windows using Proguard 4.1. (&lt;tt&gt;proguard.jar&lt;/tt&gt; 548 Kb) Issues were found with 4.2. Others versions (current Feb 2010) the 4.5 beta is out has not been tested yet. For Mac OS X you will need to softlink the classes.jar to rt.jar as described in [http://bruehlicke.blogspot.com/search/label/Mac%20OS%20X  This blog entry]</text>
+    </revision>
+  </page>
+</mediawiki>

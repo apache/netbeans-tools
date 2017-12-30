@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqThreading</title>
+    <id>7484</id>
+    <revision>
+      <id>29862</id>
+      <timestamp>2009-12-03T15:28:32Z</timestamp>
+      <contributor>
+        <username>Dsimonek</username>
+        <id>745</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===I need to run some code on a background thread. Can the platform help me?===
+
+First, ask yourself why you need to do this and if it is really necessary.  Generally there is only one reason: ''You are doing something takes some time (file I/O, computing something large and complicated, talking to a network socket) that will block the UI.''
+
+NetBeans contains a thread pool &lt;tt&gt;org.openide.util.RequestProcessor&lt;/tt&gt;. (You can use the thread pools that exist today in &lt;tt&gt;java.util.concurrent&lt;/tt&gt; but it is more typical to use &lt;tt&gt;RequestProcessor&lt;/tt&gt;.)  There is a general purpose built-in thread pool - &lt;tt&gt;RequestProcessor.getDefault()&lt;/tt&gt;.  You can use that for things that only happen once in a while;  otherwise you are probably better off creating your own instance of &lt;tt&gt;RequestProcessor&lt;/tt&gt;.  There is a [[DevFaqRequestProcessor| FAQ item about how to know when to do which]].  In its most simple usage, &lt;tt&gt;RequestProcessor.post()&lt;/tt&gt; is called with a &lt;tt&gt;Runnable&lt;/tt&gt;.  The call returns a &lt;tt&gt;RequestProcessor.Task&lt;/tt&gt; which you can use to monitor the status of the task and listen to task finish among other.
+
+Note that if you are doing something in the background, you may want to use the [http://bits.netbeans.org/dev/javadoc/org-netbeans-api-progress/org/netbeans/api/progress/ProgressHandleFactory.html Progress API] to show a progress indicator in the status-bar (or use it to put up a modal progress dialog if the UI really needs to be blocked - use with care, only when really necessary).
+
+Remember that if you are running more threads than you have processors (or cores) - and your OS is probably using some as well - then when you ask to multi-thread, you are asking your CPU to divide the time of the CPUs you have between more virtual threads.  And switching the context a CPU is working in - sending it off to some other memory space and set of instructions, and then another - takes time.  So heavy use of multi-threading, especially on single CPU machines, can slow things down rather than speed them up.  If you can make your code run faster, do that first.</text>
+    </revision>
+  </page>
+</mediawiki>

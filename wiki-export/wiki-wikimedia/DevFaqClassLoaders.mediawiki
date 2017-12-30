@@ -1,0 +1,105 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===What class loaders are created by the module system?===
+
+====Overview====
+
+This FAQ item should be a companion to the main [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/doc-files/classpath.html classpath documentation]. Please refer to the original document for additional details.
+
+====Class loaders in the NetBeans platform====
+
+There are basically three main class loader types used in the platform.
+Most code is loaded by module class loaders.
+In special cases the "system" class loader can be used,
+when you need access to resources from unknown modules.
+Resources directly on the classpath from the launch script (mainly <tt>platform*/lib/*.jar</tt>)
+are loaded by the application loader.
+(There are also bootstrap and extension loaders in the JRE,
+and the platform has a special loader for a couple of JARs in <tt>platform*/core/*.jar</tt>.)
+
+Most of the class loaders in the NetBeans platform are multi-parented class loaders.
+This means that the class loader can have zero or more parents.
+<tt>org.netbeans.ProxyClassLoader</tt> implements the search across multiple parents.
+
+====Module class loader====
+
+Every module loaded by the module system has its own class loader.
+This loader loads resources primarily from the module's JAR.
+The application loader is an implicit parent of each module loader.
+
+The module loader is able to load from additional JARs (besides delegating to various parents):
+* extensions - anything listed in the manifest attribute <tt>Class-Path</tt> of the module JAR
+* locale extensions - JARs placed in a subdirectory <tt>locale</tt> relative to the original module JAR position, named by appending a locale suffix to the original name
+* patches - JARs placed in a subdirectory <tt>patches/code-name-base</tt> relative to the original JAR position (can override module classes)
+
+The implementation class is <tt>[http://hg.netbeans.org/main/file/tip/o.n.bootstrap/src/org/netbeans/StandardModule.java org.netbeans.StandardModule$OneModuleClassLoader]</tt>.
+
+====System class loader====
+
+The "system" loader loads no resources on its own,
+but has as its parents all enabled module's class loaders.
+It is accessible via <tt>Lookup.getDefault().lookup(ClassLoader.class)</tt>
+or by using the fact that it is the context loader on all threads by default: <tt>Thread.currentThread().getContextClassLoader()</tt>
+
+====Application class loader====
+
+This class loader is set up by the launch script (or by <tt>javaws</tt> if running in JNLP mode).
+It can load classes from <tt>lib/*.jar</tt> in specified clusters.
+It is generally discouraged to use this loader for your own classes,
+but it is sometimes needed e.g. for Look & Feel classes
+(which must be loaded very early during the startup sequence).
+
+====Example====
+
+Take a very simple module <tt>a</tt>:
+
+<pre>
+Manifest-Version: 1.0
+OpenIDE-Module: org.netbeans.modules.a
+</pre>
+
+and module <tt>b</tt> depending on <tt>a</tt>:
+
+<pre>
+Manifest-Version: 1.0
+OpenIDE-Module: org.netbeans.modules.b
+OpenIDE-Module-Module-Dependencies: org.netbeans.modules.a
+Class-Path: ext/library-b-1.1.jar
+</pre>
+
+Classes in <tt>org-netbeans-modules-a.jar</tt> will be loaded in <tt>a</tt>'s module class loader.
+Classes in both <tt>org-netbeans-modules-b.jar</tt> and <tt>library-b-1.1.jar</tt>
+will be loaded in <tt>b</tt>'s module loader,
+and can refer to classes in <tt>org-netbeans-modules-a.jar</tt>.
+
+----
+Applies to: NetBeans 6.8 and above
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Rmichalsky 
+on 2009-12-02T13:43:15Z.
+

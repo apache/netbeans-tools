@@ -1,0 +1,51 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+===Creating Node Subclasses===
+
+Nodes are useful for many things beyond just representing files.  If you just need a placeholder <tt>Node</tt>, you do not need a subclass - just instantiate an <tt>AbstractNode</tt> - despite its name, <tt>AbstractNode</tt> is not an abstract class.  For example:
+
+<pre>
+AbstractNode nue = new AbstractNode (Children.LEAF);
+nue.setDisplayName ("Please wait...");
+nue.setIcon (Utilities.loadImage ("path/in/jar/to/image.gif"));
+return nue;
+</pre>
+
+
+If you are creating [[DevFaqWhatIsANode| Node]]s, you will typically deal with one of four things
+
+* [http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/nodes/AbstractNode.html AbstractNode] - create a Node which represents anything you want - you will implement all its logic, provide children, etc.  Typically most logic goes in the Children object. 
+* [http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/nodes/BeanNode.html BeanNode] - a very convenient Node subclass, which can represent any JavaBean as a Node and expose its bean properties as Property objects that can be edited on the property sheet
+* [http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/nodes/FilterNode.html FilterNode] - a Node subclass that proxies another Node.  You can subclass this to take an existing Node (possibly representing a file on disk or in the [[DevFaqSystemFilesystem| system filesystem ]] and keep most of its attributes, but provide different actions or display name or icons or properties
+* [http://bits.netbeans.org/dev/javadoc/org-openide-loaders/org/openide/loaders/DataNode.html DataNode] - a Node subclass specific to editing files.  If you are writing a module that adds support for a new file type (such as <tt>.svg</tt> files), you will write a <tt>DataNode</tt> subclass to give files of that type icons, display names, and possibly provide access to the file's content
+
+Note that if you just want to write context sensitive code, not provide your own Nodes, you may be able to do it without a dependency on the Nodes API, using [[DevFaqTrackGlobalSelection| Utilities.actionsGlobalContext()]].
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Tboudreau 
+on 2010-01-24T05:48:37Z.
+

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqDataObject</title>
+    <id>7238</id>
+    <revision>
+      <id>51034</id>
+      <timestamp>2012-01-16T22:44:07Z</timestamp>
+      <contributor>
+        <username>Geertjan</username>
+        <id>440</id>
+      </contributor>
+      <comment>/* What is a DataObject? */</comment>
+      <text xml:space="preserve">__NOTOC__
+===What is a DataObject?===
+[http://bits.netbeans.org/dev/javadoc/org-openide-loaders/index.html?org/openide/loaders/DataObject.html DataObjects] wrap [[DevFaqFileObject| FileObjects]].  (If you do not want to visualize files on disk in an explorer view or create a text editor [with syntax coloring, etc] for files, then you will never need to touch DataObjects.) A FileObject is just a container
+for data;  it happens to have a MIME type, but like &lt;tt&gt;java.io.File&lt;/tt&gt;, it doesn't know or care what kind
+of file it represents, or what data it contains.  DataObject is part of the [http://www.netbeans.org/download/dev/javadoc/org-openide-loaders/overview-summary.html Loaders API] - a good overview of this API can be found [http://www.netbeans.org/download/dev/javadoc/org-openide-loaders/overview-summary.html here].
+
+A DataObject represents one or more (typically only one) FileObjects. A DataObject knows what kind of a file it represents.  It may represent the parsed contents of a file such as a &lt;tt&gt;.java&lt;/tt&gt; file.  Or,
+as in the case of [[DevFaqInstanceDataObject| InstanceDataObject]], the file ''name'' may have semantic meaning.  For example, a file with the name &lt;code&gt;org-netbeans-modules-speech-SpeakAction.instance&lt;/code&gt; literally is an instruction to "Load the class &lt;code&gt;org.netbeans.modules.speech.SpeakAction&lt;/code&gt;, and create an instance of it using its default (no argument) constructor"  (this technique is commonly used in the [[DevFaqSystemFilesystem| system filesystem]] to register Java objects installed by modules - more about that [[DevFaqFolderOfInstances| here]]).
+
+DataObjects are produced by [[DevFaqDataLoader| DataLoaders]], which modules register for specific file types.  For each file type, there is (usually) one DataLoader.  For each file of that type, there is one DataObject.
+
+DataObjects are seldom referred to by Java subclass.  If you are casting a DataObject to its implementation class, you are probably doing something wrong.  This is a general rule for which there can be exceptions, but is especially true if you're doing the cast from code in a different module than the one in which the DataObject was defined.  Instead, the usage pattern is to ''ask'' a DataObject for instances of interfaces that are the things your code will actually interact with, by calling &lt;code&gt;DataObject.getLookup().lookup(SomeType.class)&lt;/code&gt; ([[DevFaqLookup|more about Lookup]]).
+
+As a simple example, the NetBeans APIs define an interface &lt;tt&gt;org.netbeans.api.actions.Openable&lt;/tt&gt;.  It has
+one method, &lt;tt&gt;open()&lt;/tt&gt;.  That method will open the file in the editor.
+
+What exactly will happen when &lt;tt&gt;open()&lt;/tt&gt; is called is entirely up to the module that implements the DataObject and Openable.  The rest of the system does not need to know any of the implementation details - it just needs to know if the DataObject has an Openable.  If it does, then the Open action on its context menu can be enabled, and that action will call
+&lt;tt&gt;theDataObject.getLookup().lookup(Openable.class).open()&lt;/tt&gt;.
+
+As suggested above, a DataObject may actually represent more than one file - so when you expand a folder
+in the UI, there may actually be fewer DataObjects in that folder than there are files.  This is why, in the
+NetBeans IDE, a Swing form is represented by a &lt;tt&gt;.java&lt;/tt&gt; file and a corresponding &lt;tt&gt;.form&lt;/tt&gt;
+file, but the &lt;tt&gt;.form&lt;/tt&gt; file is not visible in the UI.  &lt;tt&gt;.properties&lt;/tt&gt; files have also used
+this mechanism to present multiple resource bundles in diverse languages as a single node in the files tree.
+
+However, this ability to represent multiple files with a single DataObject is strongly discouraged for new code and will probably eventually be deprecated - it has serious negative implications for scalability.
+
+===Related tutorials===
+*[http://platform.netbeans.org/tutorials/60/nbm-copyfqn.html NetBeans Java Language Infrastructure Tutorial]
+*[http://platform.netbeans.org/tutorials/nbm-filetype.html File Type Integration Tutorial]</text>
+    </revision>
+  </page>
+</mediawiki>

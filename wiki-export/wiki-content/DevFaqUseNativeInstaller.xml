@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqUseNativeInstaller</title>
+    <id>15409</id>
+    <revision>
+      <id>65211</id>
+      <timestamp>2013-12-17T22:12:04Z</timestamp>
+      <contributor>
+        <username>Skygo</username>
+        <id>12034</id>
+      </contributor>
+      <minor/>
+      <comment>fix url</comment>
+      <text xml:space="preserve">__NOTOC__
+=== How can I run the installer for something else during module installation?===
+
+Sometimes you are distributing some software with your module which has its own installer, or some other similar code which needs to be run once to get everything needed installed on the user's system.  If you are distributing some software (which perhaps you did not write), and it has its own installer, it is 
+less work to just run its installer to be sure it is set up correctly, than to have your module do everything which that installer does too (and possibly get something wrong).
+
+[http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/overview-summary.html Autoupdate Services] primary handles NetBeans plugins based on [[DevFaqWhatIsNbm | NBM]] packaging. 
+
+In addition, Autoupdate Services offers the possibility to install/uninstall components which are not in NBM format. This possibility has been designed to support such use-cases - for example, to install an application Servers such as [http://glassfish.dev.java.net GlassFish] by running its own installer.  
+
+Using a native installer ensures that, if there are any problems with the way the software gets installed, it is a problem with the native installer, not your code.
+
+To enable such possibility, Autoupdate Services API provides:
+* An SPI for providing such components
+** A custom installer can be assigned to the component which performs installation particular component into NetBeans
+* The ability to register that [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/UpdateProvider.html special provider] among other of providers - a common Update Center
+
+====How to setup a Update Provider providing custom components?====
+Implement interface [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/UpdateProvider.html UpdateProvider] to make a provider for your component that has its own installer. This provider has to:
+* Determine if the component is already installed on the target system. 
+** If so, it should be able to tell which version, so the system knows if the bundled version is older, newer or the same version
+* Offer a component which is available to be installed into system,
+* Assign a specific '''installer''' which can install available components,
+* assign a specific '''uninstaller''' which can uninstall such component if is already installed
+* Register the application (i.e. store a path to the installed copy of the application) so that, at runtime, code that needs to use the custom-installed software can find it
+
+====A code snippet showing that provider====
+&lt;pre&gt;
+public class FooNativeComponentProvider implements org.netbeans.spi.autoupdate.UpdateProvider {...}
+&lt;/pre&gt;
+
+It has simple methods describing the provider, like this:
+&lt;pre&gt;
+    public String getName () {
+        return "Foo Update Provider";
+    }
+
+    public String getDisplayName () {
+        return getName ();
+    }
+
+    public String getDescription () {
+        return "Providing components with custom installers";
+    }
+
+    public CATEGORY getCategory () {
+        return CATEGORY.STANDARD;
+    }
+&lt;/pre&gt;
+
+The essential method '''&lt;tt&gt;getUpdateItems&lt;/tt&gt;''' will return [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/UpdateItem.html UpdateItems] which matches these components. It has to return an &lt;tt&gt;UpdateItem&lt;/tt&gt; both for installed component and for available component what has not been installed yet.
+&lt;pre&gt;
+    public Map&lt;String, UpdateItem&gt; getUpdateItems () throws IOException {
+        Map&lt;String, UpdateItem&gt; res = new HashMap&lt;String, UpdateItem&gt; ();
+
+
+        // 1. provide already installed version
+
+        // get installed version
+        String installed = NbPreferences.forModule (FooNativeComponentProvider.class).get (FOO_CODE_NAME, null);
+
+        // some foo-native-runtime is installed
+        if (installed != null) {
+            res.put (FOO_CODE_NAME + installed, getInstalledUpdateItem (installed));
+        }
+
+        // 2. provide also version available to install
+
+        // for this example: If none version hasn't been installed yet then provider the version 3.0
+        if (installed == null) {
+            res.put (FOO_CODE_NAME + "_3.0", getAvailableUpdateItem ("3.0"));
+
+        // if the version 3.0 is installed then provide newer version 3.1
+        } else if ("3.0".equals (installed)) {
+            res.put (FOO_CODE_NAME + "_3.1", getAvailableUpdateItem ("3.1"));
+        }
+        
+        return res;
+    }
+&lt;/pre&gt;
+
+There are two factory methods '''&lt;tt&gt;getInstalledUpdateItem&lt;/tt&gt;''' and '''&lt;tt&gt;getAvailableUpdateItem&lt;/tt&gt;'''.  Both are using SPI [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/UpdateItem.html#createNativeComponent(java.lang.String,%20java.lang.String,%20java.lang.String,%20java.util.Set,%20java.lang.String,%20java.lang.String,%20java.lang.Boolean,%20java.lang.Boolean,%20java.lang.String,%20org.netbeans.spi.autoupdate.CustomInstaller,%20org.netbeans.spi.autoupdate.UpdateLicense) UpdateItem.create(Installed)NativeComponent]
+
+Add an &lt;tt&gt;UpdateItem&lt;/tt&gt; matching available component first.  The provider has to specify a name, display name, download size and so forth. 
+
+The most important parts are [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/CustomInstaller.html CustomInstaller] and [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-autoupdate-services/org/netbeans/spi/autoupdate/CustomUninstaller.html CustomUninstaller]. For example:
+&lt;pre&gt;
+    private static UpdateItem getAvailableUpdateItem (String specificationVersion) {
+        String displayName = "Foo Runtime " + specificationVersion;
+        String description = "Foo Runtime " + specificationVersion + " with native installer";
+        String downloadSize = "2815";
+        CustomInstaller ci = FooInstaller.getInstaller ();
+        assert ci != null;
+        UpdateLicense license = UpdateLicense.createUpdateLicense ("none-license", "no-license");
+        UpdateItem item = UpdateItem.createNativeComponent (
+                                                    FOO_CODE_NAME,
+                                                    specificationVersion,
+                                                    downloadSize,
+                                                    null, // dependencies
+                                                    displayName,
+                                                    description,
+                                                    false, false, "my-cluster",
+                                                    ci,
+                                                    license);
+        return item;
+    }
+&lt;/pre&gt;
+Now, for an already-installed copy of the software:
+&lt;pre&gt;
+    private static UpdateItem getInstalledUpdateItem (String specificationVersion) {
+        String displayName = "Foo Runtime " + specificationVersion;
+        String description = "Foo Runtime " + specificationVersion + " with own installer";
+        CustomUninstaller cu = FooUninstaller.getUninstaller ();
+        assert cu != null;
+        UpdateItem item = UpdateItem.createInstalledNativeComponent (
+                                                    FOO_CODE_NAME,
+                                                    specificationVersion,
+                                                    null, // dependencies
+                                                    displayName,
+                                                    description,
+                                                    cu);
+        return item;
+    }
+&lt;/pre&gt;
+
+So, what does a custom installer look like? It it quite simple, look on
+&lt;pre&gt;
+public class FooInstaller implements org.netbeans.spi.autoupdate.CustomInstaller {
+    /** This code will be called back while installing the corresponding native component
+     * from Plugin Manager Install Wizard.
+     */
+    public boolean install (String codeName, String specificationVersion, ProgressHandle handle) throws OperationException {
+        // CustomInstaller has to start &lt;code&gt;org.netbeans.api.progress.ProgressHandle&lt;/code&gt; !!!
+        handle.start ();
+
+        // a custom code which invokes installation of native component actually
+        .......
+    }
+}
+&lt;/pre&gt;
+
+====How to register UpdateProvider in my application?====
+Using [[DevFaqModulesGeneral | META-INF/services]] or (in NetBeans 6.9) the &lt;tt&gt;@ServiceProvider&lt;/tt&gt; annotation (see [https://blogs.oracle.com/geertjan/entry/meta_inf_services_vs_layer Geertjan's blog for more info]):
+# Make a &lt;tt&gt;META-INF/services&lt;/tt&gt; folder in sources of your NetBeans project where the provider is,
+# Make a file &lt;tt&gt;org.netbeans.spi.autoupdate.UpdateProvider&lt;/tt&gt; in this folder,
+# Type name of class where &lt;tt&gt;UpdateProvider&lt;/tt&gt; implemented, i.e. org.netbeans.modules.fooupdateprovider.FooNativeComponentProvider
+And , that's it, the NetBeans Lookup system will read it and includes that provider among other providers registered in NetBeans application.
+
+====A sample project having this UpdateProvider====
+* Sources of &lt;tt&gt;Foo Native Component Provider&lt;/tt&gt;: [[Media:fooupdateprovider_FaqDevComponentWithCustomInstaller.zip | fooupdateprovider_FaqDevComponentWithCustomInstaller.zip]]
+* Binary NBM to playing with: [[Media:org-netbeans-modules-fooupdateprovider_FaqDevComponentWithCustomInstaller.nbm | org-netbeans-modules-fooupdateprovider_FaqDevComponentWithCustomInstaller.nbm]]
+
+====Important Note====
+Don't apply this Update Provider earlier than NetBeans 6.5 release will be out. There were several problem which had to be fixed in NetBeans 6.5. Use [http://www.netbeans.org/downloads/index.html NetBeans 6.5] or some of recent [http://bits.netbeans.org/dev/nightly/latest/ Development builds] rather than previous releases 6.1 or 6.0!
+
+------
+Do not hesitate to contact me on mailto:jrechtacek@netbeans.org if you have any question.
+{{attachments|
+* [[Media:org-netbeans-modules-fooupdateprovider_FaqDevComponentWithCustomInstaller.nbm]]
+* [[Media:fooupdateprovider_FaqDevComponentWithCustomInstaller.zip]]}}</text>
+    </revision>
+  </page>
+</mediawiki>

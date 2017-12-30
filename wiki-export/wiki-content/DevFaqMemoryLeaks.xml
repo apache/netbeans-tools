@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqMemoryLeaks</title>
+    <id>7388</id>
+    <revision>
+      <id>39123</id>
+      <timestamp>2010-06-14T20:17:25Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* Obtain the dump. */</comment>
+      <text xml:space="preserve">__NOTOC__
+==How can I fix memory leaks?==
+
+The first problem is to identify what is the root problem causing memory to not be used effectively.
+The usual approach for this is to analyze the complete contents of memory when the problem appears, using one of a number of appropriate tools, and ideally then find a solution.
+
+Below are some hints on how to analyze the content of memory:
+
+===&lt;tt&gt;jmap&lt;/tt&gt; and built-in dumpers in JDK===
+
+====Obtain the dump.====
+
+If the problem causes &lt;tt&gt;OutOfMemoryError&lt;/tt&gt;, it is possible to customize the JVM to provide a memory dump automatically whenever an &lt;tt&gt;OutOfMemoryError&lt;/tt&gt; is thrown.
+[[FaqNetBeansAndOOME | FaqNetBeansAndOOME]] describes what options can be used for this.
+If you are developing modules, it is a very good idea to set the option &lt;tt&gt;-J-XX:+HeapDumpOnOutOfMemoryError&lt;/tt&gt;.
+
+If the memory leak is not so aggresive to fill all the available memory and cause an &lt;tt&gt;OutOfMemoryError&lt;/tt&gt;, it is still possible to use &lt;tt&gt;jmap&lt;/tt&gt; to generate the same dump.
+Running full GC before you create this dump can be a good idea as it can strip the size of dump file and remove some unimportant objects from the snapshot.
+You can do this by turning memory toolbar on (do a right click in toolbar area and check '''Memory''').
+Repeating this several times can even collect large amounts of data held in various caches through soft or weak references and make it easier to browse the dump.
+
+====Analyze the problem.====
+ 
+Once you have the dump of the heap in a file, it is possible to open it using
+the NetBeans profiler.
+This has a number of analysis features and is integrated with the IDE, e.g. to browse sources.
+
+Alternately, you can use the JDK's tool &lt;tt&gt;jhat&lt;/tt&gt;.
+It will start simple web server and you can use a web browser to see the data. 
+There are many functions starting with lists of classes with numbers of objects and their size, navigation between references,
+finding of reference chains from GC root to certain objects.
+JavaScript can be used to express more complex queries.
+
+===Other tools===
+
+INSANE is a home-grown tool that is useful for analysis of memory content and also can be used in automated tests - so once you have fixed a memory leak, you can write a test that will fail if the memory leak is ever recreated.
+&lt;tt&gt;NbTestCase.assertGC&lt;/tt&gt; is all you need to know. See also [[FitnessMemoryLeaks]].
+
+[[FitnessViaTimersCounter|Timers/counters]] module can be used to register objects of interest in the code, then inspect them during IDE run via Runtime Watches window.
+
+Advanced: [http://www.opensolaris.org/os/community/dtrace/ DTrace] can be used to monitor object allocation and garbage collection. Nice article about using DTrace with the HotSpot provider: [http://www.solarisinternals.com/wiki/index.php/DTrace_Topics_Java Java and DTrace].
+
+===Tips and tricks===
+
+====Common leaking objects====
+
+There are some typical classes where it should be easily possible to tell
+what the appropriate number of their instances in memory should be,
+and if these are leaking there is a serious problem:
+* Projects - it means instances of all subclasses of &lt;tt&gt;org.netbeans.api.project.Project&lt;/tt&gt;
+* Editors (or &lt;tt&gt;TopComponent&lt;/tt&gt;s) - it can be useful to check for &lt;tt&gt;org.openide.text.QuietEditorPane&lt;/tt&gt; instances to see if closed editors can release substantial part of associated memory. If the editor component is held it often means that associated editor support is held too linking to parsing data, sidebars providing versioning information and probably also project metadata. It is also possible to look for instance of &lt;tt&gt;org.openide.windows.TopComponent&lt;/tt&gt; if there is some suspicion or better to search for its particular subclasses. Generally there will be always certain numbers of &lt;tt&gt;TopComponent&lt;/tt&gt;s.
+* Documents - somewhat related to editors. An important class where you can start is &lt;tt&gt;org.netbeans.modules.editor.NbEditorDocument&lt;/tt&gt;.
+* Top-level windows - undisposed dialogs can be a problem as these hold native resources that can be limited in the system.
+* &lt;tt&gt;ClassLoader&lt;/tt&gt; - we need to be very careful and check that class loaders created dynamically during runtime can be GC'ed when they are no longer used. Without this the result is OOME signaling that perm gen area is full.
+* &lt;tt&gt;CompilationInfo&lt;/tt&gt; (&lt;tt&gt;java.source&lt;/tt&gt; module) - related to Java infrastructure. An important class where you can start is &lt;tt&gt;com.sun.tools.javac.code.Symtab&lt;/tt&gt;, which is a singleton in a javac instance.
+
+====Leaks vs. retained memory====
+
+There are two different ways how memory can be wasted: leaks and improper retention of memory.
+
+''Leaks'' are cases when repeated invocation of certain activity creates new set of objects that cannot be reclaimed after
+activity is finished.
+The biggest problem is accumulation of these objects that leads to increased memory usage 
+and after a long enough time leads to &lt;tt&gt;OutOfMemoryError&lt;/tt&gt;.
+The nature of this error is that it leaves data structures of an application in undefined state 
+so anything executed after this moment may lead to unexpected results.
+
+''Retained memory'' is memory occupied by objects that were created to serve some purpose but these objects
+are held longer than necessary.
+This may mean that some action has to be performed that flushes these objects or they will remain in memory until the end of the session.
+An example of the former is LRU caches (often holding last component in UI, files or projects).
+A common example of the latter is resources like parsed bundles or images statically referenced in classes that use them. 
+
+&lt;tt&gt;-J-Dnetbeans.debug.heap&lt;/tt&gt; can make profiling easier as it more quickly releases references to collapsed nodes.
+
+If you have the '''Timers''' module enabled (normally it is in dev builds),
+click its button in the '''Memory''' toolbar
+to get a summary of interesting live objects and statistics.
+
+--------
+Applies to: NetBeans 6.5 and above
+
+Platforms: All
+
+[[Category:Performance:HowTo]]</text>
+    </revision>
+  </page>
+</mediawiki>

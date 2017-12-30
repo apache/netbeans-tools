@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqLookupWhere</title>
+    <id>7384</id>
+    <revision>
+      <id>26168</id>
+      <timestamp>2009-11-06T15:52:48Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===What uses Lookup?===
+
+There are a number of places [[DevFaqLookup| Lookup ]] is commonly found/used in NetBeans.  Generally, if you have found some class and you are wondering where on earth you get an actual instance of one of those, the answer is probably "from something-or-other's Lookup".
+
+Common cases:
+* &lt;tt&gt;Lookup.getDefault()()&lt;/tt&gt; - you want to find some global singleton or all instances of a particular object [[DevFaqLookupDefault| registered in the system]]
+* &lt;tt&gt;Project.getLookup()&lt;/tt&gt; - provides objects specific to a project.  The typical pattern is, you have used FileOwnerQuery to get the Project that owns some file, and now you want to find something like the classpath (from the Project's ClassPathProvider, which lives in its Lookup)
+* &lt;tt&gt;[[DevFaqWhatIsANode| Node.getLookup()]]&lt;/tt&gt; - this is how you get things like syntax trees, open and save interfaces and other miscellaneous stuff from Nodes representing files or other things
+* &lt;tt&gt;[[DevFaqWindowsTopComponent| TopComponent.getLookup()]]&lt;/tt&gt; - if you are writing a UI component, and want to affect the global selection, but your component doesn't display nodes and you don't have any use for Nodes, you probably want to provide your own Lookup here with whatever you want to include in it (things like [http://www.netbeans.org/download/dev/javadoc/org-openide-nodes/org/openide/cookies/OpenCookie.html OpenCookie], [http://www.netbeans.org/download/dev/javadoc/org-openide-nodes/org/openide/cookies/SaveCookie.html SaveCookie], objects your other UI code may want to track if you're doing a master-detail view, etc.)
+* &lt;tt&gt;[http://www.netbeans.org/download/dev/javadoc/org-openide-util/org/openide/util/Utilities.html#actionsGlobalContext() Utilities.actionsGlobalContext()]&lt;/tt&gt; returns a &lt;tt&gt;Lookup&lt;/tt&gt; which represents the global "selection context" in NetBeans.  It is a &lt;tt&gt;ProxyLookup&lt;/tt&gt; which proxies the lookup of whichever &lt;tt&gt;[[DevFaqWindowsTopComponent| TopComponent]]&lt;/tt&gt; currently has focus.  So if you listen for changes in the presence or absence of a particular type in this lookup, you will receive appropriate changes whenever the backing &lt;tt&gt;Lookup&lt;/tt&gt; being proxied changes.</text>
+    </revision>
+  </page>
+</mediawiki>

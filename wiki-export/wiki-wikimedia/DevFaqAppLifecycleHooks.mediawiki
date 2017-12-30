@@ -1,0 +1,101 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+
+====What are some of the hooks in the application's lifecycle I can plug into?====
+
+One major difference between developing a Platform application and a monolithic Java application is that there is no <tt>main</tt> method.  This sometimes leaves developers wondering where they can insert their own code.  This FAQ entry describes some places where this is possible.
+
+Although a bit drastic for most cases, you can
+replace the main class used to start NetBeans
+([[DevFaqPlatformAppAuthStrategies]])
+with your own class and then delegate back to NetBeans' normal main class.
+This offers you a hook early in the startup sequence without having to modify the launchers or shell scripts.
+
+Any module may provide a [http://bits.netbeans.org/dev/javadoc/org-openide-modules/org/openide/modules/ModuleInstall.html ModuleInstall] implementation.  The <tt>validate</tt> method will be called before your module is even loaded, so it is the first module-level hook available in the startup sequence.  Note that many services and classes offered by the platform are unlikely to be initialized at this point.
+
+A short time afterwards, the <tt>restored</tt> method will be called on each <tt>ModuleInstall</tt> class.
+More services and classes will be initialized at this point than with the <tt>validate</tt> method, but the GUI will probably not yet be realized.
+You can post some code to be executed when the UI is fully loaded like this:
+
+<pre>
+@Override public void restored() {
+    WindowManager.getDefault().invokeWhenUIReady(new Runnable() {
+        public void run() {
+            // any code here will be run with the UI is available
+            SomeTopComponent.findInstance().open();
+        }
+    });
+}
+</pre>
+
+The <tt>ModuleInstall</tt> class offers two methods which let you plug into the exit sequence.
+The <tt>closing</tt> method is called first and requires that you return a boolean value.
+If <tt>true</tt>, then your module agrees to be closed,
+but if <tt>false</tt>, then you will prevent the exit sequence from continuing.
+The <tt>close</tt> method is called after all <tt>ModuleInstall</tt> classes return <tt>true</tt> from the <tt>closing</tt> method
+and is the final hook in which modules can participate in the application's lifecycle.
+
+Note that providing a <tt>ModuleInstall</tt> class will increase total startup time a little,
+even if you have taken care to execute any long-running tasks from its methods in a background thread.
+It is always preferable to register objects declaratively,
+and/or run procedural code when it is first needed rather than eagerly.
+
+Another major class in platform development is the [http://bits.netbeans.org/dev/javadoc/org-openide-windows/org/openide/windows/TopComponent.html TopComponent] class.
+It offers several methods which allow you to hook into its lifecycle.
+
+Here are some events you can hook into for when a <tt>TopComponent</tt> is opened:
+
+* <tt>JComponent.addNotify</tt>
+* <tt>TopComponent.componentOpened</tt>
+* <tt>TopComponent.componentShowing</tt>
+* <tt>TopComponent.componentActivated</tt>
+
+When you set focus on a <tt>TopComponent</tt>, the <tt>componentActivated</tt> method is called.
+Likewise, the <tt>componentDeactivated</tt> method is called when focus is moved away from that <tt>TopComponent</tt>.
+
+Here are some events you can hook into for when a <tt>TopComponent</tt> is closed:
+
+* <tt>TopComponent.canClose</tt>
+* <tt>JComponent.removeNotify</tt>
+* <tt>TopComponent.componentHidden</tt>
+* <tt>TopComponent.componentDeactivated</tt>
+* <tt>TopComponent.componentClosed</tt>
+
+(The exact sequence in which the opening/closing hooks are invoked is not documented or guaranteed to remain constant.)
+
+Note that you can return <tt>false</tt> from <tt>TopComponent.canClose</tt> to prevent the <tt>TopComponent</tt> from being closed at all.
+
+-----
+
+Applies to: NetBeans 6.5 and later
+
+====Further reading ====
+You can get more details along with code examples [http://wiki.netbeans.org/BookNBPlatformCookbookCH01#Module_Installer here].
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Javydreamercsw 
+on 2012-07-31T13:15:59Z.
+

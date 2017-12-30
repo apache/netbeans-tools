@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>TestingThingsThatUseFileObjectDataObjectDataFolder</title>
+    <id>11895</id>
+    <revision>
+      <id>44986</id>
+      <timestamp>2011-05-13T13:08:00Z</timestamp>
+      <contributor>
+        <username>Geertjan</username>
+        <id>440</id>
+      </contributor>
+      <comment>/* Testing Things That Use FileObject/DataObject/DataFolder */</comment>
+      <text xml:space="preserve">__NOTOC__
+===Testing Things That Use FileObject/DataObject/DataFolder===
+
+If your unit tests use &lt;tt&gt;FileObject&lt;/tt&gt; (including &lt;tt&gt;DataObject&lt;/tt&gt; or &lt;tt&gt;DataFolder&lt;/tt&gt;), then you may be suprised that &lt;tt&gt;FileUtil.toFileObject(java.util.File)&lt;/tt&gt; returns &lt;tt&gt;null&lt;/tt&gt;. This is because the MasterFS filesystem implementation is what maps &lt;tt&gt;FileObject&lt;/tt&gt;s to your local disk and it needs to be on the classpath when tests are run.
+
+See [[UsingFileSystemsMasterfs | UsingFileSystemsMasterfs]] for more info on how to fix this.
+
+If for some reason you prefer not to use MasterFS, you can create a new &lt;tt&gt;LocalFileSystem&lt;/tt&gt;, create some files and use that instead of &lt;tt&gt;FileUtil.toFileObject&lt;/tt&gt; in your test.  For example, in a &lt;tt&gt;NbTestCase&lt;/tt&gt; subclass:
+
+&lt;pre&gt;
+FileObject dir;
+public @Override void setUp() throws Exception {
+  super.setUp();
+  clearWorkDir();
+  LocalFileSystem fs = new LocalFileSystem();
+  fs.setRootDirectory(getWorkDir());
+  dir = fs.getRoot();
+}
+&lt;/pre&gt;
+
+If your test just needs some simple data in a FileObject or two, you can avoid writing to disk at all as follows:
+&lt;pre&gt;
+FileObject dir;
+public @Override void setUp() throws Exception {
+  super.setUp();
+  dir = FileUtil.createMemoryFileSystem().getRoot();
+  //write out data your tests will use to files under dir/ here
+}
+&lt;/pre&gt;
+
+If you want to write tests for a &lt;tt&gt;DataObject&lt;/tt&gt; or &lt;tt&gt;DataLoader&lt;/tt&gt;, you may also want to set the mime type correctly: [[DevFaqTestDataObject | DevFaqTestDataObject]]</text>
+    </revision>
+  </page>
+</mediawiki>

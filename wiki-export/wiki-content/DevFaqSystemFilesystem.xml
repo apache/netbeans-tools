@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqSystemFilesystem</title>
+    <id>7472</id>
+    <revision>
+      <id>29800</id>
+      <timestamp>2009-12-03T13:51:54Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===What is the System Filesystem?===
+
+The system filesystem is the central repository for configuration data in NetBeans.
+It is composed at runtime of a stack of XML layers ([[DevFaqModulesLayerFile]])
+supplied by modules in the system.
+Modules use folders in the system filesystem to define ''extension points'' -
+a module can define a folder and document what files or objects
+(typically instance files: [[DevFaqInstanceDataObject]])
+other modules can put there, and then, at runtime, scan the
+contents and do something with the result.
+
+The top layer of the System Filesystem is the &lt;tt&gt;config/&lt;/tt&gt; subfolder of the user directory.
+([[DevFaqUserDir]])
+That is what makes the System Filesystem read-write -
+diffs are written there,
+and there are semantics for programmatically deleting files
+by creating an empty file called, e.g., &lt;tt&gt;TheFile.instance_hidden&lt;/tt&gt;.
+
+Any type of file can be put into the System Filesystem;
+what is done with those files is a contract between the module that defines a folder
+and documents what can be put there, and the modules that put things there.
+You can use &lt;tt&gt;FileUtil.getConfigFile&lt;/tt&gt; to access entries at runtime.
+
+The same mechanism for file recognition that recognizes user files on disk
+recognizes files in the system filesystem -
+so you can put a &lt;tt&gt;.java&lt;/tt&gt; file in the system filesystem,
+and it can be opened in the editor and edited just as a file on disk can
+(if saved, it will be written to the user dir on disk,
+and the newly written file will then be the actual content.
+In fact, this is why file templates in the IDE can be edited.
+
+Some folders have special meaning to the system,
+because they are defined by modules that are part of the NetBeans Platform.
+Some of them are:
+* &lt;tt&gt;Actions/&lt;/tt&gt; - A global repository for actions in the system, it contains subfolders which categorize actions into ad-hoc categories.  This folder supplies raw actions for the Key Bindings part of the Options dialog. If you install actions, the typical pattern is to put an &lt;tt&gt;*.instance&lt;/tt&gt; files here.
+* &lt;tt&gt;Menu&lt;/tt&gt; - The contents of the menu bar in the main window - it has a folder for each menu;  subfolders of these represent submenus, and &lt;tt&gt;*.instance&lt;/tt&gt; files represent &lt;tt&gt;Action&lt;/tt&gt;s to be shown on the menus.
+* &lt;tt&gt;Loaders&lt;/tt&gt; - Contains subfolders that define mime types (e.g. &lt;tt&gt;Loaders/text/x-java&lt;/tt&gt;) which are used to define various attributes such as popup menu items that should appear when the user right clicks on a file of a given MIME type.
+
+There are several things which affect how objects are used, all or some of which may be specified by a module's API:
+* The location of a file - a module may define a folder that modules put objects directly into, or request that client modules create subfolders in that folder in cases where the entire path to the file has semantic meaning (see below).
+* The type of the file - very often you will install &lt;tt&gt;*.instance&lt;/tt&gt; files that represent Java objects; typically the module will specify what classes or interfaces objects in a folder should be assignable from.
+* File attributes ([[DevFaqFileAttributes]]) - for cases where additional information is required to describe what to do with the files that client modules add to the folder, some optional or mandatory key/value attributes may be specified.
+
+====Available documentation on System Filesystem contents====
+
+[http://bits.netbeans.org/dev/javadoc/layers.html List of files and folders in the system filesystem]
+in NetBeans API Javadoc lists some locations.
+Feel free to file documentation bugs for modules you know read other locations
+but which fail to list them in their &lt;tt&gt;arch.xml&lt;/tt&gt; file.
+
+----
+Applies to: NetBeans 6.5 and newer</text>
+    </revision>
+  </page>
+</mediawiki>

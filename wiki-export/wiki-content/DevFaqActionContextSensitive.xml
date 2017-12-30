@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqActionContextSensitive</title>
+    <id>7199</id>
+    <revision>
+      <id>50345</id>
+      <timestamp>2011-12-14T00:08:16Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===How do I create an Action that is automatically enabled and disabled depending on the selection?===
+
+There are several ways to do this, depending on what exactly you need.  The basic problems all of the available solutions are addressing is that:
+* An action may be created and shown in a menu, toolbar or popup menu.
+* While it is visible on-screen, the selected file (or whatever) can change.
+* If it is context sensitive, it should run against the thing it was ''shown for'' not whatever is selected at the millisecond when it is actually called
+* People want to write main-menu and toolbar actions which are enabled and disabled based on what is [[DevFaqTrackGlobalSelection| selected]] - in practice this means writing an object that enables and disables itself based on a particular ''type'' &amp;mdash; a particular class or its subclasses &amp;mdash; being selected (each logical window in NetBeans has its own "selection";  the "global selection" is whatever is selected in whatever window currently has focus)
+
+NetBeans allows context-sensitive actions to be registered declaratively using annotations..  In the IDE, '''File &gt; New File &gt; Module Development &gt; Action''' will generate (on the first page of the wizard, specify that you want a context sensitive action):
+
+&lt;source lang="java"&gt;
+ @ActionID(...)
+ @ActionRegistration(...)
+ @ActionReference(...)
+ public final class SomeAction implements ActionListener {
+   private final List&lt;Project&gt; context;
+   public SomeAction(List&lt;Project&gt; context) {
+     this.context = context;
+   }
+   public void actionPerformed(ActionEvent ev) {
+     for (Project project : context) {
+       // TODO use project
+     }
+   }
+ }
+&lt;/source&gt;
+
+which will be called if and only if one or more projects is selected.  The good news is that the code is lightweight, simple and works;  the bad news is that it doesn't handle more complicated enablement logic.
+
+If you want to add this action into a context menu of a node you have to overwrite the getActions() method as follows:
+
+&lt;source lang="java"&gt;
+ public Action[] getActions(boolean context) {
+        List&lt;? extends Action&gt; myActions =
+                Utilities.actionsForPath("Actions/YOUR_FOLDER");
+        return myActions.toArray(new Action[myActions.size()]);
+    }
+&lt;/source&gt;
+
+If you need something more featureful, there are a few options, old and new:
+
+====NodeAction====
+
+[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/util/actions/NodeAction.html NodeAction] is somewhat more flexible, but requires more code to implement.  It is just passed the array of activated nodes whenever that changes, and can choose to enable or disable itself as it wishes.  Essentially this is just an action that automagically [[DevFaqTrackingExplorerSelections| tracks the global Node selection]].
+
+====Roll your own====
+
+The following is relatively simple and affords a way to perform whatever enablement logic you like (&lt;tt&gt;NodeAction&lt;/tt&gt; can do that too, but this might be a little more straightforward and your code doesn't have to worry about nodes at all: [[DevFaqWhatIsANode | DevFaqWhatIsANode]]).  To understand how this works, see [[DevFaqTrackGlobalSelection | DevFaqTrackGlobalSelection]]:
+
+&lt;source lang="java"&gt;
+public class FooAction extends AbstractAction implements LookupListener, ContextAwareAction {
+    private Lookup context;
+    Lookup.Result&lt;Whatever&gt; lkpInfo;
+
+    public FooAction() {
+        this(Utilities.actionsGlobalContext());
+    }
+
+    private FooAction(Lookup context) {
+        putValue(Action.NAME, NbBundle.getMessage(FooAction.class, "LBL_Action"));
+        this.context = context;
+    }
+
+    void init() {
+        assert SwingUtilities.isEventDispatchThread() 
+               : "this shall be called just from AWT thread";
+
+        if (lkpInfo != null) {
+            return;
+        }
+
+        //The thing we want to listen for the presence or absence of
+        //on the global selection
+        lkpInfo = context.lookupResult(Whatever.class);
+        lkpInfo.addLookupListener(this);
+        resultChanged(null);
+    }
+
+    public boolean isEnabled() {
+        init();
+        return super.isEnabled();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        init();
+        for (Whatever instance : lkpInfo.allInstances()) {
+            // use it somehow...
+        }
+    }
+
+    public void resultChanged(LookupEvent ev) {
+        setEnabled(!lkpInfo.allInstances().isEmpty());
+    }
+
+    public Action createContextAwareInstance(Lookup context) {
+        return new FooAction(context);
+    }
+}
+&lt;/source&gt;
+
+==== Deprecated CookieAction====
+
+In many older (pre-NB 6.8) examples you may find [http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/util/actions/CookieAction.html CookieAction]. It should be (but is not) deprecated. The original info is left here for reference and/or old code maintenance:
+
+[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/util/actions/CookieAction.html CookieAction] is used to write actions that are sensitive to what is in the selected Node(s) [[DevFaqLookup| Lookup]].  You can specify one or more classes that must be present in the selected [[DevFaqWhatIsANode| Node]]'s Lookup, and some other semantics about enablement.
+
+Being an older class, under the hood it is using [[DevFaqLookupCookie| Node.getCookie()]], so your action will only be sensitive to things actually returned by that method - in other words, only objects that implement the marker interface &lt;tt&gt;Node.Cookie&lt;/tt&gt; can work here.
+
+==== Not-Yet-Official spi.actions ====
+This module is part of the platform as of 6.8, but has not yet become official API (and nobody seems to be willing to make it stable API, so judge your own decisions based on this fact).  Nonetheless it is there, it is not changing and straightforward to use.  The example below opens a visual editor window if an instance of RAFDataObject is selected and has a RandomAccessFile in its lookup:
+
+&lt;source lang="java"&gt;
+public final class CustomOpenAction extends org.netbeans.spi.actions.Single&lt;RAFDataObject&gt;
+ {
+    public CustomOpenAction() {
+      super(RAFDataObject.class, "Open", null);
+    }
+    @Override
+    protected void actionPerformed(RAFDataObject target) {
+      //If an editor is already open, just give it focus
+      for (TopComponent tc : TopComponent.getRegistry().getOpened()) {
+        if (tc instanceof RAFEditor &amp;&amp; tc.getLookup().lookup(RAFDataObject.class) == target) {
+          tc.requestActive();
+          return;
+        }
+      }
+      //Nope, need a new editor
+      TopComponent editorWindow = null;
+      editorWindow = new RAFEditor(target);
+      editorWindow.open();
+      editorWindow.requestActive();
+    }
+    @Override
+    protected boolean isEnabled(RAFDataObject target) {
+      //Make sure there really is a file on disk
+      return target.getLookup().lookup(RandomAccessFile.class) != null;
+    }
+  }
+&lt;/source&gt;
+
+Use &lt;code&gt;ContextAction&lt;/code&gt; instead of &lt;code&gt;Single&lt;/code&gt; to create actions that operate on multi-selections.</text>
+    </revision>
+  </page>
+</mediawiki>

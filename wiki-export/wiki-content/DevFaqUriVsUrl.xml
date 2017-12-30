@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqUriVsUrl</title>
+    <id>7503</id>
+    <revision>
+      <id>32802</id>
+      <timestamp>2010-01-24T05:45:04Z</timestamp>
+      <contributor>
+        <username>Tboudreau</username>
+        <id>108</id>
+      </contributor>
+      <comment>/* URIs and URLs */</comment>
+      <text xml:space="preserve">__NOTOC__
+===URIs and URLs===
+
+'''Q:''' What is the difference?
+
+'''A:''' A URL is a kind of URI. URNs such as
+&lt;tt&gt;urn:oasis:foo&lt;/tt&gt; are URIs but not URLs.
+
+'''Q:''' Should I use &lt;tt&gt;java.net.URI&lt;/tt&gt; or &lt;tt&gt;java.net.URL&lt;/tt&gt;?
+
+'''A:''' Whichever is more convenient. &lt;tt&gt;URL&lt;/tt&gt;s must use a registered
+URL protocol and cannot handle URNs; there is slightly more overhead
+in making a URL than a URI, but not much. &lt;tt&gt;URI&lt;/tt&gt; provides better methods
+for relativizing and canonicalizing URLs as well as other operations
+on the syntactic structure. To directly load content you need to use a
+URL. &lt;tt&gt;URI&lt;/tt&gt; seems to have difficulty with the &lt;tt&gt;jar&lt;/tt&gt; protocol.
+
+'''Q:''' Can I interconvert &lt;tt&gt;URI&lt;/tt&gt;s and &lt;tt&gt;URL&lt;/tt&gt;s?
+
+'''A:''' Yes, use &lt;tt&gt;uri.toURL()&lt;/tt&gt; and
+&lt;tt&gt;URI.create(url.toExternalForm())&lt;/tt&gt;.
+
+'''Q:''' Can I interconvert &lt;tt&gt;File&lt;/tt&gt;s and &lt;tt&gt;URI&lt;/tt&gt;s?
+
+'''A:''' Easily. Use &lt;tt&gt;file.toURI()&lt;/tt&gt;. In the other
+direction, use &lt;tt&gt;new File(uri)&lt;/tt&gt;.
+
+For &lt;tt&gt;URL&lt;/tt&gt;s, go through &lt;tt&gt;URI&lt;/tt&gt;. ''Never'' use
+&lt;tt&gt;file.toURL()&lt;/tt&gt;; it does not handle unusual characters
+correctly.
+
+''Careful'' with file URLs/URIs denoting directories. NetBeans
+APIs generally expect these to end in a slash
+(&lt;tt&gt;/&lt;/tt&gt;). However &lt;tt&gt;file.toURI()&lt;/tt&gt; will not end in a
+slash if the file does not currently exist! Be sure to check if the
+URI ends in a slash and add one if not, if you in fact know that the
+&lt;tt&gt;File&lt;/tt&gt; is intended to represent a directory.
+
+'''Q:''' Can I interconvert &lt;tt&gt;FileObject&lt;/tt&gt;s and URLs?
+
+'''A:''' Use &lt;tt&gt;fileObject.getURL()&lt;/tt&gt;, or
+&lt;tt&gt;URLMapper&lt;/tt&gt; methods for more control over the kind of
+returned protocol; in the other direction, use
+&lt;tt&gt;URLMapper.findFileObject(url)&lt;/tt&gt;.
+
+For URIs, go through URL.
+
+'''Q:''' How do &lt;tt&gt;jar&lt;/tt&gt; URLs work?
+
+'''A:''' Unlike e.g. &lt;tt&gt;URLClassLoader&lt;/tt&gt;, in the NetBeans
+APIs &lt;tt&gt;file:/tmp/foo.jar&lt;/tt&gt; refers to the raw byte contents of
+&lt;tt&gt;foo.jar&lt;/tt&gt;. To refer to the root entry of the JAR (e.g. for
+use as a classpath entry) you ''must'' use
+&lt;tt&gt;jar:file:/tmp/foo.jar!/&lt;/tt&gt;. &lt;tt&gt;FileUtil&lt;/tt&gt; has
+methods (&lt;tt&gt;getArchiveFile&lt;/tt&gt;, &lt;tt&gt;getArchiveRoot&lt;/tt&gt;, and
+&lt;tt&gt;isArchiveFile&lt;/tt&gt;) to help you convert between these
+representations.
+
+'''Q:''' Which URL protocols are used in NetBeans?
+
+'''A:''' Several, including some custom protocols:
+
+* &lt;tt&gt;file&lt;/tt&gt; - for representing files on disk.
+* &lt;tt&gt;jar&lt;/tt&gt; - for representing entries inside JARs and ZIPs, including the root directory entry.
+* &lt;tt&gt;nbres&lt;/tt&gt; - a resource loaded from a NetBeans module (or technically the cross-module class loader), e.g. &lt;tt&gt;nbres:/org/netbeans/modules/foo/resources/foo.dtd&lt;/tt&gt; may load the same thing as &lt;tt&gt;jar:file:/opt/netbeans/ide4/modules/org-netbeans-modules-foo.jar!/org/netbeans/modules/foo/resources/foo.dtd&lt;/tt&gt;.
+* &lt;tt&gt;nbresloc&lt;/tt&gt; - same, but transparently localized and branded according to the usual conventions, e.g. &lt;tt&gt;nbresloc:/org/netbeans/modules/foo/resources/foo.html&lt;/tt&gt; may actually load the same thing as &lt;tt&gt;nbres:/org/netbeans/modules/foo/resources/foo''nb''ja.html&lt;/tt&gt;.
+* &lt;tt&gt;nbdocs&lt;/tt&gt; - same as &lt;tt&gt;nbresloc&lt;/tt&gt; but also searches in &lt;tt&gt;docs/&lt;/tt&gt; subfolders of installation directories, e.g. &lt;tt&gt;nbdocs:/org/netbeans/modules/usersguide/ide.css&lt;/tt&gt; may work like &lt;tt&gt;file:/opt/netbeans/ide4/docs/org/netbeans/modules/usersguide/ide.css&lt;/tt&gt;.
+* &lt;tt&gt;nbinst&lt;/tt&gt; - loads installation files using &lt;tt&gt;InstalledFileLocator&lt;/tt&gt; in installation directories, e.g. &lt;tt&gt;nbinst:///modules/ext/some-lib.jar&lt;/tt&gt; may load the same thing as &lt;tt&gt;file:/opt/netbeans/ide4/modules/ext/some-lib.jar&lt;/tt&gt;.
+* &lt;tt&gt;nbfs&lt;/tt&gt; - refers to a file object. As of NetBeans 4.0 there are no user-mounted filesystems so this is only useful to refer to file objects in the system filesystem (XML layers). For example, &lt;tt&gt;nbfs:/SystemFileSystem/Templates/Other/html.html&lt;/tt&gt; refers to an HTML file templates installed in the IDE.
+
+Also note that, unlike &lt;code&gt;java.net.URL&lt;/code&gt;, &lt;code&gt;URI.equals()&lt;/code&gt; does not make a network connection to determine equality.  Never put URLs into a HashSet or similar equality-testing collection for this reason.
+
+-------
+
+Applies to: NetBeans 4.0, 4.1, 5.0, 5.5, 6.0, 6.1, 6.5, 6.7</text>
+    </revision>
+  </page>
+</mediawiki>

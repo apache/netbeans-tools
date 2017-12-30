@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNodesChildFactory</title>
+    <id>7418</id>
+    <revision>
+      <id>40142</id>
+      <timestamp>2010-07-24T18:45:00Z</timestamp>
+      <contributor>
+        <username>Jtulach</username>
+        <id>526</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Computing Node Children Asynchronously===
+
+If you have a Node that needs to provide child Nodes, and computing the objects the child nodes represent is slow or expensive (i.e. you need to parse a file, connect to a database, or do some sort of I/O), you do not want to compute the child nodes in the event thread (which is what happens by default).
+
+NetBeans 6.0 introduces &lt;tt&gt;org.openide.nodes.ChildFactory&lt;/tt&gt; and &lt;tt&gt;Children.create(ChildFactory factory, boolean asynchronous)&lt;/tt&gt;.  Simply subclass &lt;tt&gt;ChildFactory&lt;/tt&gt; and implement &lt;tt&gt;protected boolean createKeys(List &lt;T&gt; toPopulate)&lt;/tt&gt; to build the list of objects that will be represented by the child nodes.  Implement &lt;tt&gt;protected Node createNodeForKey(T key)&lt;/tt&gt; to create a Node - it will be passed each object in the list of child objects.  &lt;tt&gt;createKeys&lt;/tt&gt; will be called on a background thread.
+
+Typically you'll want to make the model object from &lt;tt&gt;createKeys&lt;/tt&gt; available on the Node you create.  So a simple implementation of &lt;tt&gt;createNodeForKey&lt;/tt&gt; would look something like:
+
+&lt;source lang="java"&gt;
+    protected Node createNodeForKey(T key) {
+        AbstractNode result = new AbstractNode (Children.LEAF, Lookups.singleton (key));
+        result.setDisplayName (key.getName()); //or whatever
+        result.setIcon (Utilities.loadImage ("path/in/jar/to/image.gif"));
+        return result;
+    }
+&lt;/source&gt;
+
+ChildFactory can also simplify creating Nodes synchronously, and has the convenience that by using generics, your code can be type safe with respect to key objects.  Generally it can be used anywhere &lt;tt&gt;Children.Keys&lt;/tt&gt; would be used (it uses &lt;tt&gt;Children.Keys&lt;/tt&gt; under the hood).</text>
+    </revision>
+  </page>
+</mediawiki>

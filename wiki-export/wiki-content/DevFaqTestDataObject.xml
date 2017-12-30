@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqTestDataObject</title>
+    <id>7481</id>
+    <revision>
+      <id>26265</id>
+      <timestamp>2009-11-06T16:02:09Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+===Writing Tests For DataObjects and DataLoaders===
+
+Quite easy. At least in NetBeans 6.5 and newer. Everything shall work as 
+declarative MIME resolvers are loaded automatically from unit tests and 
+loaders are available from unit tests automatically.
+
+Example code is below:
+
+&lt;pre&gt;
+    private static final String BAD_MANIFEST_CONTENT =
+            "Manifest-Version: 1.0\n" +
+            "junk junk junk\n" +
+            "some more junk\n";
+    private static final String GOOD_MANIFEST_CONTENT =
+            "Manifest-Version: 1.0\n" +
+            "Java-Bean: true\n" +
+            "OpenIDE-Module-Name: com.foo.bar\n\n";
+
+    @Test public void checkContent() throws Exception {
+        FileSystem fs = FileUtil.createMemoryFileSystem();
+        FileObject good = fs.getRoot().createData("good.mf");
+        writeFile(GOOD_MANIFEST_CONTENT, good);
+        DataObject goodDob = DataObject.find(good);
+
+        FileObject bad = fs.getRoot().createData("bad.mf");
+        writeFile(BAD_MANIFEST_CONTENT, bad);
+        DataObject badDob = DataObject.find(bad);
+
+        YourInterface y = goodDob.getLookup().lookup(YourInterface.class);
+        y.doYourTest();
+    }
+
+    private void writeFile(String content, FileObject file) throws Exception {
+        OutputStream os = file.getOutputStream();
+        os.write(content.getBytes("UTF-8"));
+        os.close();
+    }
+&lt;/pre&gt;
+
+In the somewhat unusual case in which your unit test resides in a different module from that which contains your file support code (DataLoader, DataObject, etc.), you will need to add a &lt;tt&gt;&lt;test /&gt;&lt;/tt&gt; dependency on the module which contains the file support code.  Currently this can only be done by editing the &lt;tt&gt;project.xml&lt;/tt&gt; file for the module containing your unit tests.  See the build harness' README for more information; you can find the relevant section by searching for &lt;tt&gt;test-dependencies&lt;/tt&gt; in that file.
+
+
+
+====Older versions than 6.5====
+
+If you are writing a test for a &lt;tt&gt;DataObject&lt;/tt&gt;,
+you need to set up enough of the &lt;tt&gt;DataLoader&lt;/tt&gt; infrastructure
+that &lt;tt&gt;DataObject.find()&lt;/tt&gt; will locate your &lt;tt&gt;DataLoader&lt;/tt&gt;
+and call it to create your &lt;tt&gt;DataObject&lt;/tt&gt; subtype.
+
+First, use the setup code described in
+[[TestingThingsThatUseFileObjectDataObjectDataFolder| Testing Things That Use File Objects]].
+Add to the test's &lt;tt&gt;setUp()&lt;/tt&gt; method a call to &lt;tt&gt;FileUtil.setMIMEType()&lt;/tt&gt;
+to manually assign the file extension to the MIME type of your &lt;tt&gt;DataLoader&lt;/tt&gt;.
+
+&lt;pre&gt;
+FileUtil.setMIMEType("mf", "text/x-manifest");
+&lt;/pre&gt;
+
+(&lt;tt&gt;setMIMEType()&lt;/tt&gt; is deprecated with respect to usage from inside a module,
+but it is fine to use it in a unit test).
+
+(For XML file subtypes, &lt;tt&gt;FileUtil.setMIMEType()&lt;/tt&gt; on &lt;tt&gt;*.xml&lt;/tt&gt; is not likely to work.
+You can instead register a &lt;tt&gt;MIMEResolver&lt;/tt&gt; in default lookup which does whatever you need.)
+
+
+Second, you need to make sure your &lt;tt&gt;DataLoader&lt;/tt&gt; is registered in the
+[[DevFaqLookupDefault| default Lookup]]
+so that &lt;tt&gt;DataObject.find()&lt;/tt&gt; will find it.
+In 6.0, the '''New File Type''' template will set this up automatically
+by creating the correct file in &lt;tt&gt;test/unit/META-INF/services&lt;/tt&gt;.
+(Or you can get better control by using &lt;tt&gt;org.openide.util.test.MockLookup&lt;/tt&gt;.)</text>
+    </revision>
+  </page>
+</mediawiki>

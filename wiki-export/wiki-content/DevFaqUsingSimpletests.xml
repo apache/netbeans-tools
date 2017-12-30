@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqUsingSimpletests</title>
+    <id>7505</id>
+    <revision>
+      <id>51675</id>
+      <timestamp>2012-02-14T17:58:12Z</timestamp>
+      <contributor>
+        <username>Stophi</username>
+        <id>4589</id>
+      </contributor>
+      <comment>/* NOTES */</comment>
+      <text xml:space="preserve">__NOTOC__
+During development of the 6.5 series, an effort was made to improve testing by inherent support for tests in NetBeans build scripts (also known as the ''build harness'').  Therefore, unit and functional tests for platform applications are now supported ''out of the box'' in NetBeans 6.5 and later.  This effort is sometimes called "simpletests" because it greatly simplifies the work necessary to do such tests on your application.  [[FitnessTestsWithoutX| More information about simpletests]] can be found in the Wiki.
+
+==== NbModuleSuite ====
+
+Right [[API]] for starting the test inside [[apidesign:NetBeans Runtime Container|NetBeans Runtime Container]] is provided in form of [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-nbjunit/org/netbeans/junit/NbModuleSuite.html NbModuleSuite]. Add '''suite''' method into your test class to fully emulate [[NetBeans]] environment:
+
+&lt;pre&gt;
+   public static Test suite() {
+     return NbModuleSuite.create(YourTest.class);
+   }
+&lt;/pre&gt;
+
+====JUnit Version====
+
+NetBeans 6.5 now supports JUnit 4.x, via the &lt;tt&gt;JUnit 4&lt;/tt&gt; module in the &lt;tt&gt;platform&lt;/tt&gt; cluster.  If you're not familiar with the difference, this [http://www.ociweb.com/jnb/jnbAug2007.html helpful article explains the changes from JUnit 3 and JUnit 4].  Put simply, the main difference from a user's point of view is is one of syntax and style.  The tests you've already written against 3.x will continue to run under 4.x.  And although you could continue writing new tests using the 3.x syntax if you wanted, it's much easier to have NetBeans generate the test stubs for you (Tools -&gt; Create JUnit Tests or &lt;tt&gt;Ctrl+Shift+U&lt;/tt&gt;).  Starting with NetBeans 6.5, any new tests will be generated using the JUnit 4.x style.
+
+
+====Code Coverage====
+See [[CodeCoverage | Code Coverage]].
+
+====Setting up functional tests for a Platform Application====
+
+The testing libraries are included as modules in the build harness, so you will need to include the harness cluster in your application before you can support tests.  This is easily done through the IDE: 
+
+* Right click your suite's node in the project view
+* Choose "Properties"
+* Click "Libraries" on the left
+* Check the "harness" box and add the entire harness cluster.  
+* Now click the platform cluster (was platform&lt;number&gt; for 6.8 and older releases)
+* Check the boxes against the MultiView Windows and Visual Library API.
+
+Now you must set up the structure under your module: 
+
+* Go to the 'file' view, and expand your modules node
+* In the test folder, create a folder named 'qa-functional'.  Underneate that, create the folder src.
+* Under the test dir you should now have two folders, unit and qa-functional.  Under each of those should be an src folder.
+* Restart the IDE, there should now be two new Nodes in that Module’s Project Tab: Functional Test Packages and Functional Test Libraries
+* Right-click the Functional Test Libraries –&gt; Add Functional Test Dependencies, then add jemmy, nbjunit, jellytools platform, jellytools and junit4
+
+It should now be possible to run a class that extends JellyTestCase, and for the IDE to display this correctly.
+
+Support for functional tests on Maven-based NetBeans applications should be present from 7.0, with the resolution of http://netbeans.org/bugzilla/show_bug.cgi?id=190992 For more information, see http://netbeans.dzone.com/nb-mvn-functional-tests
+
+====TODO====
+* Describe how to set up a new unit test from scratch
+* Describe how to set up a new functional test from scratch
+* Describe adding support for external testing libraries (e.g. FIT, TestNG or marathon)
+* Describe how to set up additional test types (e.g. performance)
+* Describe how to configure suite &lt;tt&gt;build.xml&lt;/tt&gt; to remove &lt;tt&gt;harness&lt;/tt&gt; from ZIP distribution
+* Describe how to run tests under automated build using Hudson
+
+
+====NOTES====
+MockLookup and other [http://wiki.netbeans.org/UsefulTestClassesInModules classes mentioned on the Useful Test Classes in Modules] are not available in the platform.
+
+* You can add additional libraries needed for unit tests by setting the &lt;tt&gt;test.unit.cp.extra&lt;/tt&gt; property (e.g. in the module's project.properties file) to point to those libraries.  It does not matter where these libraries (JAR files) reside, and you can refer to them using a hardcoded path (BAD) or via a relative path -- even using &lt;tt&gt;$suite.dir&lt;/tt&gt; as a starting point in case they're used by multiple modules in the suite.  In the latter case, you can define the test.unit.cp.extra property in the suite's platform.properties (NOT project.properties) file.  Be aware that this may limit your ability to define additional things at the individual module level, so it might be better to define a standard suite-wide property like &lt;tt&gt;standard.unit.test.libs&lt;/tt&gt; to point to things used throughout the suite, then have individual modules define &lt;tt&gt;test.unit.cp.extra&lt;/tt&gt; to include this plus potentially some other things.  Items defined in the &lt;tt&gt;test.unit.cp.extra&lt;/tt&gt; property are used at both compile time and runtime, it seems.
+* The &lt;tt&gt;test.qa-functional.cp.extra&lt;/tt&gt; property works the same way for functional tests.
+* There is a property &lt;tt&gt;extra.test.libs.dir&lt;/tt&gt; tersely described in the harness README that makes it sound like a great way to define a place for extra testing libraries that will be picked up automatically during tests, but I could not get it to work.  Or at least things in that directory were not found at compile time.
+
+{{attachments|
+* [[Media:PaintApplicationWithSimpletests_DevFaqUsingSimpletests.zip]]
+* [[Media:PaintApplicationWithXTest_DevFaqUsingSimpletests.zip]]}}
+
+====Converting Tests for Applications Which Previously Used XTest====
+
+Essentially, you need only remove the XTest build and configuration files from your modules and replace them with a few lines of code in your tests' &lt;tt&gt;suite()&lt;/tt&gt; method.  More information is available in the [http://wiki.netbeans.org/XTestReplacementCookBook XTest Replacement Cookbook]</text>
+    </revision>
+  </page>
+</mediawiki>

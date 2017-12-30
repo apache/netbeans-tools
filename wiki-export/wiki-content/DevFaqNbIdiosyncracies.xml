@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNbIdiosyncracies</title>
+    <id>7405</id>
+    <revision>
+      <id>46682</id>
+      <timestamp>2011-08-14T15:48:03Z</timestamp>
+      <contributor>
+        <username>LiborJelinek</username>
+        <id>10431</id>
+      </contributor>
+      <minor/>
+      <text xml:space="preserve">__NOTOC__
+===Common calls that should be done slightly differently in NetBeans than standard Swing apps (loading images, localized strings, showing dialogs)===
+
+There are a few cases where NetBeans has convenience classes or facilities that you should use, instead of doing them the way you may be used to.  They are:
+* '''Loading images''' - Don't use &lt;tt&gt;ImageIO.read()&lt;/tt&gt; or &lt;tt&gt;Toolkit.loadImage()&lt;/tt&gt; - instead, use [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/ImageUtilities.html#loadImage(java.lang.String) ImageUtilities.loadImage()] - it has an optimized image caching strategy, and will play nicely with NetBeans module class loaders
+* '''Creating icons from images''' - Rather than use &lt;code&gt;new ImageIcon(someImage)&lt;/code&gt;, use [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/ImageUtilities.html#image2Icon(java.awt.Image) ImageUtilities.image2Icon(someImage)] which manages memory better.
+* '''Loading resource bundles/localized strings''' - Don't use &lt;tt&gt;ResourceBundle&lt;/tt&gt; directly - instead, use [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/util/NbBundle.html#getMessage(java.lang.Class,%20java.lang.String) NbBundle.getMessage()] - it will play nicely with NetBeans class loaders, and &lt;tt&gt;String&lt;/tt&gt;s resolved this way can be branded using the standard branding mechanism (this is the way you change the title of your application from "NetBeans" to something else).  Also, do not hold a reference to a resource bundle - just call &lt;tt&gt;NbBundle.getMessage()&lt;/tt&gt; every time - bundles are cached for a period of time, the call is fast.  In a large application, holding resource bundles eats memory wastefully
+* '''Assigning mnemonics to labels and buttons''' - use [http://bits.netbeans.org/dev/javadoc/org-openide-awt/org/openide/awt/Mnemonics.html Mnemonics] to assign text and mnemonic to a widget with one call using one key value pair in properties file and annotate the mnemonic with &amp; character. Also do not reuse the same text if it is used in different UI components. This is more freindly to localization.&lt;br&gt;''Tip: Check 'Generate Mnemonics Code' checkbox in properties of your form if you are using NetBeans GUI editing support.''
+* '''Showing dialogs''' - instead of creating a &lt;tt&gt;JDialog&lt;/tt&gt; and showing it, or using &lt;tt&gt;JOptionPane&lt;/tt&gt;, use [http://bits.netbeans.org/dev/javadoc/org-openide-dialogs/org/openide/NotifyDescriptor.html NotifyDescriptor] or [http://bits.netbeans.org/dev/javadoc/org-openide-dialogs/org/openide/DialogDescriptor.html DialogDescriptor] to define your dialog and its contents, then pass these to [http://bits.netbeans.org/dev/javadoc/org-openide-dialogs/org/openide/DialogDisplayer.html#notify(org.openide.NotifyDescriptor) DialogDisplayer.notify] - such dialogs will play nicely with NetBeans' windowing system, global actions, etc.
+* '''Reading/writing/listing files''' - in most cases, rather than work with &lt;code&gt;java.io.File&lt;/code&gt;, you will want to work with &lt;code&gt;[[DevFaqFileObject| org.openide.filesystems.FileObject]]&lt;/code&gt;.
+
+* '''Quiting application''' - you can of course still continue to quit using System.exit() but polite NBP apps should employ [http://bits.netbeans.org/dev/javadoc/org-openide-util/org/openide/LifecycleManager.html LifecycleManager] instead. Typical Usage pattern is &lt;code&gt;LifecycleManager.getDefault().exit()&lt;/code&gt; that is equals to &lt;code&gt;System.exit(0)&lt;/code&gt; you don't provide custom LifecycleManager.
+
+----
+
+Applies to: NetBeans 6.8 and above</text>
+    </revision>
+  </page>
+</mediawiki>

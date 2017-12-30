@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqNonGuiPlatformApp</title>
+    <id>7425</id>
+    <revision>
+      <id>40938</id>
+      <timestamp>2010-09-10T16:38:01Z</timestamp>
+      <contributor>
+        <username>Tomwheeler</username>
+        <id>1435</id>
+      </contributor>
+      <comment>fix url syntax</comment>
+      <text xml:space="preserve">__NOTOC__
+==Can I create a console or server (non-GUI) app with the NetBeans Platform?==
+
+While most documentation explains the NetBeans Platform in terms of Java desktop applications, it is possible to build a non-GUI application on the NetBeans Platform.  This might be useful, for example, when creating a platform-based application which will distribute computationally expensive work among a group of machines.  Note that this explains how to develop an application which is only ever meant to run headless, not how to develop a single application which can run in either GUI ''or'' command line mode (which is described in the second half of this page).
+
+This is done by simply starting with the NetBeans Platform and removing all but the most essential components.  NetBeans architect [http://www.apidesign.org/ Jaroslav Tulach] calls this subset of the NetBeans platform the "[http://wiki.apidesign.org/wiki/NetBeans_Runtime_Container runtime container]" and wrote an application which uses it to [http://dvbcentral.sourceforge.net/ control his television].  
+
+Here are the steps for creating a runtime container application:
+
+# Create a new suite
+# Exclude all clusters from the suite
+# Re-enable the platform cluster, but disable all but the following modules:
+:* Bootstrap
+:* File System API
+:* Lookup API
+:* Module System API
+:* Startup
+:* Utilities API
+# Add a new module to the suite
+# Create and register a &lt;tt&gt;ModuleInstall&lt;/tt&gt; class
+# The &lt;tt&gt;restored()&lt;/tt&gt; method is effectively your application's &lt;tt&gt;main&lt;/tt&gt; method.
+# You may optionally override the &lt;tt&gt;close()&lt;/tt&gt; method of your &lt;tt&gt;ModuleInstall&lt;/tt&gt; to clean up resources upon shutdown, but be sure then to call &lt;tt&gt;LifecycleManager.getDefault().shutDown()&lt;/tt&gt;.
+
+You will also need to suppress the splash screen by passing &lt;tt&gt;--nosplash&lt;/tt&gt; argument when starting the app.
+
+==How Can I Make My NetBeans Platform Run in GUI or Command-Line Mode?==
+
+If your application performs some repetitive task like engineering analysis and you have some users who prefer using the command line and some who don't, you may be asked to modify your application so that it can run in either the normal GUI mode or in batch processing mode from the command line.
+
+The exact method for doing this will vary per application, but you will typically need to add a module to interpret some custom command-line arguments using the [http://bits.netbeans.org/dev/javadoc/org-netbeans-modules-sendopts/ Command Line Processing API].  Inside the process(Env env, Map&lt;Option, String[]&gt; map) method of your option processor, you'll invoke whatever code corresponds to the arguments the user specified (e.g. myapp --import path/to/file.txt might import some file).  
+
+Remember that you should not use System.out, System.err and System.in for the output, error and input streams in the options processor but instead get them from the Env object passed as a parameter to the process method.  
+
+When running a platform application which contains the Window System and other GUI modules, you will also need to specify --nosplash --nogui on the command line at startup to prevent the splash screen and window system from being displayed.  You may also wish to set the netbeans.logger.console system property to true (e.g. specify -J-Dnetbeans.logger.console=true on the command line) so that you will see NetBeans' error messages on the console.  It might also be a good idea to specify the plugin.manager.check.interval=NEVER system property to avoid checks for new plugins when running in command line mode.
+
+
+Finally, note that prior to NetBeans 6.10, the current working directory available from the Env object was set to the directory of the application's installation, not the directory from which the command was executed.  The consequence of this is that resolving relative file paths did not work as expected on Microsoft Windows systems, although it does work correctly on all versions of UNIX I tested.  This has been resolved ([http://netbeans.org/bugzilla/show_bug.cgi?id=189791]), but the suggested workaround for affected versions of the platform is to introduce an additional batch file which invokes the NetBeans executable by passing in a Java system property that specifies the current (execution) directory.
+----
+Applies to: NetBeans 6.5 and later</text>
+    </revision>
+  </page>
+</mediawiki>

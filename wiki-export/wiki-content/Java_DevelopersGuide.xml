@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>Java DevelopersGuide</title>
+    <id>9242</id>
+    <revision>
+      <id>67522</id>
+      <timestamp>2015-01-29T21:05:26Z</timestamp>
+      <contributor>
+        <username>Markiewb</username>
+        <id>12770</id>
+      </contributor>
+      <comment>/* How Tos */ How do I get the packages contained in a jar/library/dependency</comment>
+      <text xml:space="preserve">__NOTOC__
+=Java Infrastructure Developer's guide (AKA Concepts &amp;amp; HowTos)=
+
+
+==Concepts==
+
+[[JavaHT_Overview| Overview]]
+
+[[JavaHT_JavacPhases| The Javac phases]] 
+
+[[JavaHT_TreesElementsTypesTokens| Trees, Elements, Types and Tokens ]] 
+
+[[JavaHT_Conversions_TreesElementsTypes| Conversions between trees and elements and types...]]
+
+[[JavaHT_IDEIntegration| Integration with the IDE]]
+
+[[JavaHT_GettingToJavacInfromation| Getting to the javac information = writting a java infrastructure task]]
+
+[[JavaHT_RegisteringRunningTasks| Registering/running tasks]]
+
+[[JavaHT_ElementHandle| The ElementHandle]]
+
+[[JavaHT_TreePathHandle| The TreePathHandle]]
+
+[[JavaHT_ComparingTreesElements| Comparing Trees and Elements]]
+
+[[JavaHT_SourceFilesVsClassFiles| Source files vs. Class Files]]
+
+[[JavaHT_ClassFilesVsSignatureFiles| Class Files vs. Signature Files]]
+
+==How Tos==
+
+[[JavaHT_SetupModule| How to setup a module which uses the Java related APIs]]
+
+[[JavaHT_GetIntoJavacContext| How do I Get into the Javac Context for a File?]]
+
+[[JavaHT_GetAllMembers| How do I Get All Methods/Fields/Constructors of a Class?]]
+
+[[JavaHT_Modification| How do I do modification to a source file?]]
+
+[[JavaHT_TreeMaker| How to work with TreeMaker]]
+
+[[JavaHT_TreeMakerQA| TreeMaker difficulties, Questions &amp; Answers]]
+
+[[JavaHT_FindUsagesOfClass| How do I Find All Usages of a Class?]]
+
+[[JavaHT_GetElementFromFQN| How do I get an ElementHandle if all I have is the Project and the class name?]]
+
+[[JavaHT_GetLibrariesForModule| How do I get a list of libraries/dependencies of a project?]]
+
+[[JavaHT_GetSourceLocationOfWrappedJar| How do I get the source location of a wrapped jar?]]
+
+[[JavaHT_GetPackagesOfAJar| How do I get the packages contained in a jar/library/dependency?]]
+
+== Tutorials ==
+http://platform.netbeans.org/tutorials/nbm-copyfqn.html
+
+http://platform.netbeans.org/tutorials/nbm-code-generator.html
+
+http://platform.netbeans.org/tutorials/nbm-java-hint.html
+
+http://netbeans.org/projects/platform/sources/platform-content/content/trunk/tutorials/60/nbm-whichelement.html?raw=true</text>
+    </revision>
+  </page>
+</mediawiki>

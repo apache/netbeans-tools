@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqGeneralWhereIsPlatformHowToBuild</title>
+    <id>7305</id>
+    <revision>
+      <id>65203</id>
+      <timestamp>2013-12-16T19:29:10Z</timestamp>
+      <contributor>
+        <username>Skygo</username>
+        <id>12034</id>
+      </contributor>
+      <minor/>
+      <comment>fix wiki url (ctd)</comment>
+      <text xml:space="preserve">__NOTOC__
+===Where is the Platform and How Can I Build It?===
+
+In versions of NetBeans prior to 6.0, two major products were available for download: the IDE and the platform.  The platform is the foundation on which the IDE is built, or looking at it another way, the platform is what's left over when you remove all the IDE features from the IDE.  At any rate, the platform provides user interface components, build scripts, declarative configuration and many other features that can save you a lot of time and effort in creating your own application.
+
+Because platform-based applications are themselves platforms that can be extended, the IDE can also be extended just as the platform can.  Since you can remove features from a platform as well as add new ones, the availability of the platform and IDE let you choose between starting small and adding on (platform) or starting large and removing things (the IDE).  Some feel the latter approach is better and even facing such a choice can be confusing to new users.  If you're a new user, you'd do well to heed this advice and just use the IDE as a platform.  It works just as well and is a lot less trouble.
+
+But if you're still here, you may be asking where is the platform?  Binary distributions of the platform are not being made available from version 6.0 onward (and [http://www.netbeans.org/issues/show_bug.cgi?id=124372 issue #124372] filed to bring them back was closed without any reasonable explanation).  So if you want a platform binary, you'll have to create one yourself.
+
+Building the platform is not difficult, but it's not intuitive either.  To start, you will need to download the  platform source ZIP file and unpack it to some directory.  Open a command prompt to that directory and change  to the &lt;pre&gt;nbbuild&lt;/pre&gt; subdirectory.  From there, issue the following command:
+
+&lt;pre&gt;
+
+   ant -Dcluster.config=platform build-platform
+
+&lt;/pre&gt;
+
+If you're using Java 6, you'll need to add an extra property:
+
+&lt;pre&gt;
+
+   ant -Dcluster.config=platform build-platform -Dpermit.jdk6.builds=true 
+
+&lt;/pre&gt;
+
+But be aware that it is not guaranteed to build under Java 6 due to language changes or compiler bugs.  It is unlikely you will encounter such a problem in the platform build, though it has certainly been known to happen in the IDE build.  If you find something that won't compile under Java 6 but does compile under Java 5, file a bug report (preferably with a patch) about it so it can be corrected.  Meanwhile, you can use Java 5 to compile -- even when Java 6 is first in your path -- by using the &lt;tt&gt;nbjdk.home&lt;/tt&gt; system property to point to your Java 5 installation:
+
+&lt;pre&gt;
+   ant -Dcluster.config=platform build-platform -Dnbjdk.home=c:/devtools/jdk/jdk-1.5.0_u15
+&lt;/pre&gt;
+
+This will build the platform into the &lt;pre&gt;netbeans&lt;/pre&gt; subdirectory (i.e. &lt;tt&gt;{nbbuild/netbeans&lt;/tt&gt;}).  You can zip or tar up the &lt;nowiki&gt;netbeans&lt;/nowiki&gt; directory to create a ZIP distribution.
+
+It's also possible to create platforms based on a different subset of the NetBeans project.  Hints for doing this can be found here:
+
+* [[WorkingWithNetBeansSources | Working with NetBeans Sources]]
+
+====Why would you want to build your application on a separate platform instead of the IDE as a platform?====
+
+Using the IDE is certainly easier, but there are inherent dangers associated with developing against your own IDE as the platform. In particular, another developer on your team may have a different version of the IDE, have different modules/clusters installed or even have simply named the platform something different in the Platform Manager.  This can result in a broken build or the introduction of unwanted features.  It also makes doing an automated build, such as through Hudson or CruiseControl, far more difficult.
+
+If you want to avoid these problems, you can check the platform you want to build against into source control and then set the &lt;tt&gt;netbeans.dest.dir&lt;/tt&gt; and &lt;tt&gt;harness.dir&lt;/tt&gt; properties in your suite's &lt;tt&gt;nbproject/platform.properties&lt;/tt&gt; file to point to the platform and harness, respectively.  Building from a known version checked out from source control avoids these problems and makes it possible to historically reproduce any build.  I show example values for these below:
+
+&lt;pre&gt;
+
+# NOTE: You must remove the nbplatform.default line which might already exist in this file.
+# Also note that editing the properties of your suite via the suite customizer (dialog)
+# can add that line back in, so you'll need to watch for this and delete it again in this case.
+
+# where the suite is located; you don't need to change this.  It exists 
+# to allow us to use relative paths for the other values
+suite.dir=${basedir}
+
+# the path to the NetBeans IDE or platform binary we want to build against 
+# (e.g. if building against the IDE, this points to the directory created when 
+# you unpack the IDE zip file).  this example assumes your platform directory 
+# is parallel to the suite directory, but you can change it to suit your needs
+netbeans.dest.dir=${suite.dir}/../platform
+
+# path to the build harness you want to use.  This is typically in the 
+# harness subdirectory of your platform, but you could point to a directory
+# containing customized build scripts if you want to.
+harness.dir=${netbeans.dest.dir}/harness
+
+&lt;/pre&gt;
+
+====Update for NBM projects generated by NetBeans 6.7 and later====
+
+If you have generated your projects in IDE version 6.7 and later, you have to modify the above described method slightly (6.5.1 and earlier projects compile against newer platform/harness without changes). You can distinguish "newer" project by the presence of &lt;tt&gt;cluster.path&lt;/tt&gt; property in &lt;tt&gt;nbproject/platform.properties&lt;/tt&gt; file or simply by the fact that an attempt to build a suite with above described &lt;tt&gt;platform.properties&lt;/tt&gt; results in error:
+&lt;pre&gt;
+.../harness/suite.xml:60: When using cluster.path property, remove
+netbeans.dest.dir, enabled.clusters and disabled.clusters properties
+from platform config, they would be ignored.
+&lt;/pre&gt;
+
+In such case you have to replace &lt;tt&gt;netbeans.dest.dir&lt;/tt&gt;, &lt;tt&gt;enabled.clusters&lt;/tt&gt; and &lt;tt&gt;disabled.clusters&lt;/tt&gt; properties with new property &lt;tt&gt;cluster.path&lt;/tt&gt;, e.g.:
+
+&lt;pre&gt;
+
+# NOTE: You must remove the nbplatform.default line which might already exist in this file.
+# Also note that editing the properties of your suite via the suite customizer (dialog)
+# can add that line back in, so you'll need to watch for this and delete it again in this case.
+
+# where the suite is located; you don't need to change this.  It exists 
+# to allow us to use relative paths for the other values
+suite.dir=${basedir}
+
+# just a helper property pointing to the same location as netbeans.dest.dir did before;
+# Referenced only in this properties file, has no meaning for NB harness.
+platform.base=${suite.dir}/../platform
+
+# Give a name to the platform at the relative path and define its location
+# using the platform.base property we set above. You can change the value  
+# ('myplatform') to something more descriptive (like 'nb68'), but you
+# must then change the name of the second property (e.g. from 
+# nbplatform.myplatform.netbeans.dest.dir to nbplatform.nb68.netbeans.dest.dir)
+nbplatform.active=myplatform
+nbplatform.myplatform.netbeans.dest.dir=${platform.base}
+
+# classpath-like list of absolute or relative paths to individual clusters 
+# against which you want your suite to build; Note that you can use 
+# "bare", i.e. not numbered cluster names, which simplifies later transitions
+# to newer version of the platform. E.g:
+cluster.path=${platform.base}/platform:\
+     ${platform.base}/ide:\
+     ../otherSuite/build/cluster
+
+# path to the build harness you want to use.  This is typically in the 
+# harness subdirectory of your platform, but you could point to a directory
+# containing customized build scripts if you want to.
+harness.dir=${platform.base}/harness
+
+&lt;/pre&gt;
+
+Note that the content of &lt;tt&gt;cluster.path&lt;/tt&gt; is not limited to clusters from NB platform, you can add clusters from other suites, standalone modules, etc. This allows to reuse non-platform modules in several RCP apps. [[DevFaqHowToReuseModules| More on module reuse here]], other details about setting up &lt;tt&gt;cluster.path&lt;/tt&gt; can be found in &lt;tt&gt;harness/README&lt;/tt&gt;.
+
+====Update for NBM projects generated by NetBeans 7.0 and later====
+Now the the platform can get downloaded automatically with some minor tweaks! This is great for usage in Continuous Integration servers like Hudson/Jenkins.
+
+See [[DevFaqAutomaticPlatformDownload|here]] for more details.
+
+==Some automation anyone?==
+The above process is basically manual so here are some stuff I developed to automate the process:
+
+===Update the development environment===
+The following allows to update the development environment mentioned above that should be part of version control. (i.e. to make it work from Hudson for example)
+
+* Add a xml file in the suite's root (referred as preparation.xml from now on)
+Hare are its contents:
+&lt;pre&gt;
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;project name="XXX-Preparation" basedir="."&gt;
+    &lt;description&gt;Prepares the environment to build the module suite XXX.&lt;/description&gt;
+    &lt;!--Don't modify this file unless you know what you are doing--&gt;
+    &lt;property name="ant-contrib-filename" value="ant-contrib-1.0b3.jar"/&gt;
+    &lt;property file="nbproject/project.properties"/&gt;
+    &lt;property file="nbproject/platform.properties"/&gt;
+    
+    &lt;target name="update-platform" depends="init-netbeans"&gt;
+        &lt;for list="${cluster.path}" delimiter=":" param="cur" trim="true"&gt;
+            &lt;sequential&gt;
+                &lt;add-core-module module="@{cur}"/&gt;
+            &lt;/sequential&gt;
+        &lt;/for&gt;
+    &lt;/target&gt;
+
+    &lt;target name="unzip-compilation-env" depends="init-netbeans, init-hudson"&gt;
+        &lt;!--Hudson needs to run this task first as it gets the core modules as zip from version control--&gt;
+        &lt;for list="${cluster.path}" delimiter=":" param="cur" trim="true"&gt;
+            &lt;sequential&gt;
+                &lt;expand-module module="@{cur}"/&gt;
+            &lt;/sequential&gt;
+        &lt;/for&gt;
+    &lt;/target&gt;
+
+    &lt;target name="update-env" depends="init-netbeans, init-hudson" description="Update the Netbeans core modules used to compile/run OIT"&gt;
+        &lt;!--Make sure that any recently added module using the IDE is also included.
+        Fix it to the proper format.--&gt;
+        &lt;mkdir dir="../netbeans/"/&gt;
+        &lt;propertyregex property="cluster.path"
+               input="${cluster.path}"
+               regexp="nbplatform.active.dir"
+               replace="platform.base"
+               global="true"
+               override="true"/&gt;
+        &lt;replaceregexp file="nbproject/platform.properties"
+                       match="nbplatform.active.dir"
+                       replace="platform.base"
+                       byline="true"
+                       flags="g,s"/&gt;
+        &lt;pathconvert pathsep="\;" property="folders_temp"&gt;
+            &lt;dirset dir="../netbeans/"&gt;
+                &lt;include name="*/**"/&gt;
+                &lt;!--ignore svn and cvs files--&gt;
+                &lt;include name="**/.svn"/&gt;
+                &lt;include name="**/.svn/**"/&gt;
+                &lt;include name="**/CVS"/&gt;
+                &lt;include name="**/CVS/**"/&gt;
+                &lt;!--Exclude the nb-plugins folder--&gt;
+                &lt;exclude name="nb-plugins/**"/&gt;
+                &lt;!--Exclude the root folder--&gt;
+                &lt;exclude name="../netbeans"/&gt;
+            &lt;/dirset&gt;
+        &lt;/pathconvert&gt;
+        &lt;antcall target="update-platform"/&gt;
+        &lt;antcall target="unzip-compilation-env"/&gt;
+    &lt;/target&gt;
+
+    &lt;macrodef name="expand-module"&gt;
+        &lt;attribute name="module"/&gt;
+        &lt;sequential&gt;
+            &lt;delete dir="@{module}"/&gt;
+            &lt;unzip src="@{module}.zip" dest="@{module}"/&gt;
+        &lt;/sequential&gt;
+    &lt;/macrodef&gt;
+
+    &lt;macrodef name="add-core-module"&gt;
+        &lt;attribute name="module"/&gt;
+        &lt;sequential&gt;
+            &lt;if&gt;
+                &lt;equals arg1="@{module}" arg2="../netbeans/nb-plugins"/&gt;
+                &lt;then&gt;
+                    &lt;echo&gt;Adding custom module @{module}&lt;/echo&gt;
+                    &lt;available file="@{module}" type="dir" property="customdir.exists"/&gt;
+                    &lt;if&gt;
+                        &lt;equals arg1="${customdir.exists}" arg2="true"/&gt;
+                        &lt;then&gt;
+                            &lt;zip destfile="@{module}.zip" basedir="@{module}" update="true"/&gt;
+                        &lt;/then&gt;
+                    &lt;/if&gt;
+                &lt;/then&gt;
+                &lt;else&gt;
+                    &lt;length string="@{module}" property="@{module}.length.module" /&gt;
+                    &lt;substring text="@{module}" start="12" end="${@{module}.length.module}" property="new.module"/&gt;
+                    &lt;echo&gt;Adding netbeans core module ${new.module}&lt;/echo&gt;
+                    &lt;mkdir dir="../netbeans/${new.module}/"/&gt;
+                    &lt;delete file="../netbeans/${new.module}.zip"/&gt;
+                    &lt;delete includeemptydirs="true"&gt;
+                        &lt;fileset dir="../netbeans/${new.module}/" includes="**/.*" defaultexcludes="false"/&gt;
+                    &lt;/delete&gt;
+                    &lt;zip destfile="../netbeans/${new.module}.zip" basedir="${netbeans.home}\..\${new.module}" update="true"/&gt;
+                &lt;/else&gt;
+            &lt;/if&gt;
+        &lt;/sequential&gt;
+    &lt;/macrodef&gt;
+    
+    &lt;scriptdef name="substring" language="javascript"&gt;
+        &lt;attribute name="text" /&gt;
+        &lt;attribute name="start" /&gt;
+        &lt;attribute name="end" /&gt;
+        &lt;attribute name="property" /&gt;
+     &lt;![CDATA[
+       var text = attributes.get("text");
+       var start = attributes.get("start");
+       var end = attributes.get("end") || text.length;
+       project.setProperty(attributes.get("property"), text.substring(start, end));
+     ]]&gt;
+    &lt;/scriptdef&gt;
+
+    &lt;target name="check-env" depends="getAntContribJar"&gt;
+        &lt;condition property="isNetbeans"&gt;
+            &lt;not&gt;
+                &lt;isset property="Hudson"/&gt;
+            &lt;/not&gt;
+        &lt;/condition&gt;
+    &lt;/target&gt;
+
+    &lt;target name="getAntContribJar"&gt;
+        &lt;fileset id="ant-contrib-jar" dir="${suite.dir}/tools"&gt;
+            &lt;include name="ant-contrib-*.jar" /&gt;
+        &lt;/fileset&gt;
+        &lt;pathconvert property="ant-contrib-jar" refid="ant-contrib-jar" pathsep="," /&gt;
+        &lt;basename property="ant-contrib-filename" file="${ant-contrib-jar}"/&gt;
+    &lt;/target&gt;
+
+    &lt;target name="init-netbeans" depends="check-env" if="isNetbeans"&gt;
+        &lt;echo&gt;Configuring ant-contrib for Netbeans use...&lt;/echo&gt;
+        &lt;property name="ant-contrib-loc" value="${suite.dir}/tools/${ant-contrib-filename}"/&gt;
+        &lt;available file="${ant-contrib-loc}" property="ant-contrib.present"/&gt;
+        &lt;fail unless="ant-contrib.present" message="The ant-contrib jar doesn't exist at: ${ant-contrib-loc}, can't build. Check your settings!" /&gt;
+        &lt;!--We are in not Hudson--&gt;
+        &lt;taskdef resource="net/sf/antcontrib/antcontrib.properties"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+    &lt;/target&gt;
+
+    &lt;target name="init-hudson" depends="check-env" unless="isNetbeans"&gt;
+        &lt;echo&gt;Configuring ant-contrib for Hudson use...&lt;/echo&gt;
+        &lt;!--Import Hudson environment variables--&gt;
+        &lt;property environment="env"/&gt;
+        &lt;property name="ant-contrib-loc" value="${env.ANT_HOME}/lib/${ant-contrib-filename}"/&gt;
+        &lt;available file="${ant-contrib-loc}" property="ant-contrib.present"/&gt;
+        &lt;fail unless="ant-contrib.present" message="The ant-contrib jar doesn't exist at: ${ant-contrib-loc}, can't build. Check your settings!" /&gt;
+        &lt;!--Define it. For some reason the approach in init-netbeans doesn't work in Hudson.--&gt;
+        &lt;taskdef name="for" classname="net.sf.antcontrib.logic.ForTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="propertyregex" classname="net.sf.antcontrib.property.RegexTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="if" classname="net.sf.antcontrib.logic.IfTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="math" classname="net.sf.antcontrib.math.MathTask"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+        &lt;taskdef name="var" classname="net.sf.antcontrib.property.Variable"&gt;
+            &lt;classpath&gt;
+                &lt;pathelement location="${ant-contrib-loc}"/&gt;
+            &lt;/classpath&gt;
+        &lt;/taskdef&gt;
+    &lt;/target&gt;
+&lt;/project&gt;
+&lt;/pre&gt;
+Here's a sumary of the targets and what they do:
+*'''init-netbeans/init-hudson''': Configures the ant-contrib lib used in other tasks. For some reason Hudson doesn't work with the init-netbeans approach.
+*'''getAntContribJar''': Looks in the suite's tools folder for the ant-contrib jar file. This file name is then used by other tasks
+*'''check-env''': Basically to decide if we're in Netbeans or in Hudson. While in Hudson just pass the -DHudson=true parameter to the ant job. Having this variable set (not the value) tells this task that we are in Hudson.
+*'''update-env''': The task to call. This one updates the cluster.path values in nbproject/platform.properties to set it up as mentioned in this FAQ. Why you might ask? This just takes care of updating any later addition of a module via using Netbeans and converts it to the format discussed in this FAQ. Basically no need to manually modify the nbproject/platform.properties file after the initial change!
+*'''update-platform''': This will grab the current's IDE modules defined in cluster.path and zip them in a netbeans folder parallel to the suite's root folder. No need to do it manually!
+*'''unzip-compilation-env''': this unzips the zips created in the above task to their proper place.
+
+Keep in mind that after making the changes proposed earlier in this FAQ the project won't work (i.e. build, run, etc) if the environment is not set.
+
+That's the reason of doing all this in another xml file. Attempting any of this from the suite's build file won't work since you are messing with the platform files it is working from.
+
+'''Notes:''' 
+*Make sure to have an ant-contrib file in &lt;suite's root&gt;/tools folder for the above to work.
+*Current release of ant-contrib has an error. To fix it unpack the jar and add this entry to the net/sf/antcontrib/antcontrib.properties file in the Logic tasks section:
+&lt;pre&gt;
+for=net.sf.antcontrib.logic.ForTask
+&lt;/pre&gt; 
+
+See also: 
+*[[DevFaqSignNbm | Can I sign NBMs I create?]] for tasks to sign all your nbm files
+*[[DevFaqCustomizeBuild | How can I customize the build process?]] To add any custom task you might have to the build process.</text>
+    </revision>
+  </page>
+</mediawiki>

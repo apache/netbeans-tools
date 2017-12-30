@@ -1,0 +1,60 @@
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+==Should I register an object in my layer file using .instance or .settings files? What about .shadow files or serialization?==
+
+There are a number of kinds of files which are treated (and can be transformed into) instances of objects.
+
+{|- border=1 class="simple" cellpadding="7" cellspacing="0" style="background-color:#FFF9EF;"
+! What
+! When to Use It
+! How
+|-valign="top"
+| <code>.instance</code> files
+| Almost all the time
+| Create a file whose name is the fully qualified name of the class you want to register, with the . characters replaced with - characters and the extension <code>.instance</code> - e.g. <code>&lt;file name=&quot;com-foo-mymodule-MyStatusBarElementProvider.instance&quot;/&gt;</code>.  You can also give the file a different name and instead declare the type using a [[DevFaqFileAttributes|FileObject attribute]], e.g. <blockquote><code>&lt;file name=&quot;x.instance&quot;&gt;<br/>&nbsp;&nbsp;&lt;attr name=&quot;instanceClass&quot; stringvalue=&quot;com.foo.mymodule.MyStatusBarElementProvider&quot;/&gt;<br/>&lt;/file&gt; </code></blockquote>
+  If you want to use a factory method and set up some configuration of the object using your own [[DevFaqFileAttributes|FileObject attributes]], you can instead <ul><li>Create a public static method on some class, which takes a <code>[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileObject.html FileObject]</code> as an argument, e.g.<br/><blockquote><code>&lt;file name=&quot;x.instance&quot;&gt;<br/>&nbsp;&nbsp;&lt;attr name=&quot;instanceClass&quot; stringvalue=&quot;com.foo.mymodule.MyStatusBarElementProvider&quot;/&gt;<br/>&nbsp;&nbsp;&lt;attr name=&quot;instanceCreate&quot; methodvalue=&quot;com.foo.mymodule.MyStatusBarElementProvider.factoryMethod&quot;/&gt;<br/>&nbsp;&nbsp;attr name=&quot;yourCustomAttribute&quot; stringvalue=&quot;someValueYouCareAbout&quot;/&gt;<br/>&lt;/file&gt;</code></blockquote>
+|-valign="top"
+| <code>.settings</code> files
+| In specialized situations when the object may be saved back to disk with changed state at runtime and you cannot simply use <code>NbPreferences</code>
+| Create an XML file in your module for your settings file, populated as described in [[DevFaqDotSettingsFiles|the .settings file FAQ]].  Register that file in some folder by specifying the XML file as the URL of the <code>&lt;file&gt;</code> entry in your layer, e.g. <code>&lt;file name=&quot;MyObject.settings&quot; url=&quot;theActualFile.xml&quot;/&gt;</code> (in this case, the layer.xml file and the settings file are in the same Java package in your sources).
+|-valign="top"
+| <code>.shadow</code> files
+| If you want your object to be a pseudo-singleton, but it will be registered in multiple folders, or the user may delete the shadow file and you need to provide a way for the user to recover it (i.e. a way to create a new <code>.shadow</code> file)
+| <code>[[DevFaqDotShadowFiles| .shadow]]</code> files are like unix symbolic links - they point to another file somewhere else in the [[DevFaqSystemFilesystem| system filesystem]] or on disk, and behave as if they were really that file.  Use one of the other registration mechanisms described here to register your object in some folder.  Then create a shadow file as [[DevFaqDotShadowFiles| described here]] which points to it.<br/> An example of this is Menu and Toolbar actions &mdash; all actions are registered in subfolders of the <code>Actions/</code> folder in the system filesystem.  The user might manually delete or rearrange them;  the UI that allows this can also show all available actions, so that the user can replace accidentally deleted actions.
+|-valign="top"
+| <code>.ser</code> (serialized object) files
+| Basically never
+| Write a serialized object out to disk in a file with the extension <code>.ser</code>, either on the fly at runtime into some folder under <code>[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileUtil.html#getConfigFile(java.lang.String) FileUtil.getConfigFile()]</code>, or serialize an object ahead of time somehow, copy it into your module sources, and register something like <code>&lt;file name="foo.ser" url="relative/path/in/module/sources/from/layer/dot/xml/to/foo.ser"/&gt;</code>.  Remember that if you use serialization, ''any'' change to the class you serialized is likely to break loading of existing <code>.ser</code> files - this is almost never a good idea.
+|-valign="top"
+| Your own file type
+| Basically never
+| Any [[DevFaqDataObject| DataObject]] type which contains an <code>[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/cookies/InstanceCookie.html InstanceCookie]</code> (and ideally also an <code>[http://bits.netbeans.org/dev/javadoc/org-openide-nodes/org/openide/cookies/InstanceCookie.Of.html InstanceCookie.Of]</code>) can be registered in some folder. If this is done <code> [http://bits.netbeans.org/dev/javadoc/org-openide-util-lookup/org/openide/util/lookup/Lookups.html#forPath(java.lang.String) Lookups.forPath(&quot;path/to/parent/folder&quot;)] </code> can be used to find it and any other objects registered in that folder (whatever their file type).  So you could create your own file type which provides these objects.  <br/>Unless you are doing something very, very unusual, one of the existing registration mechanisms will almost always be sufficient.  <br/>This mechanism may be useful if you have existing code which reads and writes files in some format, and you cannot change that code.
+|}
+
+===Apache Migration Information===
+
+The content in this page was kindly donated by Oracle Corp. to the
+Apache Software Foundation.
+
+This page was exported from , 
+that last modified by NetBeans user Jglick 
+on 2010-06-14T22:30:44Z.
+

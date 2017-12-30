@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqReplaceWindowSystem</title>
+    <id>7451</id>
+    <revision>
+      <id>26235</id>
+      <timestamp>2009-11-06T15:59:14Z</timestamp>
+      <contributor>
+        <username>Admin</username>
+        <id>1</id>
+      </contributor>
+      <text xml:space="preserve">__NOTOC__
+==How Can I Replace the Window Manager?==
+
+Perhaps your users are a bit confused by the ability to close, slide or dock windows or maybe you're trying to retain the behavior of some existing application's window system.  There are times, however rare, in which you want to replace the typical NetBeans Window Manager &lt;tt&gt;org.netbeans.core.windows.WindowManagerImpl&lt;/tt&gt; with a different one.
+
+Before doing this you should know that starting with NetBeans 6.5, it [http://blogs.sun.com/geertjan/entry/limiting_the_netbeans_window_system will be easy to change certain behaviors of the window system].  So needing to replace the window manager is rare already and will be needed even less often in the future.
+
+But if you still want to do it, you can:
+
+* Create an implementation of the &lt;tt&gt;org.openide.windows.WindowManager&lt;/tt&gt; interface
+* Register your implementation into the default lookup and [http://wiki.netbeans.org/DevFaqLookupHowToOverride replace any others]
+
+Of course, there's a lot of work involved in creating your own WindowManager implementation, but you can have a look at the &lt;tt&gt;org.openide.windows.DummyWindowManager&lt;/tt&gt; class for starters.  It's a simple implementation that opens all TopComponents in their own frame but which can also make windows invisible which is handy for testing.  
+
+The &lt;tt&gt;DummyWindowManager&lt;/tt&gt; is used as a last resort when no other window manager is present; you will not need to register it in the default Lookup as described earlier.  If you want to use it, keep in mind these two tips:
+
+* Do not include the &lt;tt&gt;Core - Windows&lt;/tt&gt; or &lt;tt&gt;Core&lt;/tt&gt; modules in your application.  Including &lt;tt&gt;Core&lt;/tt&gt; will result in an error message from the NonGui class because it seems to expect an implementation of the &lt;tt&gt;NbTopManager.WindowManager&lt;/tt&gt; class which you cannot (easily) provide.  
+
+* No windows will be shown by default on startup.  Use a &lt;tt&gt;ModuleInstall&lt;/tt&gt; class' &lt;tt&gt;restored()&lt;/tt&gt; method to display your TopComponent.</text>
+    </revision>
+  </page>
+</mediawiki>

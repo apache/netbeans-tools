@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+--><mediawiki xmlns="http://www.mediawiki.org/xml/export-0.3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="0.3" xml:lang="en" xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd">
+  <siteinfo>
+    <sitename>NetBeans Wiki</sitename>
+    <base>http://wiki.netbeans.org/Main_Page</base>
+    <generator>MediaWiki 1.15.1</generator>
+    <case>first-letter</case>
+    <namespaces>
+      <namespace key="-2">Media</namespace>
+      <namespace key="-1">Special</namespace>
+      <namespace key="0"/>
+      <namespace key="1">Talk</namespace>
+      <namespace key="2">User</namespace>
+      <namespace key="3">User talk</namespace>
+      <namespace key="4">NetBeans Wiki</namespace>
+      <namespace key="5">NetBeans Wiki talk</namespace>
+      <namespace key="6">File</namespace>
+      <namespace key="7">File talk</namespace>
+      <namespace key="8">MediaWiki</namespace>
+      <namespace key="9">MediaWiki talk</namespace>
+      <namespace key="10">Template</namespace>
+      <namespace key="11">Template talk</namespace>
+      <namespace key="12">Help</namespace>
+      <namespace key="13">Help talk</namespace>
+      <namespace key="14">Category</namespace>
+      <namespace key="15">Category talk</namespace>
+    </namespaces>
+  </siteinfo>
+  <page>
+    <title>DevFaqDynamicSystemFilesystem</title>
+    <id>14491</id>
+    <revision>
+      <id>53588</id>
+      <timestamp>2012-04-10T00:02:19Z</timestamp>
+      <contributor>
+        <username>Jglick</username>
+        <id>628</id>
+      </contributor>
+      <comment>/* Using Dynamically Added Layers */</comment>
+      <text xml:space="preserve">==Can I dynamically change the contents of the System Filesystem at runtime?==
+
+Yes.  This technique is commonly used in platform applications which require the user to log in, to keep menu contents/toolbar actions/keyboard shortcuts/window definitions hidden until the user is authenticated.
+
+There are two ways to do it.  The most obvious way is to programmatically write files to disk at runtime (call &lt;code&gt;FileUtil.getConfigRoot().createFolder()&lt;/code&gt;, etc.).  This technique is appropriate if you are creating files which should be preserved across restarts (for example, adding folders to the Favorites window).  ''It is completely inappropriate in the case of authentication, or any other case where you do not want the added files to be present after restart. You cannot depend on the application always being shut down normally and having a chance to clean such files up - since they are actually written to disk.''
+
+===Using Dynamically Added Layers===
+
+The alternative is quite simple:  Write a subclass of &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/MultiFileSystem.html MultiFileSystem]&lt;/code&gt;.  Put it in the [[DevFaqLookupDefault| default lookup]].
+
+At runtime, when you want to add contents to the system filesystem, simply add additional filesystems to your &lt;code&gt;MultiFileSystem&lt;/code&gt;.  To remove the contents, simply remove those filesystems.
+
+A convenient way to do this is to use XMLFileSystem - this is a filesystem created with exactly the same syntax as normal module XML layer files (see [[DevFaqModulesLayerFile]]). The following code loads an XML filesystem, which is in an XML file in the same package as the class, called &lt;code&gt;dynamicContent.xml&lt;/code&gt;:
+
+&lt;pre&gt;
+@ServiceProvider(service=FileSystem.class)
+public class DynamicLayerContent extends MultiFileSystem {
+    private static DynamicLayerContent INSTANCE;
+    public DynamicLayerContent() {
+        // will be created on startup, exactly once
+        INSTANCE = this;
+        setPropagateMasks(true); // permit *_hidden masks to be used
+    }
+    static boolean hasContent() {
+        return INSTANCE.getDelegates().length &amp;gt; 0;
+    }
+    static void enable() {
+        if (!hasContent()) {
+            try {
+                INSTANCE.setDelegates(new XMLFileSystem(
+                        DynamicLayerContent.class.getResource(
+                        "dynamicContent.xml")));
+            } catch (SAXException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
+    static void disable() {
+        INSTANCE.setDelegates();
+    }
+}
+&lt;/pre&gt;
+
+In NetBeans 7.2 and later, the above code can be simplified by using &lt;tt&gt;Repository.LayerProvider&lt;/tt&gt;. See its Javadoc for a usage example.
+
+If finer grained control of what is added is needed at runtime, there are two possibilities, using this general approach:
+* If the new layer contents are fixed and known, but perhaps correspond to user roles which may be overlaid together, split up the functionality for each role into a separate XML file (hint: define an enum of roles, where each role can point to an XML file URL, use &lt;code&gt;[http://java.sun.com/j2se/1.5.0/docs/api/java/util/EnumSet.html#of%28E,%20E...%29 EnumSet.of()]&lt;/code&gt; and process that to decide what to enable)
+* Write contents programmatically, but write folders/files to an in-memory filesystem created using &lt;code&gt;[http://bits.netbeans.org/dev/javadoc/org-openide-filesystems/org/openide/filesystems/FileUtil.html#createMemoryFileSystem() FileUtil.createMemoryFileSystem()]&lt;/code&gt; so the contents disappear on VM exit
+
+https://bitbucket.org/jglick/dynamicmenudemo/ tries to automate this kind of task.</text>
+    </revision>
+  </page>
+</mediawiki>
