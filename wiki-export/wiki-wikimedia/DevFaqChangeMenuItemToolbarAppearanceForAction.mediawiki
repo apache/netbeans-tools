@@ -49,7 +49,7 @@ Note that if you are changing the menu item to support a tooltip, the object ret
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqChangeMenuItemToolbarAppearanceForAction , 
+that was last modified by NetBeans user Jtulach 
 on 2010-07-24T20:39:57Z.
 

@@ -85,7 +85,7 @@ pom.xml:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqVersionNumber , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2017-02-01T14:34:50Z.
 

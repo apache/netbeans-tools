@@ -43,7 +43,7 @@ Two new methods in <tt>NotifyDescriptor</tt> were added to allow API client to c
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jrechtacek 
+This page was exported from http://wiki.netbeans.org/DevFaqWizardPanelError , 
+that was last modified by NetBeans user Jrechtacek 
 on 2009-12-15T14:23:16Z.
 

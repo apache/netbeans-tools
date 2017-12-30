@@ -29,7 +29,7 @@ You can add new actions, tabs, nodes, and lookups to an existing project type. S
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqPossibleToExtend , 
+that was last modified by NetBeans user Geertjan 
 on 2010-03-03T17:28:58Z.
 

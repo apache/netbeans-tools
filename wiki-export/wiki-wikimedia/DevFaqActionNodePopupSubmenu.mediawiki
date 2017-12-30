@@ -164,7 +164,7 @@ See https://benkiew.wordpress.com/2015/09/13/nb-how-to-create-a-context-aware-su
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqActionNodePopupSubmenu , 
+that was last modified by NetBeans user Markiewb 
 on 2015-09-13T19:53:44Z.
 

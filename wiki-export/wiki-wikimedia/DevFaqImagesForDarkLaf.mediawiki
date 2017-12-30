@@ -108,7 +108,7 @@ pane.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqImagesForDarkLaf , 
+that was last modified by NetBeans user Markiewb 
 on 2016-12-19T22:06:17Z.
 

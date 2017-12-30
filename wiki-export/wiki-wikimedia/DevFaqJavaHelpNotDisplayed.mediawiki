@@ -29,7 +29,7 @@ It is also worth noting that the JavaHelp implementation in NetBeans IDE 6.5.x a
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Gregorytechsoft 
+This page was exported from http://wiki.netbeans.org/DevFaqJavaHelpNotDisplayed , 
+that was last modified by NetBeans user Gregorytechsoft 
 on 2011-03-23T07:26:12Z.
 

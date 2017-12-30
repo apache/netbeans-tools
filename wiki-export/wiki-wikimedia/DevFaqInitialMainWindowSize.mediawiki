@@ -64,7 +64,7 @@ The snippet from ''windowmanager.wswmgr'' above opens the main window in the upp
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Simpatico 
+This page was exported from http://wiki.netbeans.org/DevFaqInitialMainWindowSize , 
+that was last modified by NetBeans user Simpatico 
 on 2010-11-02T01:43:02Z.
 

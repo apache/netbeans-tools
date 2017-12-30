@@ -99,7 +99,7 @@ Applies to: NetBeans 4.0, 4.1, 5.0, 5.5, 6.0, 6.1, 6.5, 6.7
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqUriVsUrl , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T05:45:04Z.
 

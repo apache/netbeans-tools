@@ -112,7 +112,7 @@ Up to date list of all Window System related properties and brading options shou
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqCustomizeWindowSystem , 
+that was last modified by NetBeans user Jtulach 
 on 2012-01-10T11:22:58Z.
 

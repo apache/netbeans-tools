@@ -27,7 +27,7 @@
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Anebuzelsky 
+This page was exported from http://wiki.netbeans.org/HowToEnableDisableModulesFromCommandLine , 
+that was last modified by NetBeans user Anebuzelsky 
 on 2011-12-27T16:33:57Z.
 

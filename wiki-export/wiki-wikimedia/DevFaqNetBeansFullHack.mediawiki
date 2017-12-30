@@ -58,7 +58,7 @@ to <tt>nbbuild/user.build.properties</tt> or <tt>~/.nbbuild.properties</tt>.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Lfischmeistr 
+This page was exported from http://wiki.netbeans.org/DevFaqNetBeansFullHack , 
+that was last modified by NetBeans user Lfischmeistr 
 on 2013-11-25T13:00:42Z.
 

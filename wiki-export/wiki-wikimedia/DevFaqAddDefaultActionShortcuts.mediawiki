@@ -33,7 +33,7 @@ For Maven, add the following dependency to your app:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jmborer 
+This page was exported from http://wiki.netbeans.org/DevFaqAddDefaultActionShortcuts , 
+that was last modified by NetBeans user Jmborer 
 on 2013-09-13T07:52:53Z.
 

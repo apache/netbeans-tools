@@ -47,7 +47,7 @@ for example, <tt>Shortcuts/D-J R C.shadow</tt> binds the 3-stroke sequence <tt>C
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqKeybindingsInUse , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T15:50:58Z.
 

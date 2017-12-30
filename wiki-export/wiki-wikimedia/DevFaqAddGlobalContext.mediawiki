@@ -548,7 +548,7 @@ Tested with NetBeans IDE 7.2
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Bdschubert 
+This page was exported from http://wiki.netbeans.org/DevFaqAddGlobalContext , 
+that was last modified by NetBeans user Bdschubert 
 on 2012-12-17T17:08:37Z.
 

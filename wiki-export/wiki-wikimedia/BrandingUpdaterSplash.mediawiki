@@ -78,7 +78,7 @@ Then create any image file that you like to be a replacement for the default spl
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Mithun gonsalvez 
+This page was exported from http://wiki.netbeans.org/BrandingUpdaterSplash , 
+that was last modified by NetBeans user Mithun gonsalvez 
 on 2011-08-19T06:41:46Z.
 

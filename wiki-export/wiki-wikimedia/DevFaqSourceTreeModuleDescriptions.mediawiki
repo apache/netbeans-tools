@@ -700,7 +700,7 @@ xslt.validation=XSLT Validation.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqSourceTreeModuleDescriptions , 
+that was last modified by NetBeans user Geertjan 
 on 2009-12-02T12:27:06Z.
 

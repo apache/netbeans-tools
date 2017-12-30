@@ -54,7 +54,7 @@ However, this ability to represent multiple files with a single DataObject is st
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqDataObject , 
+that was last modified by NetBeans user Geertjan 
 on 2012-01-16T22:44:07Z.
 

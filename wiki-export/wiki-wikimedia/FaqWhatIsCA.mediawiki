@@ -36,7 +36,7 @@ The OCA defines various types of contribution, covers its copyrights, patents an
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/FaqWhatIsCA , 
+that was last modified by NetBeans user Jtulach 
 on 2014-02-08T04:35:18Z.
 

@@ -55,8 +55,8 @@
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from <xsl:value-of select="/mw:mediawiki/mw:page/mw:base" />, 
-that last modified by NetBeans user <xsl:value-of select="/mw:mediawiki/mw:page/mw:revision/mw:contributor/mw:username" /> 
+This page was exported from http://wiki.netbeans.org/<xsl:value-of select="/mw:mediawiki/mw:page/mw:title/text()" /> , 
+that was last modified by NetBeans user <xsl:value-of select="/mw:mediawiki/mw:page/mw:revision/mw:contributor/mw:username" /> 
 on <xsl:value-of select="/mw:mediawiki/mw:page/mw:revision/mw:timestamp" />.
 
 </xsl:template>

@@ -30,7 +30,7 @@ However, if there are many contributors from the same company it is impractical 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Skygo 
+This page was exported from http://wiki.netbeans.org/FaqCompanyOrIndividualCA , 
+that was last modified by NetBeans user Skygo 
 on 2013-12-16T13:20:11Z.
 

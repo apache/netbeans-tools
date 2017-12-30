@@ -36,7 +36,7 @@ Register a shortcut at the "Shortcuts" folder in the layer.xml.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqAddShortCutForAction , 
+that was last modified by NetBeans user Markiewb 
 on 2016-08-06T14:53:22Z.
 

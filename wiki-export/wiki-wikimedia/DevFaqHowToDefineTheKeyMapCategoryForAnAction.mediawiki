@@ -125,7 +125,7 @@ OptionsDialog/Actions/edit.multicaret=Edit (Multicaret)
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqHowToDefineTheKeyMapCategoryForAnAction , 
+that was last modified by NetBeans user Markiewb 
 on 2016-07-21T20:58:18Z.
 

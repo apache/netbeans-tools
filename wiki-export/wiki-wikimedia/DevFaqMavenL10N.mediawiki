@@ -40,7 +40,7 @@ The module bundling the localizations can now be included in your app, or distri
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqMavenL10N , 
+that was last modified by NetBeans user Jglick 
 on 2011-01-21T13:59:19Z.
 

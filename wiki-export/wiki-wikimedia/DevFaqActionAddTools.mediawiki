@@ -33,7 +33,7 @@ See http://bits.netbeans.org/dev/javadoc/org-openide-actions/architecture-summar
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqActionAddTools , 
+that was last modified by NetBeans user Markiewb 
 on 2015-03-08T18:19:45Z.
 

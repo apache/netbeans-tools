@@ -150,7 +150,7 @@ Note that all of these are ''hints'' - a property editor is free to ignore them 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jmborer 
+This page was exported from http://wiki.netbeans.org/DevFaqPropertyEditorHints , 
+that was last modified by NetBeans user Jmborer 
 on 2015-02-05T15:53:11Z.
 

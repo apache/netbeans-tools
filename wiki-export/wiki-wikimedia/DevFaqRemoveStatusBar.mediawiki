@@ -80,7 +80,7 @@ or the equivalent System.setProperty() from a ModuleInstall
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqRemoveStatusBar , 
+that was last modified by NetBeans user Geertjan 
 on 2010-02-17T20:05:05Z.
 

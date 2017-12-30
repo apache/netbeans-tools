@@ -38,7 +38,7 @@ Note that the mapping handling does skip key combinations that simply can't work
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqLogicalKeybindings , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-02-24T21:17:52Z.
 

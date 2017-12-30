@@ -30,7 +30,7 @@ You may send your signed and completed OCA to Oracle by by fax (number available
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqCanIFileByEmail , 
+that was last modified by NetBeans user Jkovalsky 
 on 2012-04-17T09:28:08Z.
 

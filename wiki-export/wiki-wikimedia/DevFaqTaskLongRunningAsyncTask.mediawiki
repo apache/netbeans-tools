@@ -44,7 +44,7 @@ Taken from dev@platform.netbeans.org (Oct 2013)
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqTaskLongRunningAsyncTask , 
+that was last modified by NetBeans user Markiewb 
 on 2013-10-03T17:04:13Z.
 

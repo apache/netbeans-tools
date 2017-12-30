@@ -54,7 +54,7 @@ void myModelChanged() {
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqNodeChildrenDotLeaf , 
+that was last modified by NetBeans user Markiewb 
 on 2012-12-27T13:42:23Z.
 

@@ -31,7 +31,7 @@ For historical interests the design document can be found at [http://wiki.netbea
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqExportImport , 
+that was last modified by NetBeans user Markiewb 
 on 2016-02-23T19:24:33Z.
 

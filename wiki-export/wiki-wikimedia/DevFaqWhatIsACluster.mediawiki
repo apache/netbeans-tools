@@ -125,7 +125,7 @@ Most of the reasoning that lead to creation of the concept can be found in:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqWhatIsACluster , 
+that was last modified by NetBeans user Jglick 
 on 2010-06-14T19:56:39Z.
 

@@ -30,7 +30,7 @@ We encourage all contributors to sign the new Oracle Contributor Agreement 1.7.1
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Skygo 
+This page was exported from http://wiki.netbeans.org/FaqWhichVersionCA , 
+that was last modified by NetBeans user Skygo 
 on 2013-12-17T22:07:43Z.
 

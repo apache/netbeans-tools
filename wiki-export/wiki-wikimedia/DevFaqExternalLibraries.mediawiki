@@ -367,7 +367,7 @@ Applies to: NetBeans 6.8 and above
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqExternalLibraries , 
+that was last modified by NetBeans user Jglick 
 on 2012-03-14T23:34:28Z.
 

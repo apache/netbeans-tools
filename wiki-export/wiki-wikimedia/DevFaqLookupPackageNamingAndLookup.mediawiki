@@ -29,7 +29,7 @@ A: You might have tried to place the interface and the implementation class in d
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Tboudreau 
+This page was exported from http://wiki.netbeans.org/DevFaqLookupPackageNamingAndLookup , 
+that was last modified by NetBeans user Tboudreau 
 on 2010-01-24T02:36:53Z.
 

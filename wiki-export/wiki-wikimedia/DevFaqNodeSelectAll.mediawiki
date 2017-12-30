@@ -218,7 +218,7 @@ To complete our work, this is the XML code to put in the layer.xml in order to a
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqNodeSelectAll , 
+that was last modified by NetBeans user Jtulach 
 on 2010-07-24T19:16:47Z.
 

@@ -44,7 +44,7 @@ use
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqActionAddEditorPopup , 
+that was last modified by NetBeans user Markiewb 
 on 2014-12-31T11:45:54Z.
 

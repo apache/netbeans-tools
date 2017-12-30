@@ -41,7 +41,7 @@ Then your action can be invoked by a macro (and even recorded by the macro recor
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqAddMacroableAction , 
+that was last modified by NetBeans user Markiewb 
 on 2016-09-12T19:38:37Z.
 

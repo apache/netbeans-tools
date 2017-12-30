@@ -36,7 +36,7 @@ Oracle must have a fax or hard copy of the CA on file before Oracle can accept c
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqHowDoIFileACA , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-10-13T06:39:47Z.
 

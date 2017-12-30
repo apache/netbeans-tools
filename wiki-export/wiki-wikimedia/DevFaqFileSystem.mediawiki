@@ -47,7 +47,7 @@ As of NetBeans 4.0 you will rarely work directly with the <tt>FileSystem</tt> cl
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jskrivanek 
+This page was exported from http://wiki.netbeans.org/DevFaqFileSystem , 
+that was last modified by NetBeans user Jskrivanek 
 on 2009-12-03T10:34:33Z.
 

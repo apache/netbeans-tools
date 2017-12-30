@@ -44,7 +44,7 @@ If you create your own RequestProcessor, please always use a name. If you get a 
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Braiam 
+This page was exported from http://wiki.netbeans.org/DevFaqRequestProcessor , 
+that was last modified by NetBeans user Braiam 
 on 2010-03-03T22:04:22Z.
 

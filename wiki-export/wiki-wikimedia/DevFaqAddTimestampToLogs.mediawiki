@@ -133,7 +133,7 @@ This example was tested with NetBeans 8.0 and JDK 8.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Bdschubert 
+This page was exported from http://wiki.netbeans.org/DevFaqAddTimestampToLogs , 
+that was last modified by NetBeans user Bdschubert 
 on 2014-06-21T13:31:08Z.
 

@@ -57,7 +57,7 @@ See also: [[DevFaqAddGlobalContext| How to Add Content to the Global Context]]
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Bdschubert 
+This page was exported from http://wiki.netbeans.org/DevFaqTrackGlobalSelection , 
+that was last modified by NetBeans user Bdschubert 
 on 2012-11-21T17:33:20Z.
 

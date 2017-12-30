@@ -45,7 +45,7 @@ However, the main API modules use the [[DevFaqWindowsWstcrefAndFriends| declarat
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Cvdenzen 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsGeneral , 
+that was last modified by NetBeans user Cvdenzen 
 on 2012-02-16T12:52:35Z.
 

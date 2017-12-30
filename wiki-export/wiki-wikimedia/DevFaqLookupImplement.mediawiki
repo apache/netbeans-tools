@@ -35,7 +35,7 @@ If you need to customize a Node's lookup, read [[DevFaqNodesCustomLookup| the FA
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/DevFaqLookupImplement , 
+that was last modified by NetBeans user Geertjan 
 on 2010-03-26T08:00:37Z.
 

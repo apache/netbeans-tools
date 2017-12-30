@@ -93,7 +93,7 @@ Since Netbeans 6.9 ([http://netbeans.org/bugzilla/show_bug.cgi?id=182230+&x=23&y
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jmborer 
+This page was exported from http://wiki.netbeans.org/DevFaqExecutableIcon , 
+that was last modified by NetBeans user Jmborer 
 on 2015-04-28T11:14:08Z.
 

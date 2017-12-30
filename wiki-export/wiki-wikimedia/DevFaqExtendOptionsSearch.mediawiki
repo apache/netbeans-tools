@@ -64,7 +64,7 @@ public class MYPLUGINOPTIONSPanel extends javax.swing.JPanel
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqExtendOptionsSearch , 
+that was last modified by NetBeans user Markiewb 
 on 2015-03-04T10:19:38Z.
 

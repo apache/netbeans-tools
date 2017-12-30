@@ -45,7 +45,7 @@ Taken from platform-dev-mailing list 14.04.2016
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqHowToChangeUpdateCenterURL , 
+that was last modified by NetBeans user Markiewb 
 on 2016-09-18T14:21:48Z.
 

@@ -32,7 +32,7 @@ Read the following related blog entries:
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Zolta 
+This page was exported from http://wiki.netbeans.org/DevFaqSetPrefs , 
+that was last modified by NetBeans user Zolta 
 on 2013-06-09T10:11:46Z.
 

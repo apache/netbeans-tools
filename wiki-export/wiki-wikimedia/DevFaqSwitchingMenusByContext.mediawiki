@@ -55,7 +55,7 @@ Note that to hide the Navigate menu one has to declare GoTo_hidden instead of Na
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqSwitchingMenusByContext , 
+that was last modified by NetBeans user Jglick 
 on 2011-12-14T00:20:23Z.
 

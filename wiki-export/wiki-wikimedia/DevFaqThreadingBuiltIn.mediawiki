@@ -34,7 +34,7 @@ Specifically they are
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Dsimonek 
+This page was exported from http://wiki.netbeans.org/DevFaqThreadingBuiltIn , 
+that was last modified by NetBeans user Dsimonek 
 on 2009-12-03T15:38:48Z.
 

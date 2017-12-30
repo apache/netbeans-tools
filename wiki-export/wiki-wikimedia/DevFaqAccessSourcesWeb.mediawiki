@@ -43,7 +43,7 @@ that link to download the source archive.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Anebuzelsky 
+This page was exported from http://wiki.netbeans.org/DevFaqAccessSourcesWeb , 
+that was last modified by NetBeans user Anebuzelsky 
 on 2010-06-11T14:32:19Z.
 

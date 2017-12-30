@@ -166,7 +166,7 @@ Doesn't look like much but it's a lot of work.
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqFixDependencies , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2011-09-02T19:07:45Z.
 

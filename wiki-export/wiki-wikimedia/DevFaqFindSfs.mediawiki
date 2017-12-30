@@ -33,7 +33,7 @@ Repository.getDefault().getDefaultFileSystem()
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jtulach 
+This page was exported from http://wiki.netbeans.org/DevFaqFindSfs , 
+that was last modified by NetBeans user Jtulach 
 on 2010-07-24T19:42:03Z.
 

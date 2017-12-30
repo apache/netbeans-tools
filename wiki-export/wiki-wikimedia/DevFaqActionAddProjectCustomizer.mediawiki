@@ -45,7 +45,7 @@ See also [http://blogs.sun.com/gridbag/entry/project_properties_gui_for_custom P
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqActionAddProjectCustomizer , 
+that was last modified by NetBeans user Jglick 
 on 2010-06-14T23:00:56Z.
 

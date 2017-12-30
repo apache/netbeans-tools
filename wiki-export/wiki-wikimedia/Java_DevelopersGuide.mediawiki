@@ -86,7 +86,7 @@ http://netbeans.org/projects/platform/sources/platform-content/content/trunk/tut
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/Java DevelopersGuide , 
+that was last modified by NetBeans user Markiewb 
 on 2015-01-29T21:05:26Z.
 

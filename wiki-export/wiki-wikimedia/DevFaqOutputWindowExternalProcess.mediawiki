@@ -99,7 +99,7 @@ The OutputHandler referenced above has been transformed into a plugin for easier
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Javydreamercsw 
+This page was exported from http://wiki.netbeans.org/DevFaqOutputWindowExternalProcess , 
+that was last modified by NetBeans user Javydreamercsw 
 on 2012-07-17T21:47:15Z.
 

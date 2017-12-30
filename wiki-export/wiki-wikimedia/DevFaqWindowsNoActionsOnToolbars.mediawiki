@@ -139,7 +139,7 @@ public class Installer extends ModuleInstall
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Adayth 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsNoActionsOnToolbars , 
+that was last modified by NetBeans user Adayth 
 on 2011-06-15T11:23:36Z.
 

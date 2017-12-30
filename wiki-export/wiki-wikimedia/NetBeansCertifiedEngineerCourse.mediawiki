@@ -80,7 +80,7 @@ This is a wiki page for [http://edu.netbeans.org/courses/nbplatform-certified-tr
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Geertjan 
+This page was exported from http://wiki.netbeans.org/NetBeansCertifiedEngineerCourse , 
+that was last modified by NetBeans user Geertjan 
 on 2010-06-14T08:52:40Z.
 

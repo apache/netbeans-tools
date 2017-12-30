@@ -28,7 +28,7 @@ Yes.  The license is very non-restrictive.  For details, see the
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Admin 
+This page was exported from http://wiki.netbeans.org/DevFaqSellingModules , 
+that was last modified by NetBeans user Admin 
 on 2009-11-06T15:59:54Z.
 

@@ -28,7 +28,7 @@ It is impractical to include the names of all contributors to netbeans.org in th
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqListedOnCopyright , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-12-12T14:41:18Z.
 

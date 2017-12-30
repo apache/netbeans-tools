@@ -98,7 +98,7 @@ for (TopComponent tc: comps) {
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqGetOpenEditorWindows , 
+that was last modified by NetBeans user Markiewb 
 on 2016-10-26T20:35:35Z.
 

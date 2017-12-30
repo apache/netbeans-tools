@@ -44,7 +44,7 @@ Action action=FileUtil.getConfigObject("Actions/Window/org-netbeans-core-windows
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqFindInstance , 
+that was last modified by NetBeans user Markiewb 
 on 2013-03-31T16:20:03Z.
 

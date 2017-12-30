@@ -264,7 +264,7 @@ Since 5.0 there is no API that directly supports version control operations exec
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Newacct 
+This page was exported from http://wiki.netbeans.org/ProjectVersioning , 
+that was last modified by NetBeans user Newacct 
 on 2011-11-25T00:42:33Z.
 

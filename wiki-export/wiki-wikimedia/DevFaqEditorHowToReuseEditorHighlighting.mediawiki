@@ -35,7 +35,7 @@ And you will get nice syntax coloring. However you won't get line numbers and ot
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jmborer 
+This page was exported from http://wiki.netbeans.org/DevFaqEditorHowToReuseEditorHighlighting , 
+that was last modified by NetBeans user Jmborer 
 on 2013-09-27T09:13:03Z.
 

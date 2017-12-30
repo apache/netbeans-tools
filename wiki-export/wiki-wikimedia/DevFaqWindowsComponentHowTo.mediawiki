@@ -48,7 +48,7 @@ TopComponents are part of the [http://bits.netbeans.org/dev/javadoc/org-openide-
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Marciowb 
+This page was exported from http://wiki.netbeans.org/DevFaqWindowsComponentHowTo , 
+that was last modified by NetBeans user Marciowb 
 on 2011-07-28T10:00:41Z.
 

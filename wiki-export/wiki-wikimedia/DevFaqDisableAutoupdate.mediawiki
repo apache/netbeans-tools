@@ -43,7 +43,7 @@ Applies to: NetBeans 6.5 and later
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jglick 
+This page was exported from http://wiki.netbeans.org/DevFaqDisableAutoupdate , 
+that was last modified by NetBeans user Jglick 
 on 2009-12-03T14:06:05Z.
 

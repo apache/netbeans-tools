@@ -30,7 +30,7 @@ If you've already signed a JCA for a contribution to netbeans.org, then you do n
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Jkovalsky 
+This page was exported from http://wiki.netbeans.org/FaqJCAAndCA , 
+that was last modified by NetBeans user Jkovalsky 
 on 2011-12-12T13:56:00Z.
 

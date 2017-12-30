@@ -71,7 +71,7 @@ Do you want to know [[HowToAddFAQEntries | How To Add FAQ Entries]] ?
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Pjiricka 
+This page was exported from http://wiki.netbeans.org/FaqIndex , 
+that was last modified by NetBeans user Pjiricka 
 on 2011-12-01T12:32:12Z.
 

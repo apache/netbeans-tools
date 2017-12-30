@@ -44,7 +44,7 @@ Taken from mailing list, contributed by Jean-Marc Borer
 The content in this page was kindly donated by Oracle Corp. to the
 Apache Software Foundation.
 
-This page was exported from , 
-that last modified by NetBeans user Markiewb 
+This page was exported from http://wiki.netbeans.org/DevFaqPropertySheetReadonlyProperty , 
+that was last modified by NetBeans user Markiewb 
 on 2016-04-10T10:30:21Z.
 
