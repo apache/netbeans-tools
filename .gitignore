@@ -5,3 +5,6 @@
 /wiki-export/dist/
 /wiki-export/build/
 /target/**
+/wiki-convert/target/
+*.swp
+*.swo
