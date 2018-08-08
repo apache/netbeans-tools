@@ -39,7 +39,7 @@ public class AddFormLicense {
         }
         Pattern headerPattern1 = Pattern.compile(ASF_LICENSE_INPUT, Pattern.MULTILINE);
         Path root = Paths.get(args[0]);
-        int[] count = new int[1];
+        int[] count = new int[2];
         Files.find(root, Integer.MAX_VALUE, (p, attr) -> attr.isRegularFile())
              .filter(p -> p.getFileName().toString().endsWith(".form"))
              .forEach(p -> {
@@ -75,7 +75,10 @@ public class AddFormLicense {
                 } catch (IOException ex) {
                     throw new IllegalStateException(ex);
                 }
-             });
+                count[1]++;
+            });
+            System.err.println("converted: " + count[0]);
+            System.err.println("scanned: " + count[1]);
     }
 
 }
