@@ -8,3 +8,6 @@
 /wiki-convert/target/
 *.swp
 *.swo
+/html-convert/target/**
+/html-convert/tutorials-asciidoc/**
+/html-convert/external-links.txt
