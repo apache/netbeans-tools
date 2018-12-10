@@ -105,7 +105,7 @@ for arelease in releaseinfo:
   tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")
   tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'\n")
   tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'\n")
-  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/nbms/**'\n")
+  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/nbms/**'\n")
   tmpFile1.write("            }\n")
   tmpFile1.write("      }\n")
 #prepare maven artifacts

@@ -48,7 +48,7 @@ pipeline {
               archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'
               archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'
               archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'
-              archiveArtifacts 'netbeanssources/nbbuild/build/nbms/**'
+              archiveArtifacts 'netbeanssources/nbbuild/nbms/**'
             }
       }
       stage('NetBeans Maven Stage') {
