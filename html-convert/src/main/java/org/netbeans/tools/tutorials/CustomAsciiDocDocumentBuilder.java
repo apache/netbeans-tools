@@ -178,6 +178,7 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
             super.emitContent(":jbake-tags: tutorials \n");
             super.emitContent(":jbake-status: published\n");
             super.emitContent(":syntax: true\n");
+            super.emitContent(":source-highlighter: pygments\n");
             super.emitContent(":toc: left\n");
             super.emitContent(":toc-title:\n");
             super.emitContent(":description: " + trimmedContent + " - Apache NetBeans\n");
