@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -65,8 +64,8 @@ public class HTMLConverter {
     private static Transformer transformer;
     private static DocumentBuilderFactory documentBuilderFactory;
 
-    private static void convert(File docsTutorialsDocs, File docsTutorialsImages, File dest, TreeSet<String> externalLinks) throws Exception {
-        LOG.log(Level.INFO, "Converting from {0} to {1}", new Object[]{docsTutorialsDocs.getAbsolutePath(), dest.getAbsolutePath()});
+    private static void convert(File docsTutorialsDocs, File docsTutorialsImages, File dest, ExternalLinksMap externalLinks) throws Exception {
+        LOG.log(Level.INFO, "Converting tutorials from {0} to {1}", new Object[]{docsTutorialsDocs.getAbsolutePath(), dest.getAbsolutePath()});
 
         List<File> html_files = Files.find(docsTutorialsDocs.toPath(), 999,
                 (p, bfa) -> bfa.isRegularFile()).map(Path::toFile).filter((f) -> f.getName().endsWith(".html")).collect(Collectors.toList());
@@ -85,7 +84,30 @@ public class HTMLConverter {
             convertHTMLToAsciiDoc(dest, htmlFile, docsTutorialsImages, asciidoc, externalLinks);
             fileCount++;
         }
-        LOG.log(Level.INFO, "Converted {0} files.", fileCount);
+        LOG.log(Level.INFO, "Converted {0} tutorials.", fileCount);
+    }
+    
+    private static void convertTrails(File docsTutorialsTrailsDirectory, File docsTutorialsImages, File dest, ExternalLinksMap externalLinks) throws Exception {
+         LOG.log(Level.INFO, "Converting trails {0} to {1}", new Object[]{docsTutorialsTrailsDirectory.getAbsolutePath(), dest.getAbsolutePath()});
+
+        List<File> html_files = Files.find(docsTutorialsTrailsDirectory.toPath(), 999,
+                (p, bfa) -> bfa.isRegularFile()).map(Path::toFile).filter((f) -> f.getName().endsWith(".html")).collect(Collectors.toList());
+
+        URI baseDirectory = docsTutorialsTrailsDirectory.toURI();
+        int fileCount = 0;
+        boolean debug=false;
+        for (File htmlFile : html_files) {
+            if (debug) {
+                if (! htmlFile.getName().equals("annotations.html")) {
+                    continue;
+                }
+            }
+            String relativePath = baseDirectory.relativize(htmlFile.toURI()).getPath().replaceAll("\\.html", ".asciidoc");
+            File asciidoc = new File(dest, relativePath);
+            convertHTMLToAsciiDocWithoutTables(dest, htmlFile, docsTutorialsImages, asciidoc, externalLinks);
+            fileCount++;
+        }
+        LOG.log(Level.INFO, "Converted {0} trails.", fileCount);       
     }
 
     private static String asciidocHeader = null;
@@ -122,7 +144,7 @@ public class HTMLConverter {
      * @param externalLinks A map used to store external links detected in the HTML file.
      * @throws Exception on error.
      */
-    private static void convertHTMLToAsciiDoc(File topDirectory, File inputHTMLFile, File imageDirectory, File outputAsciidocFile, TreeSet<String> externalLinks) throws Exception {
+    private static void convertHTMLToAsciiDoc(File topDirectory, File inputHTMLFile, File imageDirectory, File outputAsciidocFile, ExternalLinksMap externalLinks) throws Exception {
         if (! outputAsciidocFile.getParentFile().exists()) {
             if (! outputAsciidocFile.getParentFile().mkdirs()) {
                 throw new IOException(String.format("Cannot create directory '%s'", outputAsciidocFile.getParent()));
@@ -138,7 +160,31 @@ public class HTMLConverter {
             // HtmlParser.instanceWithHtmlCleanupRules().parse(source, asciidocBuilder);
         }
     }
+    
+    /**
+     * Converts the given HTML file to AsciiDoc format, ignoring tables completely.
+     * @param inputHTMLFile The input file.
+     * @param imageDirectory The directory where images are to be found.
+     * @param outputAsciidocFile The output asciidoc file.
+     * @param externalLinks A map used to store external links detected in the HTML file.
+     * @throws Exception on error.
+     */
+    private static void convertHTMLToAsciiDocWithoutTables(File topDirectory, File inputHTMLFile, File imageDirectory, File outputAsciidocFile, ExternalLinksMap externalLinks) throws Exception {
+        if (! outputAsciidocFile.getParentFile().exists()) {
+            if (! outputAsciidocFile.getParentFile().mkdirs()) {
+                throw new IOException(String.format("Cannot create directory '%s'", outputAsciidocFile.getParent()));
+            }
+        }
+        try (BufferedWriter output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputAsciidocFile), "utf-8"), 16 * 1024);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputHTMLFile), "utf-8"))) {
+            output.write(getAsciidocHeader());
 
+            CustomAsciiDocDocumentBuilderWithoutTables asciidocBuilder = new CustomAsciiDocDocumentBuilderWithoutTables(topDirectory, imageDirectory, outputAsciidocFile, output, externalLinks);
+            InputSource source = new InputSource(reader);
+            HtmlParser.instance().parse(source, asciidocBuilder);
+        }
+    }
+    
     private static void checkDirectoryExists(String message, File dir) throws Exception {
         String error = null;
         if (!dir.exists()) {
@@ -170,7 +216,7 @@ public class HTMLConverter {
 
         File docsDirectory = new File(new File(args[0]), "docs");
         checkDirectoryExists("Incorrect 'docs' donation directory ", docsDirectory);
-
+        
         File docsTutorialsDirectory = new File(docsDirectory, "tutorials");
         checkDirectoryExists("Incorrect 'docs/tutorials' donation directory ", docsTutorialsDirectory);
 
@@ -179,6 +225,9 @@ public class HTMLConverter {
 
         File docsTutorialsDocsDirectory = new File(docsTutorialsDirectory, "docs");
         checkDirectoryExists("Incorrect 'docs/tutorials/docs' donation directory ", docsTutorialsDocsDirectory);
+
+        File docsTutorialsTrailsDirectory = new File(docsTutorialsDirectory, "trails");
+        checkDirectoryExists("Incorrect 'docs/tutorials/trails' donation directory", docsTutorialsTrailsDirectory);
 
         File currentDirectory = new File(System.getProperty("user.dir"));
         File dest = new File(currentDirectory, "tutorials-asciidoc");
@@ -194,14 +243,25 @@ public class HTMLConverter {
             throw new IllegalStateException("Cannot write to " + dest.getAbsolutePath());
         }
 
-        TreeSet<String> externalLinks = new TreeSet<>();
+        ExternalLinksMap externalLinks = new ExternalLinksMap();
 
         convert(docsTutorialsDocsDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
+        
+        convertTrails(docsTutorialsTrailsDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
 
         LOG.info("Generating 'external-links.txt' with list of external links...");
-        try (PrintWriter ef = new PrintWriter(new FileWriter("external-links.txt"))) {
-            for (String link : externalLinks) {
-                ef.println(link);
+        
+        try ( PrintWriter ef = new PrintWriter(new FileWriter("external-links.yml"))) {
+            for (String domain : externalLinks.getDomains()) {
+                ef.format("- domain: \"%s\"%n", domain);
+                ef.format("  links:%n");
+                for (String href : externalLinks.getHrefs(domain)) {
+                    ef.format("    link: \"%s\"%n", href);
+                    ef.format("    used-at:%n");
+                    for (String tutorial : externalLinks.getTutorials(href)) {
+                        ef.format("      - \"%s\"%n", tutorial);
+                    }
+                }
             }
         }
 

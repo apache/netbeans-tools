@@ -30,6 +30,7 @@ import java.nio.file.Files;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.eclipse.mylyn.wikitext.asciidoc.internal.AsciiDocDocumentBuilder;
 import org.eclipse.mylyn.wikitext.parser.Attributes;
@@ -128,7 +129,7 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
             href = copyImageIfRequired(href, false);
 
             if (href.startsWith("http")) {
-                externalLinks.add(href);
+                externalLinks.addExternalLink(href, CustomAsciiDocDocumentBuilder.this.relativePathToTutorialFile);
             }
 
             if (content.contains("image:")) {
@@ -171,13 +172,16 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
 
         @Override
         protected void emitContent(String content) throws IOException {
-            super.emitContent("= " + content + "\n");
+            String trimmedContent = content.replaceAll("\n", " ");
+            super.emitContent("= " + trimmedContent + "\n");
             super.emitContent(":jbake-type: tutorial\n");
-            super.emitContent(":jbake-tags: tutorials\n");
+            super.emitContent(":jbake-tags: tutorials \n");
             super.emitContent(":jbake-status: published\n");
+            super.emitContent(":syntax: true\n");
             super.emitContent(":toc: left\n");
             super.emitContent(":toc-title:\n");
-            super.emitContent(":description: " + content + " - Apache NetBeans\n");
+            super.emitContent(":description: " + trimmedContent + " - Apache NetBeans\n");
+            super.emitContent(":keywords: Apache NetBeans, Tutorials, " + trimmedContent + "");
             super.emitContent("\n");
         }
 
@@ -214,7 +218,7 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
                 sb.append("=");
             }
             sb.append(" ");
-            sb.append(content);
+            sb.append(content.replaceAll("\n", " "));
             sb.append("\n\n");
             super.emitContent(sb.toString());
         }
@@ -233,6 +237,10 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
         }
 
     }
+    
+    private static final Pattern RUBY_PATTERN=Pattern.compile("^require '.*", Pattern.MULTILINE);
+    private static final Pattern C_PATTERN = Pattern.compile("^#include.*", Pattern.MULTILINE);
+    private static final Pattern SHELL_PATTERN = Pattern.compile("^\\$ ", Pattern.MULTILINE);
 
     /**
      * Generates a
@@ -258,8 +266,20 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
                 if (content.contains("<div") || content.contains("<p>")) {
                     language = "html";
                 }
+                if (C_PATTERN.matcher(content).find()) {
+                    language = "c";
+                }
+                if (RUBY_PATTERN.matcher(content).find()) {
+                    language = "ruby";
+                }
+                if (SHELL_PATTERN.matcher(content).find()) {
+                    language = "shell";
+                }
                 if (content.contains("<?php")) {
                     language = "php";
+                }
+                if (content.contains("$.") || content.contains("function (")) {
+                    language = "javascript";
                 }
             }
             // [label](http://url.com) or
@@ -277,13 +297,13 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
     private File imageDirectory;
     private File outputDirectory;
     private File imageDestDirectory;
-    private TreeSet<String> externalLinks;
+    private ExternalLinksMap externalLinks;
     private Language language;
     private String relativePathToTutorialsRoot;
     private File outputFile;
+    private String relativePathToTutorialFile;
     
-    
-    public CustomAsciiDocDocumentBuilder(File topDirectory, File imageDirectory, File outputFile, BufferedWriter output, TreeSet<String> externalLinks) {
+    public CustomAsciiDocDocumentBuilder(File topDirectory, File imageDirectory, File outputFile, BufferedWriter output, ExternalLinksMap externalLinks) {
         super(output);
         this.topDirectory = topDirectory;
         this.imageDirectory = imageDirectory;
@@ -294,6 +314,8 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
         imageDestDirectory.mkdirs();
         this.externalLinks = externalLinks;
         relativePathToTutorialsRoot = outputDirectory.toURI().relativize( topDirectory.toURI()).getPath();
+        relativePathToTutorialFile = topDirectory.toURI().relativize( outputFile.toURI() ).getPath();
+        
     }
 
     /**
