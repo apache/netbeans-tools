@@ -45,7 +45,18 @@ pipeline {
                   }
               }
               archiveArtifacts 'WEBZIP.zip'
+              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/nbms/**'
             }
+      }
+      stage('NetBeans Maven Stage') {
+          steps {
+              script {
+                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:populate -DnetbeansNbmDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/nbm -DnetbeansInstallDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/netbeans -DnetbeansSourcesDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/source-zip -DnebeansJavadocDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion=1.4-SNAPSHOT -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"
+              }
+          }
       }
    }
 }

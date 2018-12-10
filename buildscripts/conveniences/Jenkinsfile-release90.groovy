@@ -39,13 +39,24 @@ pipeline {
               dir ('netbeanssources'){
                   withAnt(installation: 'Ant (latest)') {
                       sh 'ant'
-                      sh "ant build-javadoc -Djavadoc.web.root='http://bits.netbeans.org/9.0/javadoc' -Dmodules-javadoc-date='29 Jul 2018' -Datom-date='2018-07-29T12:00:00Z' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"
+                      sh "ant build-javadoc -Djavadoc.web.root='RELEASE90' -Dmodules-javadoc-date='29 Jul 2018' -Datom-date='2018-07-29T12:00:00Z' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"
                       sh 'ant build-source-zips'
                       sh 'ant build-nbms'
                   }
               }
               archiveArtifacts 'WEBZIP.zip'
+              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'
+              archiveArtifacts 'netbeanssources/nbbuild/build/nbms/**'
             }
+      }
+      stage('NetBeans Maven Stage') {
+          steps {
+              script {
+                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:populate -DnetbeansNbmDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/nbm -DnetbeansInstallDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/netbeans -DnetbeansSourcesDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/source-zip -DnebeansJavadocDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion=1.4-SNAPSHOT -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"
+              }
+          }
       }
    }
 }

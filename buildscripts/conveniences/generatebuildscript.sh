@@ -28,10 +28,10 @@ ant10='Ant (latest)'
 ## information for each release (tools + date of release to flag the doc)
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
-['release90',True,jdk8,maven339,ant10,'RELEASE90','http://bits.netbeans.org/9.0/javadoc',datetime(2018,07,29,12,00)],
-['release100',True,jdk8,maven339,ant10,'RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12,4,12,00)],
+['release90', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
+['release100',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12, 4,12,00)],
 ##release 111
-['master',True,jdk8,maven339,ant10,'dev-SNAPSHOT']] ## no need custom info
+['master',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
 
 ##for each release generate a 
 for arelease in releaseinfo:
@@ -94,15 +94,29 @@ for arelease in releaseinfo:
 ##URL for javadoc
       javadocwebroot = arelease[6]
 ##date for javadoc and for feed
-      javadocdate = arelease[7].strftime('%-d %b %Y')
-      atomdate = arelease[7].strftime('%Y-%m-%dT%H:%M:%SZ')
+      javadocdate = arelease[8].strftime('%-d %b %Y')
+      atomdate = arelease[8].strftime('%Y-%m-%dT%H:%M:%SZ')
       tmpFile1.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.root='"+javadocwebroot+"' -Dmodules-javadoc-date='"+javadocdate+"' -Datom-date='"+atomdate+"' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
   tmpFile1.write("                      sh 'ant build-source-zips'\n")
   tmpFile1.write("                      sh 'ant build-nbms'\n")
   tmpFile1.write("                  }\n")
   tmpFile1.write("              }\n")
   tmpFile1.write("              archiveArtifacts 'WEBZIP.zip'\n")
+  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")
+  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'\n")
+  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'\n")
+  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/nbms/**'\n")
   tmpFile1.write("            }\n")
+  tmpFile1.write("      }\n")
+#prepare maven artifacts
+  tmpFile1.write("      stage('NetBeans Maven Stage') {\n")
+  tmpFile1.write("          steps {\n")
+  tmpFile1.write("              script {\n")
+  nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
+  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':populate -DnetbeansNbmDirectory='+nbbuildpath+'/nbm -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zip -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[5]+' -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
+)
+  tmpFile1.write("              }\n")
+  tmpFile1.write("          }\n")
   tmpFile1.write("      }\n")
   tmpFile1.write("   }\n")
   tmpFile1.write("}\n")
