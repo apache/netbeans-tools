@@ -54,8 +54,9 @@ pipeline {
       stage('NetBeans Maven Stage') {
           steps {
               script {
-                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:populate -DnetbeansNbmDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/nbms -DnetbeansInstallDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/netbeans -DnetbeansSourcesDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/source-zips -DnebeansJavadocDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion=1.4-SNAPSHOT -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"
+                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:populate -DnetbeansNbmDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/nbms -DnetbeansInstallDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/netbeans -DnetbeansSourcesDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/source-zips -DnebeansJavadocDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion=RELEASE100 -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"
               }
+              archiveArtifacts 'testrepo/.m2/**'
           }
       }
    }

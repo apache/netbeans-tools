@@ -113,9 +113,10 @@ for arelease in releaseinfo:
   tmpFile1.write("          steps {\n")
   tmpFile1.write("              script {\n")
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
-  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':populate -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[5]+' -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
+  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':populate -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[6]+' -DdeployURL=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
 )
   tmpFile1.write("              }\n")
+  tmpFile1.write("              archiveArtifacts 'testrepo/.m2/**'\n")
   tmpFile1.write("          }\n")
   tmpFile1.write("      }\n")
   tmpFile1.write("   }\n")
