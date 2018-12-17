@@ -113,7 +113,7 @@ for arelease in releaseinfo:
   tmpFile1.write("          steps {\n")
   tmpFile1.write("              script {\n")
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
-  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex'+'"'+"\n")
+  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.m2'+'"'+"\n")
   tmpFile1.write("                        sh 'mkdir -p testrepo/.m2'\n")
   tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[6]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
 )
