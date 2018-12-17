@@ -54,7 +54,7 @@ pipeline {
       stage('NetBeans Maven Stage') {
           steps {
               script {
-                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository -DrepositoryURL=https://repo.maven.apache.org/maven2"
+                        sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository -DrepositoryUrl=https://repo.maven.apache.org/maven2"
                         sh 'mkdir -p testrepo/.m2'
                         sh "mvn org.netbeans.maven:nb-repository-plugin:1.4-SNAPSHOT:populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/nbms -DnetbeansInstallDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/netbeans -DnetbeansSourcesDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/source-zips -DnebeansJavadocDirectory=${env.WORKSPACE}/netbeanssources/nbbuild/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion=dev-SNAPSHOT -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"
               }
