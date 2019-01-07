@@ -143,9 +143,12 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
                 int i = smallPart.indexOf('[');
                 smallPart = i == -1 ? smallPart : smallPart.substring(0, i);
                 StringBuilder sb = new StringBuilder();
-                sb.append("image:");
+                sb.append("[.feature]\n");
+                sb.append("--\n");
+                sb.append("image");
                 sb.append(smallPart);
-                sb.append("[role=\"left\", link=\"").append(href).append("\"]");
+                sb.append("[role=\"left\", link=\"").append(href).append("\"]\n");
+                sb.append("--\n");
                 CustomAsciiDocDocumentBuilder.this.emitContent(sb.toString());
             } else {
                 // link::http://url.com[label]
