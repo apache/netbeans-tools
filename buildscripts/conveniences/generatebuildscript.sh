@@ -29,7 +29,7 @@ ant10='Ant (latest)'
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
 ['release90', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
-['release100',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12, 4,12,00)],
+['release100',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12,27,12,00)],
 ##release 111
 ['master',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
 

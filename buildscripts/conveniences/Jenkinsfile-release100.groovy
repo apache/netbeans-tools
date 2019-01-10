@@ -39,7 +39,7 @@ pipeline {
               dir ('netbeanssources'){
                   withAnt(installation: 'Ant (latest)') {
                       sh 'ant'
-                      sh "ant build-javadoc -Djavadoc.web.root='RELEASE100' -Dmodules-javadoc-date='4 Dec 2018' -Datom-date='2018-12-04T12:00:00Z' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"
+                      sh "ant build-javadoc -Djavadoc.web.root='RELEASE100' -Dmodules-javadoc-date='27 Dec 2018' -Datom-date='2018-12-27T12:00:00Z' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"
                       sh 'ant build-source-zips'
                       sh 'ant build-nbms'
                   }
