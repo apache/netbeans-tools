@@ -92,7 +92,7 @@ for arelease in releaseinfo:
   else:
       locale.setlocale(locale.LC_ALL,"en_US.utf8")
 ##URL for javadoc
-      javadocwebroot = arelease[6]
+      javadocwebroot = arelease[7]
 ##date for javadoc and for feed
       javadocdate = arelease[8].strftime('%-d %b %Y')
       atomdate = arelease[8].strftime('%Y-%m-%dT%H:%M:%SZ')
