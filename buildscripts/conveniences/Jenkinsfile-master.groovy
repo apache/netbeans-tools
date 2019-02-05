@@ -29,4 +29,5 @@ pipeline {
               archiveArtifacts 'WEBZIP.zip'
             }
       }
+   }
 }

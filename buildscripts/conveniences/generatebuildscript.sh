@@ -58,6 +58,7 @@ def write_pipelinecheckout(afile,scm):
   afile.write("      }\n")
 
 def write_pipelineclose(afile):
+  afile.write("   }\n")
   afile.write("}\n")
   afile.close
 
@@ -156,7 +157,7 @@ for arelease in releaseinfo:
   mavenbuildfile.write("              archiveArtifacts 'testrepo/.m2/**'\n")
   mavenbuildfile.write("          }\n")
   mavenbuildfile.write("      }\n")
-  mavenbuildfile.write("   }\n")
+  
   
   write_pipelineclose(mavenbuildfile)
   write_pipelineclose(apidocbuildFile)
