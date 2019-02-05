@@ -28,100 +28,137 @@ ant10='Ant (latest)'
 ## information for each release (tools + date of release to flag the doc)
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
-['release90', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
-['release100',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12,27,12,00)],
+['release90','9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
+['release100','10.0-vc5',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12,27,12,00)],
 ##release 111
-['master',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
+['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
+
+def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):  
+  afile.write("pipeline {\n")
+  afile.write("   agent  { label 'ubuntu' }\n")
+  afile.write("   tools {\n")
+  afile.write("      maven '"+maventool+"'\n")
+  afile.write("      jdk '"+jdktool+"'\n") 
+  afile.write("   }\n")
+  afile.write("   stages {\n")
+  afile.write("      stage('Informations') {\n")
+  afile.write("          steps {\n")
+  afile.write("              echo "+'"'+'Branche we are building is : '+scm+'"'+"\n")
+  afile.write("          }\n")
+  afile.write("      }\n")
+
+def write_pipelinecheckout(afile,scm):
+  afile.write("      stage('SCM operation') {\n") 
+  afile.write("          steps {\n")
+  afile.write("              echo 'clean up netbeans sources'\n")
+  afile.write("              sh 'rm -rf netbeanssources'\n")
+  afile.write("              echo 'Get NetBeans sources'\n")
+  afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n") 
+  afile.write("          }\n")
+  afile.write("      }\n")
+
+def write_pipelineclose(afile):
+  afile.write("}\n")
+  afile.close
 
 ##for each release generate a 
+
+
 for arelease in releaseinfo:
-  branch=arelease[0]
-  jdktool=arelease[2]
-  maventool=arelease[3]
-  anttool=arelease[4]
-  tmpFile1 = open ('Jenkinsfile-'+branch+'.groovy',"w")
-  tmpFile1.write("pipeline {\n")
-  tmpFile1.write("   agent  { label 'ubuntu' }\n")
-  tmpFile1.write("   tools {\n")
-  tmpFile1.write("      maven '"+maventool+"'\n")
-  tmpFile1.write("      jdk '"+jdktool+"'\n") 
-  tmpFile1.write("   }\n")
-  tmpFile1.write("   stages {\n")
-  tmpFile1.write("      stage('Informations') {\n")
-  tmpFile1.write("          steps {\n")
-  tmpFile1.write("              echo "+'"'+'Branche we are building is : '+branch+'"'+"\n")
-  tmpFile1.write("          }\n")
-  tmpFile1.write("      }\n")
+  branch='refs/heads/'+arelease[0]
+  if branch=='refs/heads/master':
+    tag=branch
+  else:
+    tag='refs/tags/'+arelease[1]
+  jdktool=arelease[3]
+  maventool=arelease[4]
+  anttool=arelease[5]
+  apidocbuildFile = open ('Jenkinsfile-'+arelease[0]+'.groovy',"w")
+  mavenbuildfile = open ('Jenkinsfile-maven-'+arelease[0]+'.groovy',"w")
+  write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool)
+  write_pipelinebasic(mavenbuildfile,tag,jdktool,maventool,anttool)
+  
 ## needed until we had mavenutil ready
 ##prepare nb-repository from master to populate
-  if arelease[1] == True:
-     tmpFile1.write("      stage('mavenutils preparation') {\n")
-     tmpFile1.write("          // this stage is temporary\n")
-     tmpFile1.write("          steps {\n")
-     tmpFile1.write("              echo 'Get Mavenutils sources'\n")
-     tmpFile1.write("              sh 'rm -rf mavenutils'\n")
-     tmpFile1.write("              checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'mavenutils']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans-mavenutils/']]])\n")
-     tmpFile1.write("              script {\n")
-     tmpFile1.write("                 def mvnfoldersforsite  = ['parent','nbm-shared','nb-repository-plugin']\n");
-     tmpFile1.write("                 for (String mvnproject in mvnfoldersforsite) {\n")
-     tmpFile1.write("                     dir('mavenutils/'+mvnproject) {\n")
-     tmpFile1.write("                        sh "+'"'+'mvn clean install -Dmaven.repo.local=${env.WORKSPACE}/.repository'+'"'+"\n")
-     tmpFile1.write("                     }\n")
-     tmpFile1.write("                 }\n")
-     tmpFile1.write("              }\n")
-     tmpFile1.write("          }\n")
-     tmpFile1.write("      }\n")
-   
-  tmpFile1.write("      stage('SCM operation') {\n") 
-  tmpFile1.write("          steps {\n")
-  tmpFile1.write("              echo 'clean up netbeans sources'\n")
-  tmpFile1.write("              sh 'rm -rf netbeanssources'\n")
-  tmpFile1.write("              echo 'Get NetBeans sources'\n")
-  tmpFile1.write("              checkout([$class: 'GitSCM', branches: [[name: '*/"+branch+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n") 
-  tmpFile1.write("          }\n")
-  tmpFile1.write("      }\n")
+  if arelease[2] == True:
+     mavenbuildfile.write("      stage('mavenutils preparation') {\n")
+     mavenbuildfile.write("          // this stage is temporary\n")
+     mavenbuildfile.write("          steps {\n")
+     mavenbuildfile.write("              echo 'Get Mavenutils sources'\n")
+     mavenbuildfile.write("              sh 'rm -rf mavenutils'\n")
+     mavenbuildfile.write("              checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'mavenutils']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans-mavenutils/']]])\n")
+     mavenbuildfile.write("              script {\n")
+     mavenbuildfile.write("                 def mvnfoldersforsite  = ['parent','nbm-shared','nb-repository-plugin']\n");
+     mavenbuildfile.write("                 for (String mvnproject in mvnfoldersforsite) {\n")
+     mavenbuildfile.write("                     dir('mavenutils/'+mvnproject) {\n")
+     mavenbuildfile.write("                        sh "+'"'+'mvn clean install -Dmaven.repo.local=${env.WORKSPACE}/.repository'+'"'+"\n")
+     mavenbuildfile.write("                     }\n")
+     mavenbuildfile.write("                 }\n")
+     mavenbuildfile.write("              }\n")
+     mavenbuildfile.write("          }\n")
+     mavenbuildfile.write("      }\n")
+  
+  write_pipelinecheckout(apidocbuildFile,branch)
+  write_pipelinecheckout(mavenbuildfile,tag) 
+## apidoc path do only build for javadoc   
 ## build netbeans all needed for javadoc and nb-repository plugin
-  tmpFile1.write("      stage('NetBeans Builds') {\n")
-  tmpFile1.write("          steps {\n")
-  tmpFile1.write("              dir ('netbeanssources'){\n")
-  tmpFile1.write("                  withAnt(installation: '"+anttool+"') {\n")
-  tmpFile1.write("                      sh 'ant'\n")
+  apidocbuildFile.write("      stage('NetBeans Builds') {\n")
+  apidocbuildFile.write("          steps {\n")
+  apidocbuildFile.write("              dir ('netbeanssources'){\n")
+  apidocbuildFile.write("                  withAnt(installation: '"+anttool+"') {\n")
+  apidocbuildFile.write("                      sh 'ant'\n")
 ## master use default parameter
-  if branch=='master':
-      tmpFile1.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
+  if branch=='refs/heads/master':
+      apidocbuildFile.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
   else:
       locale.setlocale(locale.LC_ALL,"en_US.utf8")
 ##URL for javadoc
-      javadocwebroot = arelease[7]
+      javadocwebroot = arelease[8]
 ##date for javadoc and for feed
-      javadocdate = arelease[8].strftime('%-d %b %Y')
-      atomdate = arelease[8].strftime('%Y-%m-%dT%H:%M:%SZ')
-      tmpFile1.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.root='"+javadocwebroot+"' -Dmodules-javadoc-date='"+javadocdate+"' -Datom-date='"+atomdate+"' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
-  tmpFile1.write("                      sh 'ant build-source-zips'\n")
-  tmpFile1.write("                      sh 'ant build-nbms'\n")
-  tmpFile1.write("                  }\n")
-  tmpFile1.write("              }\n")
-  tmpFile1.write("              archiveArtifacts 'WEBZIP.zip'\n")
-  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")
-  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'\n")
-  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'\n")
-  tmpFile1.write("              archiveArtifacts 'netbeanssources/nbbuild/nbms/**'\n")
-  tmpFile1.write("            }\n")
-  tmpFile1.write("      }\n")
+      javadocdate = arelease[9].strftime('%-d %b %Y')
+      atomdate = arelease[9].strftime('%Y-%m-%dT%H:%M:%SZ')
+      apidocbuildFile.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.root='"+javadocwebroot+"' -Dmodules-javadoc-date='"+javadocdate+"' -Datom-date='"+atomdate+"' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
+  apidocbuildFile.write("                  }\n")
+  apidocbuildFile.write("              }\n")
+  apidocbuildFile.write("              archiveArtifacts 'WEBZIP.zip'\n")
+  apidocbuildFile.write("            }\n")
+  apidocbuildFile.write("      }\n")
+
+## build artefacts for maven
+  mavenbuildfile.write("      stage('NetBeans Builds') {\n")
+  mavenbuildfile.write("          steps {\n")
+  mavenbuildfile.write("              dir ('netbeanssources'){\n")
+  mavenbuildfile.write("                  withAnt(installation: '"+anttool+"') {\n")
+  mavenbuildfile.write("                      sh 'ant'\n")
+  mavenbuildfile.write("                      sh 'ant build-javadoc'\n")
+  mavenbuildfile.write("                      sh 'ant build-source-zips'\n")
+  mavenbuildfile.write("                      sh 'ant build-nbms'\n")
+  mavenbuildfile.write("                  }\n")
+  mavenbuildfile.write("              }\n")
+  mavenbuildfile.write("              archiveArtifacts 'WEBZIP.zip'\n")
+  mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")
+  mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'\n")
+  mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'\n")
+  mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/nbms/**'\n")
+  mavenbuildfile.write("            }\n")
+  mavenbuildfile.write("      }\n")
+
 #prepare maven artifacts
-  tmpFile1.write("      stage('NetBeans Maven Stage') {\n")
-  tmpFile1.write("          steps {\n")
-  tmpFile1.write("              script {\n")
+  mavenbuildfile.write("      stage('NetBeans Maven Stage') {\n")
+  mavenbuildfile.write("          steps {\n")
+  mavenbuildfile.write("              script {\n")
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
-  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository'+ ' -DrepositoryUrl=https://repo.maven.apache.org/maven2"'+"\n")
-  tmpFile1.write("                        sh 'mkdir -p testrepo/.m2'\n")
-  tmpFile1.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[5]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[6]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
+  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository'+ ' -DrepositoryUrl=https://repo.maven.apache.org/maven2"'+"\n")
+  mavenbuildfile.write("                        sh 'mkdir -p testrepo/.m2'\n")
+  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[7]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
 )
-  tmpFile1.write("              }\n")
-  tmpFile1.write("              archiveArtifacts 'testrepo/.m2/**'\n")
-  tmpFile1.write("          }\n")
-  tmpFile1.write("      }\n")
-  tmpFile1.write("   }\n")
-  tmpFile1.write("}\n")
-  tmpFile1.close
+  mavenbuildfile.write("              }\n")
+  mavenbuildfile.write("              archiveArtifacts 'testrepo/.m2/**'\n")
+  mavenbuildfile.write("          }\n")
+  mavenbuildfile.write("      }\n")
+  mavenbuildfile.write("   }\n")
+  
+  write_pipelineclose(mavenbuildfile)
+  write_pipelineclose(apidocbuildFile)
+
 
