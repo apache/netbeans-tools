@@ -28,8 +28,9 @@ ant10='Ant (latest)'
 ## information for each release (tools + date of release to flag the doc)
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
-['release90','9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
-['release100','10.0-vc5',True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc',datetime(2018,12,27,12,00)],
+['release90',  '9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
+['release100','10.0-vc5', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
+['release110',        '', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
 ##release 111
 ['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
 
@@ -67,7 +68,7 @@ def write_pipelineclose(afile):
 
 for arelease in releaseinfo:
   branch='refs/heads/'+arelease[0]
-  if branch=='refs/heads/master':
+  if arelease[1]=='':
     tag=branch
   else:
     tag='refs/tags/'+arelease[1]
