@@ -2,6 +2,7 @@ pipeline {
    agent  { label 'ubuntu' }
    options {
       buildDiscarder(logRotator(numToKeepStr: '2'))
+      disableConcurrentBuilds() 
    }
    triggers {
       pollSCM('H/5 * * * * ')

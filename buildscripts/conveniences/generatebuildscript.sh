@@ -40,6 +40,7 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):
   afile.write("   agent  { label 'ubuntu' }\n")
   afile.write("   options {\n")
   afile.write("      buildDiscarder(logRotator(numToKeepStr: '2'))\n")
+  afile.write("      disableConcurrentBuilds() \n")
   afile.write("   }\n")
   afile.write("   triggers {\n")
   afile.write("      pollSCM('H/5 * * * * ')\n")
