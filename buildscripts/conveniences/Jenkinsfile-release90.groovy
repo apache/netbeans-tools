@@ -1,5 +1,11 @@
 pipeline {
    agent  { label 'ubuntu' }
+   options {
+      buildDiscarder(logRotator(numToKeepStr: '2'))
+   }
+   triggers {
+      pollSCM('H/5 * * * * ')
+   }
    tools {
       maven 'Maven 3.3.9'
       jdk 'JDK 1.8 (latest)'

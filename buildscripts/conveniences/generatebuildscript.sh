@@ -28,15 +28,22 @@ ant10='Ant (latest)'
 ## information for each release (tools + date of release to flag the doc)
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
-['release90',  '9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
-['release100','10.0-vc5', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
-['release110',        '', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
-##release 111
-['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT']] ## no need custom info
+['release90',  '9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90','org.apache.netbeans:netbeans-parent:1', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
+['release100','10.0-vc5', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
+## not yet (under review)
+['release110',        '', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
+##master branch
+['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT','org.apache.netbeans:netbeans-parent:1']] ## no need custom info
 
-def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):  
+def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):
   afile.write("pipeline {\n")
   afile.write("   agent  { label 'ubuntu' }\n")
+  afile.write("   options {\n")
+  afile.write("      buildDiscarder(logRotator(numToKeepStr: '2'))\n")
+  afile.write("   }\n")
+  afile.write("   triggers {\n")
+  afile.write("      pollSCM('H/5 * * * * ')\n")
+  afile.write("   }\n")
   afile.write("   tools {\n")
   afile.write("      maven '"+maventool+"'\n")
   afile.write("      jdk '"+jdktool+"'\n") 
@@ -63,7 +70,7 @@ def write_pipelineclose(afile):
   afile.write("}\n")
   afile.close
 
-##for each release generate a 
+##for each release generate a file
 
 
 for arelease in releaseinfo:
@@ -79,7 +86,7 @@ for arelease in releaseinfo:
   mavenbuildfile = open ('Jenkinsfile-maven-'+arelease[0]+'.groovy',"w")
   write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool)
   write_pipelinebasic(mavenbuildfile,tag,jdktool,maventool,anttool)
-  
+
 ## needed until we had mavenutil ready
 ##prepare nb-repository from master to populate
   if arelease[2] == True:
@@ -99,10 +106,10 @@ for arelease in releaseinfo:
      mavenbuildfile.write("              }\n")
      mavenbuildfile.write("          }\n")
      mavenbuildfile.write("      }\n")
-  
+
   write_pipelinecheckout(apidocbuildFile,branch)
-  write_pipelinecheckout(mavenbuildfile,tag) 
-## apidoc path do only build for javadoc   
+  write_pipelinecheckout(mavenbuildfile,tag)
+## apidoc path do only build for javadoc
 ## build netbeans all needed for javadoc and nb-repository plugin
   apidocbuildFile.write("      stage('NetBeans Builds') {\n")
   apidocbuildFile.write("          steps {\n")
@@ -115,10 +122,10 @@ for arelease in releaseinfo:
   else:
       locale.setlocale(locale.LC_ALL,"en_US.utf8")
 ##URL for javadoc
-      javadocwebroot = arelease[8]
+      javadocwebroot = arelease[9]
 ##date for javadoc and for feed
-      javadocdate = arelease[9].strftime('%-d %b %Y')
-      atomdate = arelease[9].strftime('%Y-%m-%dT%H:%M:%SZ')
+      javadocdate = arelease[10].strftime('%-d %b %Y')
+      atomdate = arelease[10].strftime('%Y-%m-%dT%H:%M:%SZ')
       apidocbuildFile.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.root='"+javadocwebroot+"' -Dmodules-javadoc-date='"+javadocdate+"' -Datom-date='"+atomdate+"' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
   apidocbuildFile.write("                  }\n")
   apidocbuildFile.write("              }\n")
@@ -152,14 +159,14 @@ for arelease in releaseinfo:
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
   mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository'+ ' -DrepositoryUrl=https://repo.maven.apache.org/maven2"'+"\n")
   mavenbuildfile.write("                        sh 'mkdir -p testrepo/.m2'\n")
-  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DforcedVersion='+arelease[7]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
+  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DparentGAV='+arelease[8]+' -DforcedVersion='+arelease[7]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
 )
   mavenbuildfile.write("              }\n")
   mavenbuildfile.write("              archiveArtifacts 'testrepo/.m2/**'\n")
   mavenbuildfile.write("          }\n")
   mavenbuildfile.write("      }\n")
-  
-  
+
+
   write_pipelineclose(mavenbuildfile)
   write_pipelineclose(apidocbuildFile)
 
