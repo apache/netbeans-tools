@@ -159,7 +159,7 @@ for arelease in releaseinfo:
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
   mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':download -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -Dmaven.repo.local=${env.WORKSPACE}/.repository'+ ' -DrepositoryUrl=https://repo.maven.apache.org/maven2"'+"\n")
   mavenbuildfile.write("                        sh 'mkdir -p testrepo/.m2'\n")
-  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DparentGAV='+arelease[8]+' -DforcedVersion='+arelease[7]+' -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
+  mavenbuildfile.write("                        sh "+'"'+'mvn org.netbeans.maven:nb-repository-plugin:'+arelease[6]+':populate -DnexusIndexDirectory=${env.WORKSPACE}/repoindex -DnetbeansNbmDirectory='+nbbuildpath+'/nbms -DnetbeansInstallDirectory='+nbbuildpath+'/netbeans -DnetbeansSourcesDirectory='+nbbuildpath+'/build/source-zips -DnebeansJavadocDirectory='+nbbuildpath+'/build/javadoc  -Dmaven.repo.local=${env.WORKSPACE}/.repository -DparentGAV='+arelease[8]+' -DforcedVersion='+arelease[7]+' -groupIdPrefrix=org.apache.netbeans -DskipInstall=true -DdeployUrl=file://${env.WORKSPACE}/testrepo/.m2"'+"\n"
 )
   mavenbuildfile.write("              }\n")
   mavenbuildfile.write("              archiveArtifacts 'testrepo/.m2/**'\n")
