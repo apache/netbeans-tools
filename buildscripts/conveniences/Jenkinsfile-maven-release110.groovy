@@ -51,7 +51,6 @@ pipeline {
                       sh 'ant build-nbms'
                   }
               }
-              archiveArtifacts 'WEBZIP.zip'
               archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'
               archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'
               archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'

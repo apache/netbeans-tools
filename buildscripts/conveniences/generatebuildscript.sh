@@ -145,7 +145,6 @@ for arelease in releaseinfo:
   mavenbuildfile.write("                      sh 'ant build-nbms'\n")
   mavenbuildfile.write("                  }\n")
   mavenbuildfile.write("              }\n")
-  mavenbuildfile.write("              archiveArtifacts 'WEBZIP.zip'\n")
   mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")
   mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/build/source-zips/**'\n")
   mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/build/javadoc/**'\n")
