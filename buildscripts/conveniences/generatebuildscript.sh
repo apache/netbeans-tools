@@ -62,7 +62,7 @@ def write_pipelinecheckout(afile,scm):
   afile.write("              echo 'clean up netbeans sources'\n")
   afile.write("              sh 'rm -rf netbeanssources'\n")
   afile.write("              echo 'Get NetBeans sources'\n")
-  afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n") 
+  afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[refspec: '+refs/tags/*:refs/remotes/origin/tags/*' , url: 'https://github.com/apache/incubator-netbeans/']]])\n") 
   afile.write("          }\n")
   afile.write("      }\n")
 
