@@ -15,6 +15,7 @@ pipeline {
       stage('Informations') {
           steps {
               echo "Branche we are building is : refs/heads/release90"
+	      slackSend(channel: "#netbeans-builds", message: "building netbeans javadoc ${env.JOB_NAME}", color: '#FFFF00')
           }
       }
       stage('SCM operation') {
