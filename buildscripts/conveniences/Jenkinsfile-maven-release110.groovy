@@ -14,7 +14,7 @@ pipeline {
    stages {
       stage('Informations') {
           steps {
-              echo "Branche we are building is : refs/heads/release110"
+              slackSend (channel:'#netbeans-builds', message:"STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ($env.BUILD_URL), Branch we are building is : refs/heads/release110",color:'#f0f0f0')
           }
       }
       stage('mavenutils preparation') {
@@ -68,5 +68,13 @@ pipeline {
               archiveArtifacts 'testrepo/.m2/**'
           }
       }
+   }
+   post {
+     success {
+       slackSend (channel:'#netbeans-builds', message:"SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) ",color:'#00FF00')
+     }
+     failure {
+       slackSend (channel:'#netbeans-builds', message:"FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'  (${env.BUILD_URL})",color:'#FF0000')
+     }
    }
 }

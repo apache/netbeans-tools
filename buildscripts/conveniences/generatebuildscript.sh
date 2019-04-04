@@ -52,7 +52,7 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):
   afile.write("   stages {\n")
   afile.write("      stage('Informations') {\n")
   afile.write("          steps {\n")
-  afile.write("              echo "+'"'+'Branche we are building is : '+scm+'"'+"\n")
+  afile.write("              slackSend (channel:'#netbeans-builds', message:"+'"'+"STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ($env.BUILD_URL), Branch we are building is : "+scm+'"'+",color:'#f0f0f0')"+"\n")
   afile.write("          }\n")
   afile.write("      }\n")
 
@@ -67,7 +67,17 @@ def write_pipelinecheckout(afile,scm):
   afile.write("      }\n")
 
 def write_pipelineclose(afile):
+## close stage
   afile.write("   }\n")
+  afile.write("   post {\n")
+  afile.write("     success {\n")
+  afile.write("       slackSend (channel:'#netbeans-builds', message:"+'"'+"SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) "+'"'+",color:'#00FF00')"+"\n")
+  afile.write("     }\n")
+  afile.write("     failure {\n")
+  afile.write("       slackSend (channel:'#netbeans-builds', message:"+'"'+"FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'  (${env.BUILD_URL})"+'"'+",color:'#FF0000')"+"\n")
+  afile.write("     }\n")
+  afile.write("   }\n")
+## close pipeline
   afile.write("}\n")
   afile.close
 
