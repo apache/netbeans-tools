@@ -14,7 +14,7 @@ pipeline {
    stages {
       stage('Informations') {
           steps {
-              slackSend (channel:'#netbeans-builds', message:"STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ($env.BUILD_URL), Branch we are building is : refs/heads/release110",color:'#f0f0f0')
+              slackSend (channel:'#netbeans-builds', message:"STARTED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' ($env.BUILD_URL), Branch we are building is : refs/tags/11.0-vc4",color:'#f0f0f0')
           }
       }
       stage('mavenutils preparation') {
@@ -38,7 +38,7 @@ pipeline {
               echo 'clean up netbeans sources'
               sh 'rm -rf netbeanssources'
               echo 'Get NetBeans sources'
-              checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/release110']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[refspec: '+refs/tags/*:refs/remotes/origin/tags/*' , url: 'https://github.com/apache/incubator-netbeans/']]])
+              checkout([$class: 'GitSCM', branches: [[name: 'refs/tags/11.0-vc4']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'MessageExclusion', excludedMessage: 'Automated site publishing.*'], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[refspec: '+refs/tags/*:refs/remotes/origin/tags/*' , url: 'https://github.com/apache/incubator-netbeans/']]])
           }
       }
       stage('NetBeans Builds') {

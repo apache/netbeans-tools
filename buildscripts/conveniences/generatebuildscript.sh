@@ -31,7 +31,7 @@ releaseinfo=[
 ['release90',  '9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90','org.apache.netbeans:netbeans-parent:1', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
 ['release100','10.0-vc5', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
 ## not yet (under review)
-['release110',        '', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
+['release110','11.0-vc4', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
 ##master branch
 ['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT','org.apache.netbeans:netbeans-parent:1']] ## no need custom info
 
