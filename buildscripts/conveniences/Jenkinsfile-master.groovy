@@ -8,7 +8,7 @@ pipeline {
       pollSCM('H/5 * * * * ')
    }
    environment {
-     buildnumber = ${BUILD_TIMESTAMP} 
+     buildnumber = "${BUILD_TIMESTAMP}" 
    }
    tools {
       maven 'Maven 3.3.9'

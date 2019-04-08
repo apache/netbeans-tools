@@ -48,13 +48,13 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   afile.write("   }\n")
   afile.write("   environment {\n")
   if buildnumber=='':
-      afile.write("     buildnumber = ${BUILD_TIMESTAMP} \n")
+      afile.write('     buildnumber = "${BUILD_TIMESTAMP}" \n')
   else:
-      afile.write("     buildnumber = "+buildnumber+"\n") 
+      afile.write("     buildnumber = "+buildnumber+"\n")
   afile.write("   }\n")
   afile.write("   tools {\n")
   afile.write("      maven '"+maventool+"'\n")
-  afile.write("      jdk '"+jdktool+"'\n") 
+  afile.write("      jdk '"+jdktool+"'\n")
   afile.write("   }\n")
   afile.write("   stages {\n")
   afile.write("      stage('Informations') {\n")
@@ -64,7 +64,7 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   afile.write("      }\n")
 
 def write_pipelinecheckout(afile,scm):
-  afile.write("      stage('SCM operation') {\n") 
+  afile.write("      stage('SCM operation') {\n")
   afile.write("          steps {\n")
   afile.write("              echo 'clean up netbeans sources'\n")
   afile.write("              sh 'rm -rf netbeanssources'\n")
