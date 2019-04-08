@@ -30,12 +30,13 @@ ant10='Ant (latest)'
 releaseinfo=[
 ['release90',  '9.0-vc3', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90','org.apache.netbeans:netbeans-parent:1', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
 ['release100','10.0-vc5', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
-## not yet (under review)
 ['release110','11.0-vc4', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
+## not yet (under review)
+#['release120','        ', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE120','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/12.0/javadoc', datetime(2019,02,13,12,00)],
 ##master branch
 ['master','', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','dev-SNAPSHOT','org.apache.netbeans:netbeans-parent:1']] ## no need custom info
 
-def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):
+def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   afile.write("pipeline {\n")
   afile.write("   agent  { label 'ubuntu' }\n")
   afile.write("   options {\n")
@@ -44,6 +45,12 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool):
   afile.write("   }\n")
   afile.write("   triggers {\n")
   afile.write("      pollSCM('H/5 * * * * ')\n")
+  afile.write("   }\n")
+  afile.write("   environment {\n")
+  if buildnumber=='':
+      afile.write("     buildnumber = ${BUILD_TIMESTAMP} \n")
+  else:
+      afile.write("     buildnumber = "+buildnumber+"\n") 
   afile.write("   }\n")
   afile.write("   tools {\n")
   afile.write("      maven '"+maventool+"'\n")
@@ -95,8 +102,12 @@ for arelease in releaseinfo:
   anttool=arelease[5]
   apidocbuildFile = open ('Jenkinsfile-'+arelease[0]+'.groovy',"w")
   mavenbuildfile = open ('Jenkinsfile-maven-'+arelease[0]+'.groovy',"w")
-  write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool)
-  write_pipelinebasic(mavenbuildfile,tag,jdktool,maventool,anttool)
+  if branch=='refs/heads/master':
+      buildnumber = ""
+  else:
+      buildnumber = arelease[10].strftime('%Y%m%d%H%M')
+  write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool,buildnumber)
+  write_pipelinebasic(mavenbuildfile ,tag,   jdktool,maventool,anttool,buildnumber)
 
 ## needed until we had mavenutil ready
 ##prepare nb-repository from master to populate
@@ -149,10 +160,10 @@ for arelease in releaseinfo:
   mavenbuildfile.write("          steps {\n")
   mavenbuildfile.write("              dir ('netbeanssources'){\n")
   mavenbuildfile.write("                  withAnt(installation: '"+anttool+"') {\n")
-  mavenbuildfile.write("                      sh 'ant'\n")
-  mavenbuildfile.write("                      sh 'ant build-javadoc'\n")
-  mavenbuildfile.write("                      sh 'ant build-source-zips'\n")
-  mavenbuildfile.write("                      sh 'ant build-nbms'\n")
+  mavenbuildfile.write('                      sh "ant -Dbuildnumber=${env.buildnumber}"\n')
+  mavenbuildfile.write('                      sh "ant build-javadoc -Dbuildnumber=${env.buildnumber}"\n')
+  mavenbuildfile.write('                      sh "ant build-source-zips -Dbuildnumber=${env.buildnumber}"\n')
+  mavenbuildfile.write('                      sh "ant build-nbms -Dbuildnumber=${env.buildnumber}"\n')
   mavenbuildfile.write("                  }\n")
   mavenbuildfile.write("              }\n")
   mavenbuildfile.write("              archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'\n")

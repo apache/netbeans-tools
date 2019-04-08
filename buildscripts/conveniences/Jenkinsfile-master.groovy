@@ -7,6 +7,9 @@ pipeline {
    triggers {
       pollSCM('H/5 * * * * ')
    }
+   environment {
+     buildnumber = ${BUILD_TIMESTAMP} 
+   }
    tools {
       maven 'Maven 3.3.9'
       jdk 'JDK 1.8 (latest)'

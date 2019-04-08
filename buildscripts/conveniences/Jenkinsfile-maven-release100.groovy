@@ -7,6 +7,9 @@ pipeline {
    triggers {
       pollSCM('H/5 * * * * ')
    }
+   environment {
+     buildnumber = 201812271200
+   }
    tools {
       maven 'Maven 3.3.9'
       jdk 'JDK 1.8 (latest)'
@@ -45,10 +48,10 @@ pipeline {
           steps {
               dir ('netbeanssources'){
                   withAnt(installation: 'Ant (latest)') {
-                      sh 'ant'
-                      sh 'ant build-javadoc'
-                      sh 'ant build-source-zips'
-                      sh 'ant build-nbms'
+                      sh "ant -Dbuildnumber=${env.buildnumber}"
+                      sh "ant build-javadoc -Dbuildnumber=${env.buildnumber}"
+                      sh "ant build-source-zips -Dbuildnumber=${env.buildnumber}"
+                      sh "ant build-nbms -Dbuildnumber=${env.buildnumber}"
                   }
               }
               archiveArtifacts 'netbeanssources/nbbuild/netbeans/**'
