@@ -64,11 +64,14 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   afile.write("          }\n")
   afile.write("      }\n")
 
-def write_pipelinecheckout(afile,scm):
+def write_pipelinecheckout(afile,scm,poll):
   afile.write("      stage('SCM operation') {\n")
   afile.write("          steps {\n")
   afile.write("              echo 'Get NetBeans sources'\n")
-  afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n") 
+  if poll=="":
+     afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n")
+  else:
+     afile.write("              checkout poll:false, scm:[$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]\n")
   afile.write("          }\n")
   afile.write("      }\n")
 
@@ -130,8 +133,11 @@ for arelease in releaseinfo:
      mavenbuildfile.write("          }\n")
      mavenbuildfile.write("      }\n")
 
-  write_pipelinecheckout(apidocbuildFile,branch)
-  write_pipelinecheckout(mavenbuildfile,tag)
+  write_pipelinecheckout(apidocbuildFile,branch,"")
+  if branch=='refs/heads/master':
+     write_pipelinecheckout(mavenbuildfile,tag,"")
+  else:
+     write_pipelinecheckout(mavenbuildfile,tag,"poll:false")
 ## apidoc path do only build for javadoc
 ## build netbeans all needed for javadoc and nb-repository plugin
   apidocbuildFile.write("      stage('NetBeans Builds') {\n")
@@ -168,7 +174,7 @@ for arelease in releaseinfo:
   mavenbuildfile.write("                  }\n")
   mavenbuildfile.write("              }\n")
 
-#prepare maven artifacts   
+#prepare maven artifacts
   mavenbuildfile.write("              script {\n")
   nbbuildpath = "${env.WORKSPACE}/netbeanssources/nbbuild"
   mavenbuildfile.write("                        sh 'rm -rf testrepo/.m2'\n")

@@ -40,7 +40,7 @@ pipeline {
       stage('SCM operation') {
           steps {
               echo 'Get NetBeans sources'
-              checkout([$class: 'GitSCM', branches: [[name: '97904961e496383d6150aef9b78fa8dff8f3e1ce']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])
+              checkout poll:false, scm:[$class: 'GitSCM', branches: [[name: '97904961e496383d6150aef9b78fa8dff8f3e1ce']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]
           }
       }
       stage('NetBeans Builds') {
