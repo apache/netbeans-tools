@@ -6,7 +6,7 @@ pipeline {
       disableConcurrentBuilds() 
    }
    triggers {
-      pollSCM('H/5 * * * * ')
+      pollSCM('H/30 * * * * ')
    }
    environment {
      buildnumber = 201812271200
@@ -40,7 +40,7 @@ pipeline {
       stage('SCM operation') {
           steps {
               echo 'Get NetBeans sources'
-              checkout poll:false, scm:[$class: 'GitSCM', branches: [[name: '910bd74bf46d079e49925f702432c74d54ec705c']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]
+              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '910bd74bf46d079e49925f702432c74d54ec705c']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]
           }
       }
       stage('NetBeans Builds') {

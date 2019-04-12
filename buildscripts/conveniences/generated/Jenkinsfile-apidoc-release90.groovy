@@ -6,7 +6,7 @@ pipeline {
       disableConcurrentBuilds() 
    }
    triggers {
-      pollSCM('H/5 * * * * ')
+      pollSCM('H/30 * * * * ')
    }
    environment {
      buildnumber = 201807291200

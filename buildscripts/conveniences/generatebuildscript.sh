@@ -45,7 +45,7 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   afile.write("      disableConcurrentBuilds() \n")
   afile.write("   }\n")
   afile.write("   triggers {\n")
-  afile.write("      pollSCM('H/5 * * * * ')\n")
+  afile.write("      pollSCM('H/30 * * * * ')\n")
   afile.write("   }\n")
   afile.write("   environment {\n")
   if buildnumber=='':
@@ -71,7 +71,7 @@ def write_pipelinecheckout(afile,scm,poll):
   if poll=="":
      afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n")
   else:
-     afile.write("              checkout poll:false, scm:[$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]\n")
+     afile.write("              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]\n")
   afile.write("          }\n")
   afile.write("      }\n")
 
