@@ -23,8 +23,10 @@ pipeline {
       }
       stage('SCM operation') {
           steps {
+              dir ('netbeanssources') {
               echo 'Get NetBeans sources'
-              checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/release90']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true], [$class: 'RelativeTargetDirectory', relativeTargetDir: 'netbeanssources']], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])
+              checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/release90']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])
+              }
           }
       }
       stage('NetBeans Builds') {
@@ -41,7 +43,7 @@ pipeline {
    }
    post {
      cleanup  {
-         cleanWs()  
+         cleanWs()
      }
      success {
        slackSend (channel:'#netbeans-builds', message:"SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) ",color:'#00FF00')
