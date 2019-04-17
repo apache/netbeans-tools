@@ -51,7 +51,7 @@ def write_pipelinebasic(afile,scm,jdktool,maventool,anttool,buildnumber):
   if buildnumber=='':
       afile.write('     buildnumber = "${BUILD_TIMESTAMP}" \n')
   else:
-      afile.write("     buildnumber = "+buildnumber+"\n")
+      afile.write("     buildnumber = '" + buildnumber+ "' \n")
   afile.write("   }\n")
   afile.write("   tools {\n")
   afile.write("      maven '"+maventool+"'\n")
