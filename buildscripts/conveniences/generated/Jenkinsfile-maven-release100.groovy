@@ -9,7 +9,7 @@ pipeline {
       pollSCM('H/30 * * * * ')
    }
    environment {
-     buildnumber = 201812271200
+     buildnumber = incubator-netbeans-release-380-on-20181217
    }
    tools {
       maven 'Maven 3.3.9'

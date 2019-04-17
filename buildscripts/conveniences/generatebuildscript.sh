@@ -28,9 +28,9 @@ ant10='Ant (latest)'
 ## information for each release (tools + date of release to flag the doc)
 ## pick tools that are available on ubuntu node on build.apache.org
 releaseinfo=[
-['release90', '97904961e496383d6150aef9b78fa8dff8f3e1ce', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90','org.apache.netbeans:netbeans-parent:1', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00)],
-['release100','910bd74bf46d079e49925f702432c74d54ec705c', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00)],
-['release110','275dea5557510c107cf9d193fe61555aacd544b1', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00)],
+['release90', '97904961e496383d6150aef9b78fa8dff8f3e1ce', True,jdk8,maven339,ant10,'1.4-SNAPSHOT', 'RELEASE90','org.apache.netbeans:netbeans-parent:1', 'http://bits.netbeans.org/9.0/javadoc', datetime(2018,07,29,12,00), 'incubator-netbeans-release-334-on-20180708'],
+['release100','910bd74bf46d079e49925f702432c74d54ec705c', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE100','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/10.0/javadoc', datetime(2018,12,27,12,00), 'incubator-netbeans-release-380-on-20181217'],
+['release110','275dea5557510c107cf9d193fe61555aacd544b1', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE110','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/11.0/javadoc', datetime(2019,02,13,12,00), 'incubator-netbeans-release-404-on-20190319'],
 ## not yet (under review)
 #['release120','        ', True,jdk8,maven339,ant10,'1.4-SNAPSHOT','RELEASE120','org.apache.netbeans:netbeans-parent:1','http://bits.netbeans.org/12.0/javadoc', datetime(2019,02,13,12,00)],
 ##master branch
@@ -111,7 +111,7 @@ for arelease in releaseinfo:
   if branch=='refs/heads/master':
       buildnumber = ""
   else:
-      buildnumber = arelease[10].strftime('%Y%m%d%H%M')
+      buildnumber = arelease[11]
   write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool,buildnumber)
   write_pipelinebasic(mavenbuildfile ,tag,   jdktool,maventool,anttool,buildnumber)
 
