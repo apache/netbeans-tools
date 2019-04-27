@@ -27,7 +27,7 @@ pipeline {
               echo 'Get Mavenutils sources'
               sh 'rm -rf mavenutils'
               dir('mavenutils') {
-                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans-mavenutils/']]])
+                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans-mavenutils/']]])
               }
               script {
                  def mvnfoldersforsite  = ['parent','nbm-shared','nb-repository-plugin']
@@ -43,7 +43,7 @@ pipeline {
           steps {
               dir ('netbeanssources') {
               echo 'Get NetBeans sources'
-              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '97904961e496383d6150aef9b78fa8dff8f3e1ce']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]
+              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '97904961e496383d6150aef9b78fa8dff8f3e1ce']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans/']]]
               }
           }
       }

@@ -25,7 +25,7 @@ pipeline {
           steps {
               dir ('netbeanssources') {
               echo 'Get NetBeans sources'
-              checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/release110']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])
+              checkout([$class: 'GitSCM', branches: [[name: 'refs/heads/release110']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans/']]])
               }
           }
       }

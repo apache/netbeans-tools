@@ -38,12 +38,12 @@ all file will be generated in `generated` folder:
 ## creation
  * Create a job at https://builds.apache.org/
 
-incubator-netbeans-*branch*-maven or incubator-netbeans-*branch*-apidocmaven depending on the groovy file
+netbeans-*branch*-maven or netbeans-*branch*-apidocmaven depending on the groovy file
 Type of the job: **pipeline** type
 
 ## configuration 
  pipeline script from SCM
- git https://github.com/apache/incubator-netbeans-tools
+ git https://github.com/apache/netbeans-tools
 
  additionnal behavioud checkout to a subdirectory **scripts**
 

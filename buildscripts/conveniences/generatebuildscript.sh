@@ -70,9 +70,9 @@ def write_pipelinecheckout(afile,scm,poll):
   afile.write("              dir ('netbeanssources') {\n")
   afile.write("              echo 'Get NetBeans sources'\n")
   if poll=="":
-     afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]])\n")
+     afile.write("              checkout([$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans/']]])\n")
   else:
-     afile.write("              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans/']]]\n")
+     afile.write("              checkout changelog:false, poll:false, scm:[$class: 'GitSCM', branches: [[name: '"+scm+"']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans/']]]\n")
   afile.write("              }\n")
   afile.write("          }\n")
   afile.write("      }\n")
@@ -124,7 +124,7 @@ for arelease in releaseinfo:
      mavenbuildfile.write("              echo 'Get Mavenutils sources'\n")
      mavenbuildfile.write("              sh 'rm -rf mavenutils'\n")
      mavenbuildfile.write("              dir('mavenutils') {\n")
-     mavenbuildfile.write("                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/incubator-netbeans-mavenutils/']]])\n")
+     mavenbuildfile.write("                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/apache/netbeans-mavenutils/']]])\n")
      mavenbuildfile.write("              }\n")
      mavenbuildfile.write("              script {\n")
      mavenbuildfile.write("                 def mvnfoldersforsite  = ['parent','nbm-shared','nb-repository-plugin']\n");
