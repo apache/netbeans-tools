@@ -106,13 +106,11 @@ for arelease in releaseinfo:
   jdktool=arelease[3]
   maventool=arelease[4]
   anttool=arelease[5]
-  apidocbuildFile = open ('generated/Jenkinsfile-apidoc-'+arelease[0]+'.groovy',"w")
   mavenbuildfile =  open ('generated/Jenkinsfile-maven-' +arelease[0]+'.groovy',"w")
   if branch=='refs/heads/master':
       buildnumber = ""
   else:
       buildnumber = arelease[11]
-  write_pipelinebasic(apidocbuildFile,branch,jdktool,maventool,anttool,buildnumber)
   write_pipelinebasic(mavenbuildfile ,tag,   jdktool,maventool,anttool,buildnumber)
 
 ## needed until we had mavenutil ready
@@ -137,34 +135,11 @@ for arelease in releaseinfo:
      mavenbuildfile.write("          }\n")
      mavenbuildfile.write("      }\n")
 
-  write_pipelinecheckout(apidocbuildFile,branch,"")
   if branch=='refs/heads/master':
      write_pipelinecheckout(mavenbuildfile,tag,"")
   else:
      write_pipelinecheckout(mavenbuildfile,tag,"poll:false")
-## apidoc path do only build for javadoc
 ## build netbeans all needed for javadoc and nb-repository plugin
-  apidocbuildFile.write("      stage('NetBeans Builds') {\n")
-  apidocbuildFile.write("          steps {\n")
-  apidocbuildFile.write("              dir ('netbeanssources'){\n")
-  apidocbuildFile.write("                  withAnt(installation: '"+anttool+"') {\n")
-  apidocbuildFile.write("                      sh 'ant'\n")
-## master use default parameter
-  if branch=='refs/heads/master':
-      apidocbuildFile.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
-  else:
-      locale.setlocale(locale.LC_ALL,"en_US.utf8")
-##URL for javadoc
-      javadocwebroot = arelease[9]
-##date for javadoc and for feed
-      javadocdate = arelease[10].strftime('%-d %b %Y')
-      atomdate = arelease[10].strftime('%Y-%m-%dT%H:%M:%SZ')
-      apidocbuildFile.write("                      sh "+'"'+"ant build-javadoc -Djavadoc.web.root='"+javadocwebroot+"' -Dmodules-javadoc-date='"+javadocdate+"' -Datom-date='"+atomdate+"' -Djavadoc.web.zip=${env.WORKSPACE}/WEBZIP.zip"+'"'+"\n")
-  apidocbuildFile.write("                  }\n")
-  apidocbuildFile.write("              }\n")
-  apidocbuildFile.write("              archiveArtifacts 'WEBZIP.zip'\n")
-  apidocbuildFile.write("            }\n")
-  apidocbuildFile.write("      }\n")
 
 ## build artefacts for maven
   mavenbuildfile.write("      stage('NetBeans Builds') {\n")
@@ -193,6 +168,5 @@ for arelease in releaseinfo:
 
 
   write_pipelineclose(mavenbuildfile)
-  write_pipelineclose(apidocbuildFile)
 
 
