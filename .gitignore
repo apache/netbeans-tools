@@ -11,3 +11,6 @@
 /html-convert/target/**
 /html-convert/tutorials-asciidoc/**
 /html-convert/external-links.txt
+/tutorials-convert/tutorials-asciidoc/**
+/tutorials-convert/target**
+/tutorials-convert/external-links.txt
