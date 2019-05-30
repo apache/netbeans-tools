@@ -1,0 +1,16 @@
+{
+  "name": "Synergy",
+  "version": "0.6.0",
+  "description": "Test case management system",
+  "devDependencies": {
+    "grunt": "0.4.0",
+    "minimatch": "0.3.0",
+    "grunt-contrib-concat": "0.5.0",
+    "grunt-contrib-cssmin": "",
+    "grunt-contrib-jshint": "0.10.0",
+    "grunt-contrib-uglify": "",
+    "grunt-text-replace": "",
+    "jshint-stylish": "0.2.0",
+    "underscore.string": "3.3.4"
+  }
+}
