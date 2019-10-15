@@ -1,0 +1,83 @@
+<?php
+$h = 'Sorry, no plugin found';
+if ($this->plugin) {
+    $h = $this->plugin->getName();
+} 
+echo '<h3 class="text-primary">'.$h.'</h3>';
+
+if ($plugin) {
+    echo '
+    <div class="row">
+    <div class="col-md-6">
+    <p>
+    <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b> &nbsp;&nbsp;
+    ';
+
+        foreach ($plugin->getVersions() as $v) {
+            echo '<span class="badge">'.$v->getVersion().'</span> &nbsp;';
+        }    
+        
+    echo '</p>
+    <p>Author: <b>'.$plugin->getAuthorName().'</b></p>
+    <p>License: <b>'.$plugin->getLicense().'</b></p>
+    <p>Homepage: <a href="'.$plugin->getHomepage().'">'.$plugin->getHomepage().'</a></p>
+    <p>
+        <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
+        <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp;
+        <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
+    </p>
+    <p>';
+
+        foreach ($plugin->getCategories() as $cat) {
+            echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
+        }    
+    echo '</p> 
+    <br/><h4 class="text-primary">Download matrix</h4>
+    <table class="table table-striped table-hover" style="width:auto">
+    <thead>
+        <tr>
+        <th>Plugin version</th>
+        <th>NetBeans compatible</th>
+        </tr>
+        </thead>
+        <tbody>
+        ';
+        foreach ($plugin->getVersions() as $version) {
+            echo '<tr><td><span class="badge">'.$version->getVersion().'</span></td><td>';
+            foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+                echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge badge-brown"><i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().'</span></a> &nbsp; ';
+            }    
+            echo '</td></tr>';
+        }
+        echo '</tbody>
+        </table>
+        </div>
+        <div class="col-md-6">';
+        if($plugin->getImage()) {
+            echo '<div><img src="../data/plugins/'.$plugin->getId().'/'.$plugin->getImage().'" style="max-width: 100%;"/></div>';
+        }    
+    echo '</div>
+        </div>
+    <br/>
+    <div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Intro</h3>
+    </div>
+    <div class="panel-body">
+        '.$plugin->getShortDescription().'
+    </div>
+    </div>
+    <br/>
+    <div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">Description</h3>
+    </div>
+    <div class="panel-body">
+        '.$plugin->getDescription().'
+    </div>
+    </div>
+    <br/>
+    ';
+    
+
+}

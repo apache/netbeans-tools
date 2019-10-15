@@ -1,0 +1,145 @@
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Most downloaded</h3>
+      </div>
+      <div class="panel-body">
+        <?php
+        $i=1;
+        foreach($this->best as $p) {
+          echo '<p>
+          <h5>'.$i.'. <span class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$p->getId()))).'">'.$p->getName().'</a></span> &nbsp; 
+            <i class="fas fa-download"></i> '.number_format($p->getDownloads()).'</h5>
+          </p>';
+          $i++;
+        }
+        ?>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Latest updates</h3>
+      </div>
+      <div class="panel-body">
+      <?php
+        $i=1;
+        foreach($this->latest as $p) {
+          echo '<p>
+          <h5>'.$i.'. <span class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$p->getId()))).'">'.$p->getName().'</a></span> &nbsp; 
+            '.date_format($p->getLastUpdatedAt(), 'Y-m-d').'</h5>
+          </p>';
+          $i++;
+        }
+        ?>
+      </div>
+    </div>
+  </div>
+</div>
+<br/><br/>
+<form class="form-inline" method="get" action="">
+  <div class="form-group">
+    <label for="search">Search</label>
+    <input type="text" class="form-control" name="search" id="search" 
+    placeholder="Name, description, author, category, license..." style="width: 350px;" value="<?= htmlentities($this->search) ?>">
+  </div>
+  <div class="form-group">
+       <label for="nbvsel">&nbsp; NetBeans version</label>
+       <select id="nbvsel" name="nbv" class="form-control">
+          <option value="">Any</option>
+          <?php
+          foreach($this->versions as $version) {
+              $sel = ($_GET['nbv'] == $version->getVersion())? 'selected' : ''; 
+              echo '<option value="'.$version->getVersion().'" '.$sel.'>'.$version->getVersion().'</option>';
+          }
+          ?>
+       </select>
+  </div>
+  <div class="form-group">
+       <label for="catsel">&nbsp; Category</label>
+       <select id="catsel" name="cat" class="form-control">
+          <option value="">Any</option>
+          <?php
+          foreach($this->categories as $cat) {
+              $sel = ($_GET['cat'] == $cat->getName())? 'selected' : ''; 
+              echo '<option value="'.$cat->getName().'" '.$sel.'>'.$cat->getName().'</option>';
+          }
+          ?>
+       </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Go!</button>
+</form>
+<br/>
+<hr/>
+<p class="text-info">Found <?= number_format($this->paginator->getTotalItemCount())?> plugins.</p>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Plugin</th>
+      <th>Categories</th>
+      <th>NetBeans compatible</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+<?php
+    foreach($this->paginator as $plugin) {
+        $versionBadges = array();
+        foreach ($plugin->getVersions() as $version) {
+            $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
+        }
+
+        echo '<tr>
+        <td>
+            <h4 class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
+            <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b> &nbsp; &nbsp; <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' <p>
+            <p>Author: <b>'.$plugin->getAuthorName().'</b></p> 
+            <p>License: <b>'.$plugin->getLicense().'</b></p> 
+            <p>'.implode('&nbsp;', $versionBadges).'</p>   
+        </td>
+        <td>';
+
+        foreach ($plugin->getCategories() as $cat) {
+            echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
+        }    
+        
+        echo '</td><td>';
+        $a = array();
+        foreach ($plugin->getVersions() as $version) {
+            foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+              $a[]=$nbvPv->getNbVersion()->getVersion();
+            }    
+          }
+        foreach (array_unique($a) as $nbvPv) {
+          echo '<span class="badge badge-brown">NB '.$nbvPv.'</span> &nbsp; ';
+        }
+        echo '</td>
+        <td>'.$plugin->getShortDescription().'</td>
+        </tr>';
+    }
+?>
+  </tbody>
+</table>
+<script type="text/javascript">
+  const searchElement = document.getElementById('search');
+  if (searchElement) {
+    searchElement.focus();
+    const val = searchElement.value; 
+    searchElement.value = '';
+    searchElement.value = val;
+  }
+  $( function() {
+    $( "#search" ).autocomplete({
+      source: "<?= $this->url('plugin',array('action'=>'search-autocomplete')) ?>",
+      minLength: 3,      
+    });
+  } );
+  </script>
+
+<?= $this->paginationControl($this->paginator,
+            'Sliding',
+            'partials/_paginator', 
+            ['route' => 'home', 'search' => $this->search]); ?>

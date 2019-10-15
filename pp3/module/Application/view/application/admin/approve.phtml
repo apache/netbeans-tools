@@ -1,0 +1,44 @@
+<?= $this->partial('_nav.phtml'); ?>
+<h4>Plugins waiting for approval</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Plugin</th>
+            <th>Description</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php
+    foreach ($this->plugins as $plugin) {
+        $versionBadges = array();
+        foreach ($plugin->getVersions() as $version) {
+            $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
+        }
+        echo '<tr>
+            <td>
+               '.$this->partial('_pluginRowItem.phtml', array('plugin' => $plugin)).'
+            </td>
+            <td>
+                '.$plugin->getDescription().'
+            </td>
+            <td>
+                <p>
+                <a class="btn btn-success" href="'.$this->url('admin',array('action'=>'approve'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Approve">
+                    Approve
+                </a>
+                </p>
+                <p>
+                <a class="btn btn-danger" href="'.$this->url('admin',array('action'=>'delete-pending'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Publish">
+                    Delete
+                </a>
+                </p>
+            </td>
+        </tr>';
+    }
+?>
+    </tbody>
+</table>

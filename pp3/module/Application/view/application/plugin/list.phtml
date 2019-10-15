@@ -1,0 +1,23 @@
+<h3>My plugins</h3>
+<div class="row">
+    <div class="col col-sm-6">
+        <?= $this->partial('layout/flash.phtml'); ?>
+    </div>
+</div>
+<?php
+if (empty($this->plugins)) {
+    echo '<p>You do not have any plugins yet.</p>';
+}
+?>
+<div class="row">
+<table class="table">
+    <tbody>
+    <?php
+    foreach($this->plugins as $plugin) {
+        echo $this->partial('application/plugin/_plugin-listrow.phtml', array('plugin' => $plugin));
+    }
+    ?>
+
+    </tbody>
+</table>
+</div>

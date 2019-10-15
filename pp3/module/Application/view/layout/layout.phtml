@@ -1,0 +1,111 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="google-signin-client_id" content="432862904114-ierlf9j6qmmuhtd44ecmlfqivlirq7uc.apps.googleusercontent.com">
+        <?php echo $this->headTitle('Apache NetBeans Plugin Portal ') ?>
+
+        <?php
+        echo $this->headMeta()
+                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php
+        echo $this->headLink()
+                ->prependStylesheet($this->basePath('scss/style.css'))
+                //->prependStylesheet($this->basePath('js/datepicker/css/bootstrap-datepicker3.min.css'))
+                ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
+                ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
+                //->prependStylesheet($this->basePath('css/font-awesome.min.css'))
+        ?>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+        <!-- Scripts -->
+        <?php
+        echo $this->headScript()
+                ->prependFile($this->basePath('js/script.js'))
+                //->prependFile($this->basePath('js/datepicker/js/bootstrap-datepicker.min.js'))
+                //->prependFile($this->basePath('js/tinymce/tinymce.min.js'))
+                ->prependFile($this->basePath('js/jquery.ba-throttle-debounce.min.js'))
+                ->prependFile($this->basePath('js/validator.min.js'))
+                ->prependFile($this->basePath('js/bootstrap.min.js'))
+                ->prependFile('//code.jquery.com/ui/1.12.1/jquery-ui.min.js')
+                ->prependFile($this->basePath('js/jquery.min.js'))
+                ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript',
+                        array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath('js/html5shiv.min.js'), 'text/javascript',
+                        array('conditional' => 'lt IE 9',))
+        ;
+        ?>
+        <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+        <script type="text/javascript">
+            const BASE_URL = '<?= $this->url('home')?>';
+        </script>   
+    </head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="pp-navbar">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="<?= $this->url('home') ?>">
+                    <img src="<?= $this->basePath('img/apache-netbeans.svg')?>" style="padding-right: 8px; height: 30px;">
+                    <span class="r-white">Apache NetBeans Plugin Portal</span></a>
+                </div>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav" id="mynav">
+                        <li><a href="<?= $this->url('home') ?>">Plugin Catalog</a></li>
+                        <?php if ($_SESSION['sessionUserId']) { ?>
+                        <li><a href="<?= $this->url('plugin') ?>">Add plugin</a></li>
+                        <li ><a href="<?= $this->url('plugin', array('action' => 'list'))?>">My plugins</a></li>
+                        
+                        <?php
+                            if ($_SESSION['isVerifier']) {
+                                echo '<li><a href="'.$this->url('verification', array('action' => 'list')).'">Verification requests</a></li>';
+                            }
+                            ?>
+                            <?php } ?>
+                            <?php
+                        if ($_SESSION['isAdmin']) {
+                            echo '<li><a href="'.$this->url('admin').'">Admin</a></li>';
+                        }
+                        ?>
+                        <li><a href="https://cwiki.apache.org/confluence/display/NETBEANS/How+to+get+plugin+on+Plugin+Portal+Update+Center">Help</a></li>
+                    </ul>
+                    <div class="pull-right">
+                        <div style="margin: 7px 20px;">
+                        <?php                        
+                            if (!$_SESSION['sessionUserId']) {                            
+                                echo '<div class="g-signin2" data-onsuccess="onSignIn" approvalprompt="force" ></div>';
+                            } else {
+                                echo '<div style = "display:none" align="middle" class="g-signin2" data-cookiepolicy=\'single_host_origin\' data-onsuccess="onSignIn"></div>';
+                                echo '<a href="#" onclick="signOut();" class="btn btn-default" role="button">Sign out '.$_SESSION['sessionUserId'].'</a>';
+                                // echo '<span class="badge" style="display:inline-block;margin-top: 10px;">'.$_SESSION['sessionUserId'].'</a>';
+                            }
+                        ?>
+                        </div>
+                    </div>
+                </div><!--/.nav-collapse -->
+               
+            </div>
+        </nav>
+        <div class="container-fluid" style="margin: 0px 30px;">
+            <div class="r-pad">
+                <?php                 
+                echo $this->content; 
+                ?>
+            </div>
+            <footer class='pp-footer'>
+            Apache NetBeans Plugin Portal, build #191001
+            </footer>
+        </div> <!-- /container -->
+        <?php echo $this->inlineScript() ?>
+    </body>
+</html>

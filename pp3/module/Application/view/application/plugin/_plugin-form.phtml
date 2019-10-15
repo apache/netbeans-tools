@@ -1,0 +1,53 @@
+
+    <div class="form-group">
+        <label for="url">Author <span class="text-primary">*</span></label>
+        <input type="email" class="form-control" id="author" name="author" required placeholder="Author" value="<?= $this->plugin->getAuthor() ?>" xreadonly="true">
+    </div>
+    <div class="form-group">
+        <label for="urgroupIdl">GroupId</label>
+        <input type="text" class="form-control" id="groupId" name="groupid" placeholder="Enter groupId" value="<?= $this->plugin->getGroupId() ?>" readonly="true">
+    </div>
+    <div class="form-group">
+        <label for="url">ArtifactId</label>
+        <input type="text" class="form-control" id="artefictid" name="artifactid" placeholder="Enter artefactId" value="<?= $this->plugin->getArtifactId() ?>" readonly="true">
+    </div>
+    <div class="form-group">
+        <label for="url">URL</label>
+        <input type="text" class="form-control" id="url" name="url" placeholder="Enter url" value="<?= $this->plugin->getUrl() ?>" readonly="true">
+    </div>
+    <div class="form-group">
+        <label for="name">Name <span class="text-primary">*</span></label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Plugin name" value="<?= $this->plugin->getName() ?>" required>                
+    </div>
+    <div class="form-group">
+        <label for="name">License <span class="text-primary">*</span></label>
+        <input type="text" class="form-control" id="license" name="license" placeholder="License" value="<?= $this->plugin->getLicense() ?>" required>                
+    </div>
+    <div class="form-group">
+    <label for="cat1">Category #1</label>
+    <?= $this->partial('partials/_categories-select.phtml', array('fieldName' => 'category', 'categories' =>$this->categories, 'required' => true, 'selected' => $this->plugin->getCategories()[0])); ?>
+    </div>
+    <div class="form-group">
+    <label for="cat1">Category #2</label>
+    <?= $this->partial('partials/_categories-select.phtml', array('fieldName' => 'category2', 'categories' =>$this->categories, 'required' => false, 'selected' => $this->plugin->getCategories()[1])); ?>
+    </div>
+    <div class="form-group">
+        <label for="hp">Homepage</label>
+        <input type="text" class="form-control" id="hp" name="homepage" placeholder="Project homepage, github etc..." value="<?= $this->plugin->getHomepage() ?>">                
+    </div>
+    <div class="form-group">
+        <label for="sdescription">Short description <span class="text-primary">*</span></label>
+        <textarea class="form-control" id="sdescription" name="short_description" rows="5"
+        placeholder="Short description, few lines" required><?= $this->plugin->getShortDescription() ?></textarea>                
+        <p>Basic HTML syntax can be used for text formatting </p>
+    </div>
+    <div class="form-group">
+        <label for="description">Full description<span class="text-primary">*</span></label>
+        <textarea class="form-control" id="description" name="description" rows="7"
+        placeholder="Full, detail description" required><?= $this->plugin->getDescription() ?></textarea>                
+        <p>Basic HTML syntax can be used for text formatting </p>
+    </div>
+    <div class="form-group">
+        <label for="image-file">Image</label>
+        <input type="file" name="image-file" id="image-file">
+    </div>

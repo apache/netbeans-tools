@@ -1,0 +1,57 @@
+body {
+    //padding-top: 60px;
+    padding-bottom: 20px;
+}
+
+.navbar {
+    margin-bottom: 10px;
+}
+.navbar-brand .fa {
+    margin-right: 5px;
+    color: white;
+}
+.navbar-nav {
+    margin: 5px;
+}
+.navbar-fixed-top {
+    z-index: 1;
+}
+.badge-red {
+    background-color: #c12e2a;
+}
+.badge-green {
+    background-color: #099c09;
+}
+.badge-blue {
+    background-color:#269eda;
+}
+.badge-brown {
+    //background-color: #8a6d3b;
+    background-color: #b59c70;
+}
+
+.color-red {
+    color: #c12e2a;
+}
+.color-green {
+    color: #099c09;
+}
+.admin-nav a {
+    display: inline-block;
+    margin-right: 20px;
+}
+.r-white {
+    color: white;
+} 
+.navbar-inverse .navbar-nav>li>a {
+    color: #c7c7c7;
+}
+.pp-footer {
+    border-top: 1px solid #ddd;
+    padding-top: 20px;
+    text-align: center;
+    margin-top: 20px;
+}
+#pp-navbar {
+    position: relative;
+}

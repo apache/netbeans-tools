@@ -1,0 +1,13 @@
+<?php
+$flash = $this->flashMessenger();
+$flash->setAutoEscape(false);
+$flash->setMessageOpenFormat('<div%s>
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+    &times;
+</button>
+<div>')->setMessageCloseString('</div></div>');
+echo $flash->renderCurrent('error', array('alert', 'alert-dismissable', 'alert-danger'));
+echo $flash->renderCurrent('info', array('alert', 'alert-dismissable', 'alert-info'));
+echo $flash->renderCurrent('default', array('alert', 'alert-dismissable', 'alert-info'));
+echo $flash->renderCurrent('success', array('alert', 'alert-dismissable', 'alert-success'));
+?>

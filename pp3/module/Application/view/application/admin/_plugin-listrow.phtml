@@ -1,0 +1,101 @@
+<?php
+$pluugin = $this->plugin;
+echo '<tr>
+<td style="text-align: center;"><h4><i class="fas '.$plugin->getStatusIconClass().'" title="'.$plugin->getStatusTitle().'"></i></h4></td>
+<td>
+    <h4 class="text-primary">'.$plugin->getName().'</h4>
+    <p>
+        <a class="btn btn-default" href="'.$this->url('admin', array('action' => 'edit'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Edit">
+            <i class="fas fa-edit text-primary"></i>
+        </a>
+        <a class="btn btn-default" href="'.$this->url('admin',array('action'=>'index'),array('query' => array('id'=>$plugin->getId(), 'act'=>'delete'))).'" role="button" title="Remove">
+            <i class="fas fa-trash text-danger"></i>
+        </a>
+        <a class="btn btn-default" href="'.$this->url('admin',array('action'=>'index'),array('query' => array('id'=>$plugin->getId(), 'act'=>'sync'))).'" role="button" title="Sync with source manifest.">
+            <i class="fas fa-sync"></i>
+        </a>               
+        <a class="btn btn-default" href="'.$this->url('admin',array('action'=>'index'),array('query' => array('id'=>$plugin->getId(), 'act'=>'publish'))).'" role="button" title="Approve">
+        <i class="fas fa-eye color-green"></i>&nbsp; Approve
+        </a> 
+        <a class="btn btn-default" href="'.$this->url('admin',array('action'=>'index'),array('query' => array('id'=>$plugin->getId(), 'act'=>'hide'))).'" role="button" title="Hide">
+        <i class="fas fa-eye-slash color-red"></i>&nbsp; Hide
+        </a>
+    </p>
+    <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
+    <div>
+        <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
+        <p>Author: <b>'.$plugin->getAuthor().'</b><p>
+        <p>
+        <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
+        <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
+        <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
+        </p>                
+    </div>
+    <p>';
+
+foreach ($plugin->getCategories() as $cat) {
+    echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
+}    
+
+echo '</p>
+</td>
+<td>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col" style="width: 170px;">Plugin Version</th>
+            <th scope="col">NB Versions</th>
+            <th scope="col">Verifications</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+foreach ($plugin->getVersions() as $version) {
+    echo '<tr>
+        <td><span class="badge">'.$version->getVersion().'</span></td>
+        <td>';
+    foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+            echo '<span class="badge badge-brown">NB '.$nbvPv->getNbVersion()->getVersion().'</span>&nbsp; ';
+    }    
+    echo '</td>
+        <td>';
+    foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+        if ($nbvPv->getVerificationId()) {
+            echo '<a data-toggle="modal" data-target="#logModal'.$nbvPv->getVerificationId().'" href="#"><span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'" title="'.$nbvPv->getVerification()->getStatusBadgeTitle().'">
+            NB '.$nbvPv->getNbVersion()->getVersion().' - '.$nbvPv->getVerification()->getStatusBadgeTitle().'</span></a> &nbsp; ';
+            echo ' 
+                    <div class="modal fade" id="logModal'.$nbvPv->getVerificationId().'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="myModalLabel">Verification Log of '.$version->getVersion().' plugin version to NB '.$nbvPv->getNbVersion()->getVersion().'</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p><b>Verification status: '.$nbvPv->getVerification()->getStatusBadgeTitle().'</b></p> 
+                                <p>Requested on: '.$nbvPv->getVerification()->getCreatedAt()->format('Y-m-d').'</p><br/>  
+                                <h4>Votes</h4>
+                                <table class="table table-striped">'; 
+                            foreach($nbvPv->getVerification()->getVerificationRequests() as $vrq) {
+                                echo '<tr>
+                                        <td>'.$vrq->getVerifier()->getuserId().'</td>
+                                        <td><span class="badge '.$vrq->getVoteBadgeClass().'" title="'.$vrq->getVoteBadgeTitle().'">'.$vrq->getVoteBadgeTitle().'</span></td>
+                                        <td>'.($vrq->getVotedAt() ? $vrq->getVotedAt()->format('Y-m-d') : '').'</td>
+                                    </tr>';
+                            }
+                            echo'</table></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                            </div>
+                        </div>
+                    </div>';
+        }
+    }
+}
+echo '<td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>';

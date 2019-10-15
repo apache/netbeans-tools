@@ -1,0 +1,76 @@
+<?php
+$pluugin = $this->plugin;
+echo '<tr>
+<td style="text-align: center;"><h4><i class="fas '.$plugin->getStatusIconClass().'" title="'.$plugin->getStatusTitle().'"></i></h4></td>
+<td>
+    <h4 class="text-primary">'.$plugin->getName().'</h4>
+    <p>
+        <a class="btn btn-default" href="'.$this->url('plugin',array('action'=>'edit'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Edit">
+            <i class="fas fa-edit text-primary"></i>
+        </a>
+        <a class="btn btn-default" href="'.$this->url('plugin',array('action'=>'delete'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Remove">
+            <i class="fas fa-trash text-danger"></i>
+        </a>
+        <a class="btn btn-default" href="'.$this->url('plugin',array('action'=>'sync'),array('query' => array('id'=>$plugin->getId()))).'" role="button" title="Sync with source manifest.">
+            <i class="fas fa-sync"></i>
+        </a>                
+    </p>
+    <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
+    <div>
+        <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
+        <p>
+        <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
+        <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
+        <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
+        </p>                
+    </div>
+    <p>';
+
+foreach ($plugin->getCategories() as $cat) {
+    echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
+}    
+
+echo '</p>
+</td>
+<td>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+            <th scope="col" style="width: 170px;">Plugin Version</th>
+            <th scope="col" style="width: 100px;"></th>
+            <th scope="col">NB Versions</th>
+            <th scope="col">Verifications</th>
+            </tr>
+        </thead>
+        <tbody>';
+
+foreach ($plugin->getVersions() as $version) {
+    echo '<tr>
+        <td><span class="badge">'.$version->getVersion().'</span></td>
+        <td>
+            <a class="btn btn-default" href="'.$this->url('plugin-version',array('action'=>'edit'),array('query' => array('id'=>$version->getId()))).'" role="button" title="Edit">
+                <i class="fas fa-edit text-primary"></i>
+            </a>
+            <!-- <a class="btn btn-default" href="'.$this->url('plugin-version',array('action'=>'delete'),array('query' => array('id'=>$version->getId()))).'" role="button" title="Edit">
+                <i class="fas fa-trash text-danger"></i>
+            </a> -->
+        </td>
+        <td>';
+    foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+            echo '<span class="badge badge-brown">NB '.$nbvPv->getNbVersion()->getVersion().'</span> &nbsp; ';
+    }    
+    echo '</td>
+        <td>';
+    foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+        if ($nbvPv->getVerificationId()) {
+            echo '<span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'" title="'.$nbvPv->getVerification()->getStatusBadgeTitle().'">
+            NB '.$nbvPv->getNbVersion()->getVersion().' - '.$nbvPv->getVerification()->getStatusBadgeTitle().'</span> &nbsp; ';
+        }
+    }
+    echo ' <td>
+    </tr>';
+}
+echo '</tbody>
+</table>
+</td>
+</tr>';
