@@ -1,0 +1,29 @@
+<?= $this->partial('_nav.phtml'); ?>
+<h4>Plugin categories</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<p>
+<form class="form-inline" method="post" action="">
+  <div class="form-group">
+    <label for="name">New category: </label>
+    <input type="text" class="form-control" name="name" id="name" placeholder="category name" style="width: 300px;" value="">
+  </div>
+  <button type="submit" class="btn btn-primary">Add Category</button>
+</form>
+</p>
+<br/>
+<table class="table table-striped table-hover" style="width: 50%">
+<?php
+    foreach ($this->categories as $c) {
+        echo '<tr>
+            <td><h5>'.$c->getName().'</h5></td>            
+            <td>
+                <a class="btn btn-danger" href="'.$this->url('admin',array('action'=>'categories'),array('query' => array('id'=>$c->getId()))).'" role="button" title="Approve">
+                    Delete
+                </a>
+            </td>
+        </tr>';
+    }
+?>
+</table>

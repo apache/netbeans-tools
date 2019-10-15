@@ -1,0 +1,36 @@
+<?php
+$mapping = array();
+foreach($this->pluginVersion->getNbVersionsPluginVersions() as $nbvPv) {
+    $assignedNbVersions[$nbvPv->getNbVersionId()] = $nbvPv;    
+}
+if($this->nbVersions) {
+    echo '<table class="table table-striped">';
+    foreach ($this->nbVersions as $nbv) {  
+        echo '            
+        <tr>
+        <td>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" value="'.$nbv->getId().'" name="nbVersion_ids[]" '.(array_key_exists($nbv->getId(), $assignedNbVersions) ? 'checked' : '').'>    
+                <span class="badge badge-brown">NB '.$nbv->getVersion().'</span>          
+            </label>
+        </div>
+        <td>
+        <td>';
+        if (array_key_exists($nbv->getId(), $assignedNbVersions)) {
+            $nbvPv = $assignedNbVersions[$nbv->getId()];
+            if ($nbvPv->getVerificationId()) {
+                echo 'Verification request created on '.$nbvPv->getVerification()->getCreatedAt()->format('Y-m-d').' 
+                &nbsp; &nbsp; <span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'">'.$nbvPv->getVerification()->getStatusBadgeTitle().'</span>
+                &nbsp;&nbsp;
+                <a href="'.$this->url('plugin-version',array('action'=>'edit'),array('query' => array('id' => $this->pluginVersion->getId(), 'verifId' => $nbvPv->getVerification()->getId()))).'" class="btn btn-default" role="button">Drop verification</a>';
+            } elseif(!in_array($nbv->getId(), $this->verifiedNbVersionIds)) {
+                echo '<a href="'.$this->url('verification',array('action'=>'create'),array('query' => array('nbvPvId' => $nbvPv->getId()))).'" class="btn btn-default" role="button">Request verification</a>';
+            }
+        }
+
+        echo '</td>
+        </tr>';
+    }    
+    echo '</table>';
+}

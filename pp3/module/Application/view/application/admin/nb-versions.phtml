@@ -1,0 +1,29 @@
+<?= $this->partial('_nav.phtml'); ?>
+<h4>NetBeans versions</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<p>
+<form class="form-inline" method="post" action="">
+  <div class="form-group">
+    <label for="exampleInputName2">New version: </label>
+    <input type="text" class="form-control" name="version" id="search" placeholder="NetBeans version" style="width: 300px;" value="">
+  </div>
+  <button type="submit" class="btn btn-primary">Add version</button>
+</form>
+</p>
+<br/>
+<table class="table table-striped table-hover" style="width: 50%">
+<?php
+    foreach ($this->nbVersions as $v) {
+        echo '<tr>
+            <td><h5>'.$v->getVersion().'</h5></td>            
+            <td>
+                <a class="btn btn-danger" href="'.$this->url('admin',array('action'=>'nb-versions'),array('query' => array('id'=>$v->getId()))).'" role="button" title="Delete">
+                    Delete
+                </a>
+            </td>
+        </tr>';
+    }
+?>
+</table>

@@ -1,0 +1,26 @@
+<?php
+$versionBadges = array();
+foreach ($plugin->getVersions() as $version) {
+    $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
+}
+
+echo '
+<h4 class="text-primary"><a href="'.$this->url('admin', array('action' => 'edit'),array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
+<p>
+    '.implode('&nbsp;', $versionBadges).'
+</p>
+<p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
+<p>
+<p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
+<i class="fas fa-user"></i> '.$plugin->getAuthorName().' &nbsp; &nbsp;&nbsp; 
+<i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;&nbsp; 
+<i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').'   &nbsp; &nbsp;  &nbsp;            
+<i class="fas fa-file-contract"></i> '.$plugin->getLicense().'
+</p>
+<p>';
+
+foreach ($plugin->getCategories() as $cat) {
+    echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
+}    
+echo '</p>';
+?>

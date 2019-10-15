@@ -1,0 +1,11 @@
+<select name="<?= $this->fieldName?>" class="form-control" <?= $this->required ? 'required' : ''?> >
+<option>Select category</option>
+<?php
+foreach ($this->categories as $cat) {
+    if ($this->selected) {
+        $sel = $cat->getId() == $this->selected->getId() ? 'selected' : '';
+    }
+    echo '<option value="'.$cat->getId().'" '.$sel.'>'.$cat->getName().'</option>';
+}
+?>
+</select>

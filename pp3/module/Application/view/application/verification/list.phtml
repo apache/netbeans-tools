@@ -1,0 +1,107 @@
+<h3>My verification requests</h3>
+<p>
+    Showing only your verification requests with yet undecided overal status.   
+</p>
+<?= $this->partial('layout/flash.phtml'); ?>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Request for</th>
+            <th></th>
+            <th>Created</th>
+            <th>Overal status</th>
+            <th>My vote</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php
+    foreach ($this->verificationRequests as $vReq) {
+        $verification = $vReq->getVerification();
+        $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion();
+        $pluginVersion = $vReq->getVerification()->getNbVersionPluginVersion()->getPluginVersion();
+        $plugin = $pluginVersion->getPlugin();
+        echo '<tr>
+        <td>
+            <span class="text text-primary" style="font-size:1.2em"><a href="'.$pluginVersion->getUrl().'">'.$plugin->getName().'</a></span>
+        </td>
+        <td>
+            <span class="badge">'.$pluginVersion->getVersion().'</span> &nbsp; <i class="fas fa-arrow-right"></i> &nbsp;
+            <span class="badge">NB '.$nbVersion->getVersion().'</span>
+        </td>
+        <td>'.$verification->getCreatedAt()->format('Y-m-d H:i').'</td>
+        <td>
+            <span class="badge '.$verification->getStatusBadgeClass().'" title="'.$verification->getStatusBadgeTitle().'">'.$verification->getStatusBadgeTitle().'</span>
+        </td>
+        <td>    
+            <span class="badge '.$vReq->getVoteBadgeClass().'" title="'.$vReq->getVoteBadgeTitle().'">'.$vReq->getVoteBadgeTitle().'</span>
+        </td>
+        <td>
+        <div>
+        <a href="'.$this->url('verification', array('action'=>'vote-go'), array('query' => array('id'=>$vReq->getId()))).'" class="btn btn-success" role="button">Go</a>
+        <a href="'.$this->url('verification', array('action'=>'vote-undecided'), array('query' => array('id'=>$vReq->getId()))).'" class="btn btn-default" role="button">Undecided</a>
+        <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#noGoModal-'.$vReq->getId().'">NoGo</button>
+        
+        ';
+
+        // master options
+        if ($this->isAdmin) {
+            echo ' &nbsp; | &nbsp;
+            <a href="'.$this->url('verification', array('action'=>'vote-master-go'), array('query' => array('id'=>$verification->getId()))).'" class="btn btn-success" role="button">Master Go</a>        
+            <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#masterNoGoModal-'.$verification->getId().'">Master NoGo</a>
+            ';
+        }
+        echo '
+        </div>
+        <div class="modal fade" id="noGoModal-'.$vReq->getId().'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <form action="'.$this->url('verification', array('action'=>'vote-nogo'), array('query' => array('id'=>$vReq->getId()))).'" method="post">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">NoGo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comment">NoGo Comment</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="5"
+                            placeholder="Short description why giving NoGo"></textarea>                
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">NoGo</button>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal fade" id="masterNoGoModal-'.$verification->getId().'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <form action="'.$this->url('verification', array('action'=>'vote-master-nogo'), array('query' => array('id'=>$verification->getId()))).'" method="post">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">NoGo</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="comment">NoGo Comment</label>
+                            <textarea class="form-control" id="comment" name="comment" rows="5"
+                            placeholder="Short description why giving NoGo"></textarea>                
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">NoGo</button>
+                    </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        </td>
+        </tr>';
+    }
+?>
+    </tbody>
+</table>

@@ -1,0 +1,20 @@
+<h3>Add plugin</h3>
+    <div class="row">
+        <div class="col col-sm-6">
+            <?= $this->partial('layout/flash.phtml'); ?>
+            <form method="post" action="" enctype="multipart/form-data">
+            <div class="form-group">
+                <label>Plugin attributes from maven.org's <code>maven-metadata.xml</code> </label>
+            </div>
+            <div class="form-group">
+                <label for="urgroupIdl">GroupId</label>
+                <input type="text" class="form-control" id="groupId" name="groupid" placeholder="com.project" value="<?= $this->plugin->getGroupId() ?>" style="width: 400px;">
+            </div>
+            <div class="form-group">
+                <label for="url">ArtifactId</label>
+                <input type="text" class="form-control" id="artefictid" name="artifactid" placeholder="artifactId" value="<?= $this->plugin->getArtifactId() ?>" style="width: 400px;">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Plugin</button>
+            </form>
+        </div>
+    </div>

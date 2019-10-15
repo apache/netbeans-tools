@@ -1,0 +1,45 @@
+<?= $this->partial('_nav.phtml'); ?>
+<h4>Find and edit plugin</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<form class="form-inline" method="get" action="">
+  <div class="form-group">
+    <!-- <label for="exampleInputName2">Search</label> -->
+    <input type="text" class="form-control" name="search" id="search" placeholder="Search for plugin..." style="width: 300px;" value="<?= $this->search ?>">
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+<br/>
+<br/>
+<?php
+if ($this->plugins) {
+    echo '<table class="table table-striped">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Plugin</th>
+            <th>Versions</th>            
+        </tr>
+    </thead>
+        <tbody>';
+
+    foreach($this->plugins as $plugin) {
+        echo $this->partial('application/admin/_plugin-listrow.phtml', array('plugin' => $plugin));
+    }
+    echo '</tbody></table>';
+} else {
+    if ($this->search) {
+        echo '<p>Sorry, no plugins found</p>';
+    }
+}
+
+?>
+<script>
+  $( function() {
+    $( "#search" ).autocomplete({
+      source: "<?= $this->url('admin',array('action'=>'search-autocomplete')) ?>",
+      minLength: 3,      
+    });
+  } );
+</script>

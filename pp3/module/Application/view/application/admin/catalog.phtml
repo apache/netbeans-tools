@@ -1,0 +1,27 @@
+<?= $this->partial('_nav.phtml'); ?>
+<h4>Publish catalog</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<table class="table table-striped table-hover">
+<?php
+    foreach ($this->nbVersions as $nbv) {
+        echo '<tr>
+            <td><h4>NB '.$nbv->getVersion().'</h4></td>
+            <td>
+                <a href="'.$this->catalUrlPath.'/'.$nbv->getVersion().'/catalog.xml" target="_blank">View catalog</a><br/>
+                <a href="'.$this->catalUrlPath.'/'.$nbv->getVersion().'/catalog-experimental.xml" target="_blank">View experimental catalog</a>
+            </td>
+            <td>
+                <a class="btn btn-primary" href="'.$this->url('admin',array('action'=>'catalog'),array('query' => array('version'=>$nbv->getVersion()))).'" role="button" title="Approve">
+                    Publish catalog
+                </a>
+                &nbsp;
+                <a class="btn btn-primary" href="'.$this->url('admin',array('action'=>'catalog'),array('query' => array('version'=>$nbv->getVersion(), 'experimental' => true))).'" role="button" title="Approve">
+                Publish experimental catalog
+            </a>
+            </td>
+        </tr>';
+    }
+?>
+</table>
