@@ -9,6 +9,7 @@ use Application\Repository\PluginVersionRepository;
 use Application\Repository\CategoryRepository;
 use Application\Controller\PluginController;
 use Application\Repository\VerifierRepository;
+use Application\Repository\NbVersionRepository;
 
 class PluginControllerFactory implements FactoryInterface
 {
@@ -29,6 +30,9 @@ class PluginControllerFactory implements FactoryInterface
         $verifierRepository = new VerifierRepository();
         $verifierRepository->setEntityManager($em);
 
-        return new PluginController($repository, $pvRepository, $categRepository, $config, $verifierRepository);
+        $nbVersionRepository = new NbVersionRepository();
+        $nbVersionRepository->setEntityManager($em);
+
+        return new PluginController($repository, $pvRepository, $categRepository, $config, $verifierRepository, $nbVersionRepository);
     }
 }

@@ -8,5 +8,6 @@ Local Setup Instructions:
 	module/Application/config/
 4) setup local database with config/pp3.sql script
 5) to become admin user add your google email into module/Application/config/module.config.php: pp3->admin property 
-6) open pp3/public/ folder in teh browser to see the application
-7) set write access to data/ and public/data folders so app can store files
+6) set write access to data/, vendor/ and public/data folders so app can store files (user uploads, app cache etc...
+7) open pp3/public/ folder in teh browser to see the application
+

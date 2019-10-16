@@ -8,6 +8,7 @@ use Zend\Session\Container;
 use Application\Pp\MavenDataLoader;
 use Application\Entity\Plugin;
 use Application\Entity\PluginVersion;
+use Application\Pp\Catalog;
 use Zend\Mail;
 use HTMLPurifier;
 use HTMLPurifier_Config;
@@ -20,13 +21,15 @@ class PluginController extends BaseController {
     private $_pluginVersionRepository;
     private $_categoryRepository;
     private $_verifierRepository;
+    private $_nbVersionRepository;
 
-    public function __construct($pluginRepo, $pvRepo, $categRepository, $config, $verifierRepository) {
+    public function __construct($pluginRepo, $pvRepo, $categRepository, $config, $verifierRepository, $nbVersionRepository) {
         parent::__construct($config);
         $this->_pluginRepository = $pluginRepo;
         $this->_pluginVersionRepository = $pvRepo;
         $this->_categoryRepository = $categRepository;       
         $this->_verifierRepository = $verifierRepository;
+        $this->_nbVersionRepository = $nbVersionRepository;
     }
 
     public function syncAction() {
@@ -277,9 +280,35 @@ class PluginController extends BaseController {
         };        
         $this->flashMessenger()->setNamespace('success')->addMessage('Plugin '.$plugin->getName().' deleted.');
         $this->_pluginRepository->remove($plugin);
+        $this->rebuildAllCatalogs();
         return $this->redirect()->toRoute('plugin', array(
             'action' => 'list'
         ));
+    }
+
+    private function rebuildAllCatalogs() {
+        $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
+        foreach ($versions as $v) {
+            $version = $v->getVersion();
+            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
+            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
+            $catalog = new Catalog($version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            try {
+                $xml = $catalog->asXml(true);
+                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+            } catch (\Exception $e) { }                 
+            
+            $catalog = new Catalog($version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            try {
+                $xml = $catalog->asXml(true);
+                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+            } catch (\Exception $e) { }                 
+            
+        }
+    }
+
+    private function _getCatalogLink() {
+        return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
     }
 
     private function _validateAndCleanPluginData($author, $name, $license, $description, $shortDescription, $category, $homepage) {
