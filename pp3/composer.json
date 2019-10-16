@@ -17,6 +17,7 @@
         "doctrine/doctrine-orm-module": "^0.9.1",
         "ezyang/htmlpurifier": "^4.10",
         "zendframework/zendoauth": "2.0.*",
-        "knplabs/knp-paginator-bundle": "^3.0"
+        "knplabs/knp-paginator-bundle": "^3.0",
+        "google/apiclient": "^2.4"
     }
 }

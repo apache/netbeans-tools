@@ -28,6 +28,7 @@ function onLoad() {
 function onSignIn(googleUser) {
     var profile = googleUser.getBasicProfile();
     var auth2 = gapi.auth2.getAuthInstance();
+    id_token = googleUser.getAuthResponse().id_token;
     googleUser.disconnect()
     auth2.disconnect();
     $.ajax({
@@ -36,6 +37,7 @@ function onSignIn(googleUser) {
         data: {
             name: profile.getName(),
             email: profile.getEmail(),
+            idtoken: id_token,
         },
         success: (response) => {
             if(response === 'reload') {            
