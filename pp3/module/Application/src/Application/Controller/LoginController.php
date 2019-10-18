@@ -6,6 +6,7 @@ namespace Application\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
+// use \Google\Apiclient\Client;
 
 class LoginController extends AbstractActionController {
 
@@ -27,13 +28,20 @@ class LoginController extends AbstractActionController {
             $response->setContent('');
         } else {
             if ($req->isPost()) {
-                $name = $this->params()->fromPost('name');
-                $email= $this->params()->fromPost('email');
-                $_SESSION['sessionUserId'] = $email;
-                $_SESSION['sessionUserEmail'] = $email;        
-                $this->checkVerifier($email);
-                $this->checkAdmin($email);
-                $response->setContent('reload');
+                $client = new \Google_Client(['client_id' => $this->_config['pp3']['googleClientId']]);  // Specify the CLIENT_ID of the app that accesses the backend
+                $idToken = $this->params()->fromPost('idtoken');
+                $payload = $client->verifyIdToken($idToken);
+                if ($payload) {
+                    $email = $payload['email'];
+                    $_SESSION['sessionUserId'] = $email;
+                    $_SESSION['sessionUserEmail'] = $email;        
+                    $this->checkVerifier($email);
+                    $this->checkAdmin($email);
+                    $response->setContent('reload');
+                } else {
+                    // Invalid ID token
+                    $response->setContent('Failure');
+                }
             }
         }
        return $response;

@@ -19,7 +19,8 @@ return array(
         'admin' => array(
             'jan.pirek@gmail.com',
             'jiri.kovalsky@gmail.com'
-        )
+        ),
+        'googleClientId' => '432862904114-ierlf9j6qmmuhtd44ecmlfqivlirq7uc.apps.googleusercontent.com',
     ), 
     'router' => array(
         'routes' => array(  
