@@ -2,23 +2,21 @@
 
 namespace Application\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
 use Knp\Component\Pager\PaginatorInterface;
 use Zend\View\Model\ViewModel;
 use DoctrineORMModule\Paginator\Adapter\DoctrinePaginator as DoctrineAdapter;
 use Doctrine\ORM\Tools\Pagination\Paginator as ORMPaginator;
 use Zend\Paginator\Paginator;
 
-class IndexController extends AbstractActionController {
+class IndexController extends BaseController {
 
-    private $_config;
     private $_pluginRepository;
     private $_paginator;
     private $_categoryRepository;
     private $_nbVersionRepository;
 
     public function __construct($pluginRepo, $config, PaginatorInterface $paginator, $nbVersionRepository, $categoryRepository, $pvRepo) {
-        $this->_config = $config;
+        parent::__construct($config);
         $this->_pluginRepository = $pluginRepo;
         $this->_paginator = $paginator;
         $this->_nbVersionRepository = $nbVersionRepository;

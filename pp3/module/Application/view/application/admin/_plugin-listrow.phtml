@@ -24,7 +24,7 @@ echo '<tr>
     <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
     <div>
         <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
-        <p>Author: <b>'.$plugin->getAuthor().'</b><p>
+        <p>Author: <b>'.$plugin->getAuthor()->getName().'</b><p>
         <p>
         <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
         <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
@@ -78,7 +78,12 @@ foreach ($plugin->getVersions() as $version) {
                                 <table class="table table-striped">'; 
                             foreach($nbvPv->getVerification()->getVerificationRequests() as $vrq) {
                                 echo '<tr>
-                                        <td>'.$vrq->getVerifier()->getuserId().'</td>
+                                        <td>'
+                                            . htmlentities($vrq->getVerifier()->getName(), ENT_HTML5, 'UTF-8')
+                                            . ' &lt;'
+                                            . htmlentities($vrq->getVerifier()->getEmail(), ENT_HTML5, 'UTF-8')
+                                            . '&gt;'
+                                            .'</td>
                                         <td><span class="badge '.$vrq->getVoteBadgeClass().'" title="'.$vrq->getVoteBadgeTitle().'">'.$vrq->getVoteBadgeTitle().'</span></td>
                                         <td>'.($vrq->getVotedAt() ? $vrq->getVotedAt()->format('Y-m-d') : '').'</td>
                                     </tr>';

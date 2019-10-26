@@ -12,7 +12,7 @@ echo '
 <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
 <p>
 <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
-<i class="fas fa-user"></i> '.$plugin->getAuthorName().' &nbsp; &nbsp;&nbsp; 
+<i class="fas fa-user"></i> '.$plugin->getAuthor()->getName().' &nbsp; &nbsp;&nbsp;
 <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;&nbsp; 
 <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').'   &nbsp; &nbsp;  &nbsp;            
 <i class="fas fa-file-contract"></i> '.$plugin->getLicense().'

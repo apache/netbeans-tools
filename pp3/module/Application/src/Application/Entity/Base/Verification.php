@@ -82,4 +82,7 @@ class Verification {
         return $this->nbVersionPluginVersion;
     }
 
+    function setNbVersionPluginVersion($nbVersionPluginVersion): void {
+        $this->nbVersionPluginVersion = $nbVersionPluginVersion;
+    }
 }

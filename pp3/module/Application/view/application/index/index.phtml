@@ -52,7 +52,7 @@
           <option value="">Any</option>
           <?php
           foreach($this->versions as $version) {
-              $sel = ($_GET['nbv'] == $version->getVersion())? 'selected' : ''; 
+              $sel = (array_key_exists('nbv', $_GET) && $_GET['nbv'] == $version->getVersion()) ? 'selected' : '';
               echo '<option value="'.$version->getVersion().'" '.$sel.'>'.$version->getVersion().'</option>';
           }
           ?>
@@ -64,7 +64,7 @@
           <option value="">Any</option>
           <?php
           foreach($this->categories as $cat) {
-              $sel = ($_GET['cat'] == $cat->getName())? 'selected' : ''; 
+              $sel = (array_key_exists('cat', $_GET) && $_GET['cat'] == $cat->getName()) ? 'selected' : '';
               echo '<option value="'.$cat->getName().'" '.$sel.'>'.$cat->getName().'</option>';
           }
           ?>
@@ -96,7 +96,7 @@
         <td>
             <h4 class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
             <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b> &nbsp; &nbsp; <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' <p>
-            <p>Author: <b>'.$plugin->getAuthorName().'</b></p> 
+            <p>Author: <b>'.$plugin->getAuthor()->getName().'</b></p>
             <p>License: <b>'.$plugin->getLicense().'</b></p> 
             <p>'.implode('&nbsp;', $versionBadges).'</p>   
         </td>

@@ -2,12 +2,7 @@
 
 namespace Application\Controller;
 
-use Application\Controller\BaseController;
 use Zend\View\Model\ViewModel;
-use Zend\Session\Container;
-use Application\Pp\MavenDataLoader;
-use Application\Entity\Plugin;
-use Application\Entity\PluginVersion;
 use Application\Entity\NbVersionPluginVersion;
 use Application\Pp\Catalog;
 use HTMLPurifier;
@@ -15,7 +10,7 @@ use HTMLPurifier_Config;
 
 define('PLUGIN_SESSION_NAMESPACE', 'pp3_plugin_session');
 
-class PluginVersionController extends BaseController {
+class PluginVersionController extends AuthenticatedController {
 
     public function __construct($pluginRepo, $pvRepo, $nbvRepo, $nbVersionPluginVersionRepo, $config, $verificationRepo) {
         parent::__construct($config);
@@ -29,7 +24,7 @@ class PluginVersionController extends BaseController {
     public function editAction() {
         $pvId = $this->params()->fromQuery('id');
         $pluginVersion = $this->_pluginVersionRepository->find($pvId);        
-        if (!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->_sessionUserId)) {
+        if (!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -115,7 +110,7 @@ class PluginVersionController extends BaseController {
     public function deleteAction() {
         $pId = $this->params()->fromQuery('id');
         $pluginVersion = $this->_pluginVersionRepository->find($pId);        
-        if (!$pluginVersion || empty($pId) || !$pluginVersion->getPlugin()->isOwnedBy($this->_sessionUserId)) {
+        if (!$pluginVersion || empty($pId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));

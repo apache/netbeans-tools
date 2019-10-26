@@ -2,7 +2,6 @@
 
 namespace Application\Controller;
 
-use Application\Controller\BaseController;
 use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Pp\MavenDataLoader;
@@ -15,28 +14,31 @@ use HTMLPurifier_Config;
 
 define('PLUGIN_SESSION_NAMESPACE', 'pp3_plugin_session');
 
-class PluginController extends BaseController {
+class PluginController extends AuthenticatedController {
 
     private $_pluginRepository;
     private $_pluginVersionRepository;
     private $_categoryRepository;
-    private $_verifierRepository;
     private $_nbVersionRepository;
+    /**
+     * @var \Application\Repository\UserRepository
+     */
+    private $_userRepository;
 
-    public function __construct($pluginRepo, $pvRepo, $categRepository, $config, $verifierRepository, $nbVersionRepository) {
+    public function __construct($pluginRepo, $pvRepo, $categRepository, $config, $nbVersionRepository, $userRepository) {
         parent::__construct($config);
         $this->_pluginRepository = $pluginRepo;
         $this->_pluginVersionRepository = $pvRepo;
         $this->_categoryRepository = $categRepository;       
-        $this->_verifierRepository = $verifierRepository;
         $this->_nbVersionRepository = $nbVersionRepository;
+        $this->_userRepository = $userRepository;
     }
 
     public function syncAction() {
         $pId = $this->params()->fromQuery('id');
         $plugin = $this->_pluginRepository->find($pId);        
         $plugin->setDataLoader(new MavenDataLoader());
-        if (!$plugin->isOwnedBy($this->_sessionUserId)) {
+        if (!$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -78,11 +80,12 @@ class PluginController extends BaseController {
             
             if (!empty($groupId) && !empty($artifactId)) {
                 $url = $this->_config['pp3']['mavenRepoUrl'].str_replace('.','/', $groupId).'/'.$artifactId.'/maven-metadata.xml';
+                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
                 $plugin->setUrl($url);
                 $plugin->setArtifactId($artifactId);
                 $plugin->setGroupId($groupId);
                 $plugin->setStatus(Plugin::STATUS_PRIVATE);
-                $plugin->setAuthor($this->_sessionUserId);
+                $plugin->setAuthor($user);
                 $plugin->setDataLoader(new MavenDataLoader());
                 try {
                     if ($plugin->loadData()) {
@@ -125,7 +128,6 @@ class PluginController extends BaseController {
         $req = $this->request;
         if ($req->isPost()) {
             $validatedData = $this->_validateAndCleanPluginData(
-                $this->params()->fromPost('author'),
                 $this->params()->fromPost('name'),
                 $this->params()->fromPost('license'),
                 $this->params()->fromPost('description'),
@@ -134,7 +136,8 @@ class PluginController extends BaseController {
                 $this->params()->fromPost('homepage')
             );
             if ($validatedData) {
-                $plugin->setAuthor($validatedData['author']);
+                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
+                $plugin->setAuthor($user);
                 $plugin->setName($validatedData['name']);
                 $plugin->setLicense($validatedData['license']);
                 $plugin->setDescription($validatedData['description']);
@@ -199,7 +202,7 @@ class PluginController extends BaseController {
     }
 
     public function listAction() {
-        $plugins = $this->_pluginRepository->getPluginsByAuthor($this->_sessionUserId);
+        $plugins = $this->_pluginRepository->getPluginsByAuthorId($this->getAuthenticatedUserId());
         return new ViewModel(array(
             'plugins' => $plugins,
         ));
@@ -208,7 +211,7 @@ class PluginController extends BaseController {
     public function editAction() {
         $pId = $this->params()->fromQuery('id');
         $plugin = $this->_pluginRepository->find($pId);        
-        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->_sessionUserId)) {
+        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -216,7 +219,6 @@ class PluginController extends BaseController {
         $req = $this->request;
         if ($req->isPost()) {
             $validatedData = $this->_validateAndCleanPluginData(
-                $this->params()->fromPost('author'),
                 $this->params()->fromPost('name'),
                 $this->params()->fromPost('license'),
                 $this->params()->fromPost('description'),
@@ -225,7 +227,6 @@ class PluginController extends BaseController {
                 $this->params()->fromPost('homepage')
             );
             if ($validatedData) {
-                $plugin->setAuthor($validatedData['author']);
                 $plugin->setName($validatedData['name']);
                 $plugin->setLicense($validatedData['license']);
                 $plugin->setDescription($validatedData['description']);
@@ -273,7 +274,7 @@ class PluginController extends BaseController {
     public function deleteAction() {
         $pId = $this->params()->fromQuery('id');
         $plugin = $this->_pluginRepository->find($pId);    
-        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->_sessionUserId)) {
+        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -311,14 +312,13 @@ class PluginController extends BaseController {
         return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
     }
 
-    private function _validateAndCleanPluginData($author, $name, $license, $description, $shortDescription, $category, $homepage) {
-        if (empty($author) || empty($name) || empty($license) || empty($category) || empty($shortDescription)) {
+    private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category, $homepage) {
+        if (empty($name) || empty($license) || empty($category) || empty($shortDescription)) {
             return false;
         }
         $config = HTMLPurifier_Config::createDefault();
         $purifier = new HTMLPurifier($config);
         return  array(
-            'author' => $purifier->purify($author),
             'name' => $purifier->purify($name),
             'license' => $purifier->purify($license),
             'description' => $purifier->purify($description),
@@ -348,14 +348,8 @@ P.S.: This is an automatic email. DO NOT REPLY to this email. ');
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('NetBeans plugin waiting for approval: '.$plugin->getName());
         $transport = new Mail\Transport\Sendmail();
-        $i=0;
-        foreach($this->_verifierRepository->findAll() as $verifier) {
-            if ($i == 0) {
-                $mail->addTo($verifier->getUserId());
-                $i++;
-            } else {
-                $mail->addBcc($verifier->getUserId());
-            }
+        foreach($this->_userRepository->findAdmins() as $verifier) {
+            $mail->addBcc($verifier->getEmail());
         }
         $transport->send($mail);
     }

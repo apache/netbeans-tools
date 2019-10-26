@@ -1,69 +1,72 @@
 body {
-  padding-bottom: 20px;
-}
+  padding-bottom: 20px; }
 
 .navbar {
-  margin-bottom: 10px;
-}
+  margin-bottom: 10px; }
 
 .navbar-brand .fa {
   margin-right: 5px;
-  color: white;
-}
+  color: white; }
 
 .navbar-nav {
-  margin: 5px;
-}
+  margin: 5px; }
 
 .navbar-fixed-top {
-  z-index: 1;
-}
+  z-index: 1; }
 
 .badge-red {
-  background-color: #c12e2a;
-}
+  background-color: #c12e2a; }
 
 .badge-green {
-  background-color: #099c09;
-}
+  background-color: #099c09; }
 
 .badge-blue {
-  background-color: #269eda;
-}
+  background-color: #269eda; }
 
 .badge-brown {
-  background-color: #b59c70;
-}
+  background-color: #b59c70; }
 
 .color-red {
-  color: #c12e2a;
-}
+  color: #c12e2a; }
 
 .color-green {
-  color: #099c09;
-}
+  color: #099c09; }
 
 .admin-nav a {
   display: inline-block;
-  margin-right: 20px;
-}
+  margin-right: 20px; }
 
 .r-white {
-  color: white;
-}
+  color: white; }
 
 .navbar-inverse .navbar-nav > li > a {
-  color: #c7c7c7;
-}
+  color: #c7c7c7; }
 
 .pp-footer {
   border-top: 1px solid #ddd;
   padding-top: 20px;
   text-align: center;
-  margin-top: 20px;
-}
+  margin-top: 20px; }
 
 #pp-navbar {
-  position: relative;
-}
-/*# sourceMappingURL=style.css.map */
+  position: relative; }
+
+#loginProviderList .providerIcon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 32px;
+  height: 32px;
+  background-size: contain;
+  margin-right: 1ex;
+  background-repeat: no-repeat; }
+
+#loginProviderList .list-group-item {
+  padding: 0; }
+  #loginProviderList .list-group-item a {
+    padding: 10px 15px;
+    text-decoration: none;
+    color: black;
+    background-color: white; }
+    #loginProviderList .list-group-item a:hover, #loginProviderList .list-group-item a:focus {
+      color: black;
+      background-color: #e8e8e8; }

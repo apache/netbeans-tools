@@ -7,7 +7,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Application\Controller\VerificationController;
 use Application\Repository\NbVersionPluginVersionRepository;
 use Application\Repository\VerificationRepository;
-use Application\Repository\VerifierRepository;
+use Application\Repository\UserRepository;
 use Application\Repository\VerificationRequestRepository;
 use Application\Repository\PluginVersionRepository;
 
@@ -22,8 +22,8 @@ class VerificationControllerFactory implements FactoryInterface
         $vrepository = new VerificationRepository();
         $vrepository->setEntityManager($em);
        
-        $verifierRepository = new VerifierRepository();
-        $verifierRepository->setEntityManager($em);
+        $userRepository = new UserRepository();
+        $userRepository->setEntityManager($em);
 
         $verificationRequestRepository = new VerificationRequestRepository();
         $verificationRequestRepository->setEntityManager($em);
@@ -32,6 +32,6 @@ class VerificationControllerFactory implements FactoryInterface
         $pluginVersionRepository = new PluginVersionRepository();
         $pluginVersionRepository->setEntityManager($em);
 
-        return new VerificationController($repository, $vrepository, $verifierRepository, $verificationRequestRepository, $config, $pluginVersionRepository);
+        return new VerificationController($repository, $vrepository, $userRepository, $verificationRequestRepository, $config, $pluginVersionRepository);
     }
 }

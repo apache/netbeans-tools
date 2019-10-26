@@ -133,11 +133,6 @@ class Plugin extends Base\Plugin {
         }
     }
 
-    public function getAuthorName() {
-        $split = explode('@', $this->getAuthor());
-        return $split[0];
-    }
-
     public function incrementDownloadCounter() {
         $this->downloads++;
     }
@@ -147,7 +142,7 @@ class Plugin extends Base\Plugin {
     }
 
     public function isOwnedBy($userId) {
-        return $this->author == $userId;
+        return $this->getAuthor()->getId() == $userId;
     }
 
     public function setUrl($url) {

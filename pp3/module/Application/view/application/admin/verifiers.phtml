@@ -1,29 +1,82 @@
 <?= $this->partial('_nav.phtml'); ?>
-<h4>Verifiers</h4>
+<h4>New verifier</h4>
 <p>
 <?= $this->partial('layout/flash.phtml'); ?>
 </p>
 <p>
 <form class="form-inline" method="post" action="">
   <div class="form-group">
-    <label for="exampleInputName2">New verifier: </label>
-    <input type="text" class="form-control" name="userId" id="search" placeholder="User ID" style="width: 300px;" value="">
+    <label for="search">Search: </label>
+    <input type="text" class="form-control" name="email" id="search" placeholder="Email" style="width: 300px;" value="">
   </div>
-  <button type="submit" class="btn btn-primary">Add Verifier</button>
+  <button type="button" id="searchAccount" class="btn btn-primary">Search Account</button>
+  <table class="table table-striped table-hover" id="addVerifierStatusList" style="margin-top: 1ex; margin-bottom: 1ex">
+
+  </table>
 </form>
 </p>
-<br/>
-<table class="table table-striped table-hover" style="width: 50%">
+<h4>Existing verifiers</h4>
+<table class="table table-striped table-hover">
 <?php
     foreach ($this->verifiers as $v) {
-        echo '<tr>
-            <td><h5>'.$v->getUserId().'</h5></td>            
-            <td>
-                <a class="btn btn-danger" href="'.$this->url('admin',array('action'=>'verifiers'),array('query' => array('id'=>$v->getId()))).'" role="button" title="Delete">
-                    Delete
-                </a>
-            </td>
-        </tr>';
+        printf('
+                <tr>
+                    <td>%s &lt;%s&gt; (ID: %d, IdP: %s)</td>
+                    <td>
+                        <form action="%s" method="POST">
+                            <button type="submit" class="btn btn-danger" role="button" name="removeVerifierStatusId" value="%d">
+                            Remove verifier status
+                            </button>
+                        </form>
+                    </td>
+                </tr>',
+                htmlentities($v->getName(), ENT_HTML5, 'UTF-8'),
+                htmlentities($v->getEmail(), ENT_HTML5, 'UTF-8'),
+                $v->getId(),
+                htmlentities($v->getIdpProviderId(), ENT_HTML5, 'UTF-8'),
+                $this->url('admin',array('action'=>'verifiers')),
+                $v->getId()
+        );
     }
 ?>
 </table>
+
+<script>
+    $(document).ready(function() {
+        var inputField = $('#search');
+        var searchButton = $('#searchAccount');
+        var resultList = $('#addVerifierStatusList');
+
+        function updateAddVerifierStatusList() {
+            var url = BASE_URL;
+            url += 'admin/search-user-by-email?email=';
+            url += encodeURIComponent(inputField.val());
+            $.ajax(url, {dataType: 'json'}).done(function(data) {
+                resultList.empty();
+                for(var idx in data) {
+                    var row = data[idx];
+                    if(row['verifier']) {
+                        continue;
+                    }
+                    resultList
+                            .append(
+                                $("<tr></tr>").append(
+                                    $('<td></td>')
+                                        .text(row['name'] + "<" + row['email'] + "> (ID: " + row['id'] + ", IdP: " + row['idpProviderId'] + ")"),
+                                    $('<td></td>')
+                                        .append($('<form action="%s" method="POST"></form>')
+                                            .attr('action', BASE_URL + "admin/verifiers")
+                                            .append($('<button type="submit" class="btn btn-success" role="button" name="addVerifierStatusId">')
+                                                .attr('value', row['id'])
+                                                .text('Add verifier status')
+                                            )
+                                            )
+                            )
+                    );
+                }
+            });
+        }
+
+        searchButton.click(updateAddVerifierStatusList);
+    });
+</script>

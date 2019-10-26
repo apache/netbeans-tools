@@ -2,7 +2,6 @@
 
 namespace Application\Controller;
 
-use Application\Controller\BaseController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Verification;
 use Application\Pp\Catalog;
@@ -11,31 +10,31 @@ use Zend\Mail;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 
-class VerificationController extends BaseController {
+class VerificationController extends AuthenticatedController {
 
     private $_nbVersionPluginVersionRepository;
     private $_verificationRepository;
-    private $_verifierRepository;
+    /**
+     * @var \Application\Repository\UserRepository
+     */
+    private $_userRepository;
     private $_verificationRequestRepository;
     private $_pluginVersionRepository;
 
     public function __construct($nbVersionPluginVersionRepo, $verificationRepo, 
-                                $verifierRepository, $verificationRequestRepository, $config,
+                                $userRepository, $verificationRequestRepository, $config,
                                 $pluginVersionRepository) {
         parent::__construct($config);
         $this->_nbVersionPluginVersionRepository = $nbVersionPluginVersionRepo;
         $this->_verificationRepository = $verificationRepo;
-        $this->_verifierRepository = $verifierRepository;
+        $this->_userRepository = $userRepository;
         $this->_verificationRequestRepository = $verificationRequestRepository;
         $this->_pluginVersionRepository = $pluginVersionRepository;
-
-        $session = new Container();
-        $this->_sessionUserId = $session->userId ? $session->userId : ANONUSER;
     } 
 
     public function listAction() {
         return new ViewModel([
-            'verificationRequests' => $this->_verificationRequestRepository->getVerificationRequestsForVerifier($this->_sessionUserId),
+            'verificationRequests' => $this->_verificationRequestRepository->getVerificationRequestsForVerifier($this->getAuthenticatedUserId()),
             'isAdmin' => $this->_isAdmin,
         ]);
     }
@@ -59,7 +58,7 @@ class VerificationController extends BaseController {
             $bailOut = true;
         }
         $req = $this->_verificationRequestRepository->find($reqId);
-        if (!$req || $req->getVerifier()->getUserId() !== $this->_sessionUserId) {
+        if (!$req || $req->getVerifier()->getId() !== $this->getAuthenticatedUserId()) {
             $bailOut = true;
         }
         if ($bailOut) {
@@ -148,12 +147,13 @@ class VerificationController extends BaseController {
         if (empty($nbvPvId)) {
             $bailOut = true;
         }
+        /** @var \Application\Entity\NbVersionPluginVersion $nbVersionPluginVersion   */
         $nbVersionPluginVersion = $this->_nbVersionPluginVersionRepository->find($nbvPvId);
         if (!$nbVersionPluginVersion) {
             $bailOut = true;
         }
         $plugin = $nbVersionPluginVersion->getPluginVersion()->getPlugin();
-        if (!$plugin->isOwnedBy($this->_sessionUserId)) {
+        if (!$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
             $bailOut = true;
         }
         if ($bailOut) {
@@ -165,14 +165,19 @@ class VerificationController extends BaseController {
         $verification = new Verification();
         $verification->setStatus(Verification::STATUS_REQUESTED);
         $verification->setCreatedAt(new \DateTime('now'));
+        $verification->setPluginVersionId($nbvPvId);
         $this->_verificationRepository->persist($verification);
         // join it to nbVersionPluginVersion
         $nbVersionPluginVersion->setVerification($verification);
         $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
+        $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
         // generate requests for all verifiers
-        $verifiers = $this->_verifierRepository->findAll();
+        $verifiers = $this->_userRepository->findVerifier();
         $verification->createRequests($verifiers, $plugin);
         $this->_verificationRepository->persist($verification);
+        foreach($verification->getVerificationRequests() as $req) {
+            $req->sendVerificationMail($plugin);
+        }
         $this->flashMessenger()->setNamespace('success')->addMessage('Verification Requested.');
         return $this->redirect()->toUrl('../plugin-version/edit?id='.$nbVersionPluginVersion->getPluginVersion()->getId());         
     }
@@ -182,7 +187,7 @@ class VerificationController extends BaseController {
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
         $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion()->getVersion();
         $mail = new Mail\Message();
-        $mail->addTo($plugin->getAuthor());
+        $mail->addTo($plugin->getAuthor()->getEmail());
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('Verification of your '.$plugin->getName().' is complete');
         $mail->setBody('Hello plugin owner,
@@ -212,7 +217,7 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.');
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
         $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion()->getVersion();
         $mail = new Mail\Message();
-        $mail->addTo($plugin->getAuthor());
+        $mail->addTo($plugin->getAuthor()->getEmail());
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('Verification of your '.$plugin->getName().' is complete');
         $mail->setBody('Hello plugin owner,

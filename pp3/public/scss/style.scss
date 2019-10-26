@@ -55,3 +55,27 @@ body {
 #pp-navbar {
     position: relative;
 }
+
+#loginProviderList .providerIcon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    background-size: contain;
+    margin-right: 1ex;
+    background-repeat: no-repeat;
+}
+
+#loginProviderList .list-group-item {
+    padding: 0;
+    a {
+        padding: 10px 15px;
+        text-decoration: none;
+        color: black;
+        background-color: white;
+        &:hover, &:focus {
+            color: black;
+            background-color: #e8e8e8;
+        }
+    }
+}

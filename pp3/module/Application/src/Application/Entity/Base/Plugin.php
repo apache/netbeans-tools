@@ -32,7 +32,9 @@ class Plugin {
     /** @ORM\Column(type="string", length=255) */
     protected $license;
 
-    /** @ORM\Column(type="string", length=255) */
+    /** 
+     * @ORM\ManyToOne(targetEntity="User") 
+     */
     protected $author;
 
     /** @ORM\Column(type="datetime") */
@@ -138,10 +140,16 @@ class Plugin {
         $this->license = $license;
     }
 
+    /**
+     * @return User
+     */
     public function getAuthor() {
         return $this->author;
     }
 
+    /**
+     * @param User $author
+     */
     public function setAuthor($author) {
         $this->author = $author;
     }

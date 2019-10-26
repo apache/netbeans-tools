@@ -29,7 +29,7 @@ class VerificationRequestRepository extends DoctrineEntityRepository {
         ->join('nbVersionPluginVersion.pluginVersion', 'pluginVersion')
         ->join('nbVersionPluginVersion.nbVersion', 'nbVersion')
         ->join('pluginVersion.plugin', 'plugin')
-        ->where('verifier.user_id = :userId')
+        ->where('verifier.id = :userId')
         ->andWhere('verification.status IN (:status)')
         ->orderBy('vrq.created_at', 'DESC')
         ->setParameter('status', array(\Application\Entity\Verification::STATUS_REQUESTED, \Application\Entity\Verification::STATUS_PENDING))

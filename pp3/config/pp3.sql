@@ -18,27 +18,23 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- Databáze: `pp3`
---
-
--- --------------------------------------------------------
-
---
--- Struktura tabulky `category`
---
+CREATE TABLE IF NOT EXISTS `user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idp_provider_id` varchar(20) COLLATE utf8_czech_ci NOT NULL,
+  `idp_user_id` varchar(100) COLLATE utf8_czech_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8_czech_ci NOT NULL,
+  `admin` boolean DEFAULT false NOT NULL,
+  `verifier` boolean DEFAULT false NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY(idp_provider_id, idp_user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
 CREATE TABLE IF NOT EXISTS `category` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabulky `nb_version`
---
 
 CREATE TABLE IF NOT EXISTS `nb_version` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -47,32 +43,12 @@ CREATE TABLE IF NOT EXISTS `nb_version` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
--- --------------------------------------------------------
-
---
--- Struktura tabulky `nb_version_plugin_version`
---
-
-CREATE TABLE IF NOT EXISTS `nb_version_plugin_version` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `nb_version_id` int(11) NOT NULL,
-  `plugin_version_id` int(11) NOT NULL,
-  `verification_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabulky `plugin`
---
-
 CREATE TABLE IF NOT EXISTS `plugin` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_czech_ci NOT NULL,
   `artifactid` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `license` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  `author` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
+  `author_id` int(11) NOT NULL REFERENCES user(id),
   `added_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `last_updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `approved_at` datetime DEFAULT NULL,
@@ -89,52 +65,39 @@ CREATE TABLE IF NOT EXISTS `plugin` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
--- --------------------------------------------------------
-
---
--- Struktura tabulky `plugin_category`
---
-
-CREATE TABLE IF NOT EXISTS `plugin_category` (
-  `plugin_id` int(11) NOT NULL,
-  `category_id` int(11) NOT NULL,
-  PRIMARY KEY (`plugin_id`,`category_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabulky `plugin_version`
---
-
 CREATE TABLE IF NOT EXISTS `plugin_version` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `version` varchar(255) COLLATE utf8_czech_ci NOT NULL,
   `url` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `relnotes` text COLLATE utf8_czech_ci,
-  `plugin_id` int(11) DEFAULT NULL,
+  `plugin_id` int(11) NOT NULL REFERENCES plugin(id),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabulky `verification`
---
 
 CREATE TABLE IF NOT EXISTS `verification` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `status` int(11) DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `plugin_version_id` int(11) DEFAULT NULL,
+  `plugin_version_id` int(11) NOT NULL REFERENCES plugin_version(id),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
--- --------------------------------------------------------
 
---
--- Struktura tabulky `verification_request`
---
+CREATE TABLE IF NOT EXISTS `nb_version_plugin_version` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nb_version_id` int(11) NOT NULL REFERENCES nb_version(id),
+  `plugin_version_id` int(11) NOT NULL REFERENCES plugin_version(id),
+  `verification_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
+
+CREATE TABLE IF NOT EXISTS `plugin_category` (
+  `plugin_id` int(11) NOT NULL REFERENCES plugin(id),
+  `category_id` int(11) NOT NULL REFERENCES category(id),
+  PRIMARY KEY (`plugin_id`,`category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
 
 CREATE TABLE IF NOT EXISTS `verification_request` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -143,21 +106,10 @@ CREATE TABLE IF NOT EXISTS `verification_request` (
   `voted_at` datetime DEFAULT NULL,
   `comment` text COLLATE utf8_czech_ci,
   `verification_id` int(11) DEFAULT NULL,
-  `verifier_id` int(11) DEFAULT NULL,
+  `verifier_id` int(11) NOT NULL REFERENCES user(id),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
--- --------------------------------------------------------
-
---
--- Struktura tabulky `verifier`
---
-
-CREATE TABLE IF NOT EXISTS `verifier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

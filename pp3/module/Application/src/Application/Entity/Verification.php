@@ -21,7 +21,11 @@ class Verification extends Base\Verification {
     public function addVerificationRequest($req) {
         $this->verification_requests[] = $req;
     }
-    
+
+    /**
+     * @param User[] $verifiers
+     * @param Plugin $plugin
+     */
     public function createRequests($verifiers, $plugin) {
         foreach($verifiers as $verifier) {
             $req = new VerificationRequest();
@@ -30,7 +34,6 @@ class Verification extends Base\Verification {
             $req->setVerifier($verifier);
             $req->setVote(VerificationRequest::VOTE_UNDECIDED);
             $this->addVerificationRequest($req);
-            $req->sendVerificationMail($plugin);
         }
     }
 

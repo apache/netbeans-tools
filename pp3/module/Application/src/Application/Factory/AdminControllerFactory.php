@@ -9,7 +9,7 @@ use Application\Repository\PluginRepository;
 use Application\Repository\PluginVersionRepository;
 use Application\Repository\NbVersionPluginVersionRepository;
 use Application\Repository\VerificationRepository;
-use Application\Repository\VerifierRepository;
+use Application\Repository\UserRepository;
 use Application\Repository\VerificationRequestRepository;
 use Application\Repository\NbVersionRepository;
 use Application\Repository\CategoryRepository;
@@ -24,9 +24,9 @@ class AdminControllerFactory implements FactoryInterface
         
         $vrepository = new VerificationRepository();
         $vrepository->setEntityManager($em);
-       
-        $verifierRepository = new VerifierRepository();
-        $verifierRepository->setEntityManager($em);
+
+        $userRepository = new UserRepository();
+        $userRepository->setEntityManager($em);
 
         $verificationRequestRepository = new VerificationRequestRepository();
         $verificationRequestRepository->setEntityManager($em);
@@ -42,11 +42,13 @@ class AdminControllerFactory implements FactoryInterface
 
         $categoryRepository = new CategoryRepository();
         $categoryRepository->setEntityManager($em);
-        
+
         $config = $serviceLocator->getServiceLocator()->get('config');
 
         return new AdminController($pluginRepository, $repository, $vrepository, 
-                                    $verifierRepository, $verificationRequestRepository, 
-                                    $nbVersionRepository, $pluginVersionRepository, $config, $categoryRepository);
+                                    $verificationRequestRepository,
+                                    $nbVersionRepository,
+                                    $pluginVersionRepository, $config,
+                                    $categoryRepository, $userRepository);
     }
 }

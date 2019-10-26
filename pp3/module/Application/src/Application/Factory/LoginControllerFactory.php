@@ -5,7 +5,7 @@ namespace Application\Factory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Application\Controller\LoginController;
-use Application\Repository\VerifierRepository;
+use Application\Repository\UserRepository;
 
 class LoginControllerFactory implements FactoryInterface
 {
@@ -14,9 +14,9 @@ class LoginControllerFactory implements FactoryInterface
 
         $config = $serviceLocator->getServiceLocator()->get('config');
         $em = $serviceLocator->getServiceLocator()->get('Doctrine\ORM\EntityManager');
-        $verifierRepository = new VerifierRepository();
-        $verifierRepository->setEntityManager($em);
+        $userRepository = new UserRepository();
+        $userRepository->setEntityManager($em);
 
-        return new LoginController($config, $verifierRepository);
+        return new LoginController($config, $userRepository);
     }
 }

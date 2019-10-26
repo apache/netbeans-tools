@@ -38,7 +38,7 @@ class VerificationRequest {
     protected $verification;
     
     /**
-     * @ORM\ManyToOne(targetEntity="Verifier", inversedBy="verification_requests")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="verification_requests")
      * @ORM\JoinColumn(name="verifier_id", referencedColumnName="id")
      */
     protected $verifier;
