@@ -1,3 +1,7 @@
+Licensed to the Apache Software Foundation (ASF) under one or more contributor
+license agreements; and to You under the Apache License, Version 2.0.
+
+
 Local Setup Instructions:
 
 0) required software: php >=5.6 cli, web server with php >=5.6 (apache, nginx...), mysql >=5.7, composer 
