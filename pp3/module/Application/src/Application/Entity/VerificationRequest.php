@@ -16,9 +16,6 @@ class VerificationRequest extends Base\VerificationRequest {
     const VOTE_UNDECIDED = 0;
 
     public function sendVerificationMail($plugin) {
-        // TODO - remove when we have auth ready
-        return;
-
         $body = 'Hello verifier,
 
 this is to inform you about new verification request requiring your immediate attention.
@@ -38,7 +35,7 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.';
         $mail = new Mail\Message();
         $mail->setBody($body);
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
-        $mail->addTo($this->getVerifier()->getUserId());
+        $mail->addTo($this->getVerifier()->getEmail());
         $mail->setSubject('Verification request for NetBeans plugin: '.$plugin->getName());
         $transport = new Mail\Transport\Sendmail();
         

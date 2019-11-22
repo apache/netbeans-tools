@@ -6,8 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="verifier")
+ * @ORM\Table(name="user")
  */
-class Verifier extends Base\Verifier {
+class User extends Base\User {
 
 }

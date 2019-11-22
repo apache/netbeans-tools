@@ -4,6 +4,8 @@
 foreach ($this->categories as $cat) {
     if ($this->selected) {
         $sel = $cat->getId() == $this->selected->getId() ? 'selected' : '';
+    } else {
+        $sel = '';
     }
     echo '<option value="'.$cat->getId().'" '.$sel.'>'.$cat->getName().'</option>';
 }

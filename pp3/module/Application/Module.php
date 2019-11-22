@@ -27,7 +27,24 @@ class Module {
             'remember_me_seconds' => 180,
             'use_cookies' => true,
             //'cookie_httponly' => true,
-        ]);        
+        ]);
+
+        // Why this code is necessary will be the secret of the Zend Developers
+        // instead of logging, they hide exception and just show meaningless
+        // error messages
+        //
+        //Attach render errors
+        $eventManager->attach(MvcEvent::EVENT_RENDER_ERROR, function($e) {
+            if ($e->getParam('exception')) {
+                error_log($e->getParam('exception')); //Custom error render function.
+            }
+        });
+        //Attach dispatch errors
+        $eventManager->attach(MvcEvent::EVENT_DISPATCH_ERROR, function($e) {
+            if ($e->getParam('exception')) {
+                error_log($e->getParam('exception')); //Custom error render function.
+            }
+        });
     }
 
     public function getConfig() {

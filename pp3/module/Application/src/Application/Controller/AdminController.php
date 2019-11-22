@@ -2,43 +2,44 @@
 
 namespace Application\Controller;
 
-use Application\Controller\BaseController;
 use Zend\View\Model\ViewModel;
 use Application\Entity\Plugin;
-use Zend\Session\Container;
 use Application\Pp\MavenDataLoader;
 use Application\Pp\Catalog;
-use Application\Entity\Verifier;
+use Application\Entity\User;
 use Application\Entity\NbVersion;
 use Application\Entity\Category;
-use Zend\Mvc\MvcEvent;
 use HTMLPurifier;
 use HTMLPurifier_Config;
-use Zend\Http\Response;
+use Zend\Http\PhpEnvironment\Response;
 
-class AdminController extends BaseController {
+class AdminController extends AuthenticatedController {
 
     private $_pluginRepository;
     private $_pluginVersionRepository;
     private $_nbVersionPluginVersionRepository;
     private $_verificationRepository;
-    private $_verifierRepository;
     private $_verificationRequestRepository;
+    /**
+     * @var \Application\Repository\UserRepository
+     */
+    private $_userRepository;
     private $_nbVersionRepository;
     private $_categoryRepository;
 
     public function __construct($pluginRepository, $nbVersionPluginVersionRepo, $verificationRepo, 
-                                $verifierRepository, $verificationRequestRepository, $nbVersionRepository,
-                                $pluginVersionRepository, $config, $categoryRepository) {
+                                $verificationRequestRepository, $nbVersionRepository,
+                                $pluginVersionRepository, $config, $categoryRepository,
+                                $userRepository) {
         parent::__construct($config);
         $this->_pluginRepository = $pluginRepository;
         $this->_pluginVersionRepository = $pluginVersionRepository;
         $this->_nbVersionPluginVersionRepository = $nbVersionPluginVersionRepo;
         $this->_verificationRepository = $verificationRepo;
-        $this->_verifierRepository = $verifierRepository;
         $this->_verificationRequestRepository = $verificationRequestRepository;
         $this->_nbVersionRepository = $nbVersionRepository;
         $this->_categoryRepository = $categoryRepository;
+        $this->_userRepository = $userRepository;
     } 
 
     public function deletePendingAction() {
@@ -166,30 +167,58 @@ class AdminController extends BaseController {
         ]);
     }
 
+    public function searchUserByEmailAction() {
+        /* @var $response Response */
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine("Content-Type", "application/json");
+        $email = $this->params()->fromQuery('email');
+        $result = array();
+        if(! empty($email)) {
+            foreach($this->_userRepository->findByEmail($email) as $user) {
+                $result[] = array(
+                    'id' => $user->getId(),
+                    'name' => $user->getName(),
+                    'email' => $user->getEmail(),
+                    'idpProviderId' => $user->getIdpProviderId(),
+                    'verifier' => !!$user->isVerifier(),
+                    'admin' => !!$user->isVerifier()
+                );
+            }
+        }
+        $response->setContent(json_encode($result));
+        return $response;
+    }
+
     public function verifiersAction() {
         $this->_checkAdminUser();
-        $req = $this->request;   
-        $id = $this->params()->fromQuery('id');
-        if (!empty($id)) {
-            $verifier = $this->_verifierRepository->find($id);
+        $removeVerifierStatusId = $this->params()->fromPost('removeVerifierStatusId');
+        if (!empty($removeVerifierStatusId)) {
+            /* @var $verifier User */
+            $verifier = $this->_userRepository->find($removeVerifierStatusId);
             if ($verifier) {
-                $this->_verifierRepository->remove($verifier);$this->flashMessenger()->setNamespace('success')->addMessage('Verifier '.$verifier->getUserId().' deleted.');
+                $verifier->setVerifier(false);
+                $this->_userRepository->persist($verifier);
+                $this->flashMessenger()->setNamespace('success')->addMessage('Verifier '.$verifier->getName().' removed.');
                 return $this->redirect()->toRoute('admin', array(
                     'action' => 'verifiers'
                 ));
             }
         }
-        if ($req->isPost() && $this->params()->fromPost('userId')) {
-            $verifier = new Verifier();
-            $verifier->setUserId($this->params()->fromPost('userId'));
-            $this->_verifierRepository->persist($verifier);
-            $this->flashMessenger()->setNamespace('success')->addMessage('Verifier '.$verifier->getUserId().' added.');
+        $addVerifierStatusId = $this->params()->fromPost('addVerifierStatusId');
+        if (!empty($addVerifierStatusId)) {
+            /* @var $verifier User */
+            $verifier = $this->_userRepository->find($addVerifierStatusId);
+            if ($verifier) {
+                $verifier->setVerifier(true);
+                $this->_userRepository->persist($verifier);
+                $this->flashMessenger()->setNamespace('success')->addMessage('Verifier '.$verifier->getName().' added.');
                 return $this->redirect()->toRoute('admin', array(
                     'action' => 'verifiers'
                 ));
+            }
         }
         return new ViewModel([
-            'verifiers' => $this->_verifierRepository->findAll()
+            'verifiers' => $this->_userRepository->findVerifier()
         ]);
     }
 
@@ -301,7 +330,7 @@ class AdminController extends BaseController {
     }
 
     private function _checkAdminUser() {
-        if (!$this->_isAdmin) {
+        if (!$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'index'
             ));
@@ -318,7 +347,6 @@ class AdminController extends BaseController {
         $req = $this->request;
         if ($req->isPost()) {
             $validatedData = $this->_validateAndCleanPluginData(
-                $this->params()->fromPost('author'),
                 $this->params()->fromPost('name'),
                 $this->params()->fromPost('license'),
                 $this->params()->fromPost('description'),
@@ -326,7 +354,6 @@ class AdminController extends BaseController {
                 $this->params()->fromPost('category')
             );
             if ($validatedData) {
-                $plugin->setAuthor($validatedData['author']);
                 $plugin->setName($validatedData['name']);
                 $plugin->setLicense($validatedData['license']);
                 $plugin->setDescription($validatedData['description']);
@@ -359,7 +386,7 @@ class AdminController extends BaseController {
                 $this->_pluginRepository->persist($plugin);
                 $this->flashMessenger()->setNamespace('success')->addMessage('Plugin updated.');               
             } else {
-                $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data or Author email not in correct format.');
+                $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data.');
             }
             return $this->redirect()->toUrl('./edit?id='.$plugin->getId());      
         }
@@ -370,15 +397,13 @@ class AdminController extends BaseController {
         ));
     }
 
-    private function _validateAndCleanPluginData($author, $name, $license, $description, $shortDescription, $category) {
-        if (empty($author) || empty($name) || empty($license) || empty($category) || empty($shortDescription)
-            || !filter_var($author, FILTER_VALIDATE_EMAIL)) {
+    private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category) {
+        if (empty($name) || empty($license) || empty($category) || empty($shortDescription)) {
             return false;
         }
         $config = HTMLPurifier_Config::createDefault();
         $purifier = new HTMLPurifier($config);
         return  array(
-            'author' => $purifier->purify($author),
             'name' => $purifier->purify($name),
             'license' => $purifier->purify($license),
             'description' => $purifier->purify($description),

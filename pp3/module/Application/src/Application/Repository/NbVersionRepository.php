@@ -27,12 +27,11 @@ class NbVersionRepository extends DoctrineEntityRepository {
         ->from('Application\Entity\NbVersion', 'nbv')
         ->join('nbv.nbVersionsPluginVersions', 'nbvpv')
         ->join('nbvpv.pluginVersion', 'pv')
-        ->join('pv.plugin p WITH p.id = :pid')
-        ->join('nbvpv.verification v WITH v.status >= 0')
+        ->join('pv.plugin', 'p', 'WITH', 'p.id = :pid')
+        ->join('nbvpv.verification', 'v', 'WITH', 'v.status >= 0')
         ->setParameter('pid', $pluginId)
         ->groupBy('nbv.id');
 
         return $queryBuilder->getQuery()->getResult();
-        // return $queryBuilder->getQuery()->getSQL();
     }
 }

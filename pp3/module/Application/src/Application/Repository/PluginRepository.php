@@ -48,16 +48,18 @@ class PluginRepository extends DoctrineEntityRepository {
         return $queryBuilder->getQuery()->getResult();
     }
 
-    public function getPluginsByAuthor($author) {
+    public function getPluginsByAuthorId($author) {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('p, v, nbvPv, nbv, verif')
-        ->from('Application\Entity\Plugin', 'p')
-        ->leftJoin('p.versions', 'v')
-        ->leftJoin('v.nbVersionsPluginVersions', 'nbvPv')
-        ->leftJoin('nbvPv.nbVersion', 'nbv')
-        ->leftJoin('nbvPv.verification', 'verif')
-        ->where('p.author = :author')->orderBy('p.id', 'DESC')
-        ->setParameter('author', $author);
+                ->from('Application\Entity\Plugin', 'p')
+                ->leftJoin('p.versions', 'v')
+                ->leftJoin('v.nbVersionsPluginVersions', 'nbvPv')
+                ->leftJoin('nbvPv.nbVersion', 'nbv')
+                ->leftJoin('nbvPv.verification', 'verif')
+                ->leftJoin('p.author', 'a')
+                ->where('a.id = :author')
+                ->orderBy('p.id', 'DESC')
+                ->setParameter('author', $author);
         return $queryBuilder->getQuery()->getResult();        
     }
 
@@ -79,8 +81,9 @@ class PluginRepository extends DoctrineEntityRepository {
         ->from('Application\Entity\Plugin', 'p')
         ->leftJoin('p.versions', 'v')
         ->leftJoin('v.nbVersionsPluginVersions', 'nbvPv')
-        ->leftJoin('nbvPv.nbVersion', 'nbv')     
-        ->where('(p.name LIKE :name) OR (p.author LIKE :name)')->orderBy('p.id', 'ASC')
+        ->leftJoin('nbvPv.nbVersion', 'nbv')
+        ->leftJoin('p.author', 'a')
+        ->where('(p.name LIKE :name) OR (a.email LIKE :name)')->orderBy('p.id', 'ASC')
         ->setParameter('name', '%'.$name.'%');
         return $queryBuilder->getQuery()->getResult();
     }
@@ -94,10 +97,11 @@ class PluginRepository extends DoctrineEntityRepository {
         ->leftJoin('nbvPv.verification', 'verif')
         ->leftJoin('nbvPv.nbVersion', 'nbv')
         ->leftJoin('p.categories', 'cat')
+        ->leftJoin('p.author', 'a')
         ->where('p.status = :status')
         ->setParameter('status', \Application\Entity\Plugin::STATUS_PUBLIC);
         if ($name) {
-            $queryBuilder->andWhere('(p.name LIKE :name OR p.artifactid LIKE :name OR p.author LIKE :name OR p.short_description LIKE :name OR p.description LIKE :name
+            $queryBuilder->andWhere('(p.name LIKE :name OR p.artifactid LIKE :name OR a.email LIKE :name OR p.short_description LIKE :name OR p.description LIKE :name
             OR p.license LIKE :name OR nbv.version LIKE :name OR cat.name LIKE :name)')->setParameter('name', '%'.$name.'%');
         }     
         //$queryBuilder->orderBy('p.name', 'ASC');

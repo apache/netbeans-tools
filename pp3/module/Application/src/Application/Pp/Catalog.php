@@ -46,7 +46,7 @@ class Catalog {
             $moduleElement->setAttribute(self::REQ_ATTRS_MODULE_distribution, $this->_downloadPath.$item->getId());
             $moduleElement->setAttribute(self::REQ_ATTRS_MODULE_downloadsize, '1024');
             $moduleElement->setAttribute('targetcluster', 'nbms');            
-            $moduleElement->setAttribute('moduleauthor', $item->getPlugin()->getAuthor());            
+            $moduleElement->setAttribute('moduleauthor', $item->getPlugin()->getAuthor()->getEmail());
             
             $manifestElement =$xml->createElement('manifest');  
             $manifestElement->setAttribute(self::REQ_ATTRS_MANIFEST_OpenIDE_Module, $item->getPlugin()->getArtifactId());            

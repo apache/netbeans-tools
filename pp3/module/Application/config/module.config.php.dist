@@ -15,13 +15,34 @@ return array(
         'mavenRepoUrl' => 'https://repo1.maven.org/maven2/',
         'catalogSavepath' => '/home/honza/checkout/pp3/public/data',
         'catalogUrlPath' => 'http://localhost/checkout/pp3/public/data',    
-        'dtdPath' => 'http://localhost/checkout/pp3/public/data/autoupdate-catalog-2_6.dtd',    
-        'admin' => array(
-            'jan.pirek@gmail.com',
-            'jiri.kovalsky@gmail.com'
+        'dtdPath' => 'http://localhost/checkout/pp3/public/data/autoupdate-catalog-2_6.dtd'
+    ),
+    'loginConfig' => array (
+        array(
+            'id' => 'github',
+            'name' => 'GitHub',
+            'icon' => '/img/login/github.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'github'
         ),
-        'googleClientId' => '432862904114-ierlf9j6qmmuhtd44ecmlfqivlirq7uc.apps.googleusercontent.com',
-    ), 
+        array(
+            'id' => 'google',
+            'name' => 'Google',
+            'icon' => '/img/login/google.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'google'
+        ),
+        array(
+            'id' => 'amazon',
+            'name' => 'Amazon',
+            'icon' => '/img/login/amazon.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'amazon'
+        )
+    ),
     'router' => array(
         'routes' => array(  
             'home' => array(
