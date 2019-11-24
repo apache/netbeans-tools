@@ -1,3 +1,23 @@
+<?php
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+?>
 <?php echo $this->doctype(); ?>
 
 <html lang="en">
@@ -15,25 +35,21 @@
         <?php
         echo $this->headLink()
                 ->prependStylesheet($this->basePath('scss/style.css'))
-                //->prependStylesheet($this->basePath('js/datepicker/css/bootstrap-datepicker3.min.css'))
                 ->prependStylesheet($this->basePath('css/bootstrap-theme.min.css'))
                 ->prependStylesheet($this->basePath('css/bootstrap.min.css'))
-                //->prependStylesheet($this->basePath('css/font-awesome.min.css'))
+                ->prependStylesheet($this->basePath('css/jquery-ui-1.12.1.css'))
+                ->prependStylesheet($this->basePath('fontawesome/css/all.min.css'))
         ?>
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
         <!-- Scripts -->
         <?php
         echo $this->headScript()
                 ->prependFile($this->basePath('js/script.js'))
-                //->prependFile($this->basePath('js/datepicker/js/bootstrap-datepicker.min.js'))
-                //->prependFile($this->basePath('js/tinymce/tinymce.min.js'))
                 ->prependFile($this->basePath('js/jquery.ba-throttle-debounce.min.js'))
                 ->prependFile($this->basePath('js/validator.min.js'))
                 ->prependFile($this->basePath('js/bootstrap.min.js'))
-                ->prependFile('//code.jquery.com/ui/1.12.1/jquery-ui.min.js')
                 ->prependFile($this->basePath('js/jquery.min.js'))
+                ->prependFile($this->basePath('js/jquery-ui-1.12.1.min.js'))
                 ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript',
                         array('conditional' => 'lt IE 9',))
                 ->prependFile($this->basePath('js/html5shiv.min.js'), 'text/javascript',
@@ -42,7 +58,7 @@
         ?>
         <script type="text/javascript">
             const BASE_URL = '<?= $this->url('home')?>';
-        </script>   
+        </script>
     </head>
     <body>
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" id="pp-navbar">
@@ -89,13 +105,13 @@
                         </li>
                     </ul>
                 </div><!--/.nav-collapse -->
-               
+
             </div>
         </nav>
         <div class="container-fluid" style="margin: 0px 30px;">
             <div class="r-pad">
-                <?php                 
-                echo $this->content; 
+                <?php
+                echo $this->content;
                 ?>
             </div>
             <footer class='pp-footer'>
