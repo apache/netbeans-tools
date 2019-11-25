@@ -92,7 +92,7 @@ class User {
      * @param string $idpProviderId
      * @return void
      */
-    function setIdpProviderId($idpProviderId): void {
+    function setIdpProviderId($idpProviderId) {
         $this->idpProviderId = $idpProviderId;
     }
 
@@ -100,7 +100,7 @@ class User {
      * @param string $idpUserId
      * @return void
      */
-    function setIdpUserId($idpUserId): void {
+    function setIdpUserId($idpUserId) {
         $this->idpUserId = $idpUserId;
     }
 
@@ -108,7 +108,7 @@ class User {
      * @param string $name
      * @return void
      */
-    function setName($name): void {
+    function setName($name) {
         $this->name = $name;
     }
 
@@ -116,7 +116,7 @@ class User {
      * @param string $email
      * @return void
      */
-    function setEmail($email): void {
+    function setEmail($email) {
         $this->email = $email;
     }
 
@@ -138,7 +138,7 @@ class User {
      * @param boolean $admin
      * @return void
      */
-    function setAdmin($admin): void {
+    function setAdmin($admin) {
         $this->admin = $admin;
     }
 
@@ -146,7 +146,7 @@ class User {
      * @param boolean $verifier
      * @return void
      */
-    function setVerifier($verifier): void {
+    function setVerifier($verifier) {
         $this->verifier = $verifier;
     }
 }
