@@ -177,12 +177,6 @@ class PluginController extends AuthenticatedController {
                         }
                     }
                 }
-                // save image
-                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
-                if ($im) {                    
-                    $plugin->setImage($im);
-                }
-
                 // categ
                 $plugin->removeCategories();
                 $this->_pluginRepository->persist($plugin);
@@ -198,6 +192,12 @@ class PluginController extends AuthenticatedController {
                         $plugin->addCategory($cat2);
                     }
                 }
+                // save image
+                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
+                if ($im) {                    
+                    $plugin->setImage($im);
+                }
+
 
                 $this->_pluginRepository->persist($plugin);
                 $this->flashMessenger()->setNamespace('success')->addMessage('Plugin registered.');

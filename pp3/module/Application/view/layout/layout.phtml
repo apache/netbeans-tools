@@ -30,7 +30,6 @@
                 ->appendName('viewport', 'width=device-width, initial-scale=1.0')
                 ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
-
         <!-- Le styles -->
         <?php
         echo $this->headLink()
@@ -48,8 +47,8 @@
                 ->prependFile($this->basePath('js/jquery.ba-throttle-debounce.min.js'))
                 ->prependFile($this->basePath('js/validator.min.js'))
                 ->prependFile($this->basePath('js/bootstrap.min.js'))
-                ->prependFile($this->basePath('js/jquery.min.js'))
                 ->prependFile($this->basePath('js/jquery-ui-1.12.1.min.js'))
+                ->prependFile($this->basePath('js/jquery.min.js'))
                 ->prependFile($this->basePath('js/respond.min.js'), 'text/javascript',
                         array('conditional' => 'lt IE 9',))
                 ->prependFile($this->basePath('js/html5shiv.min.js'), 'text/javascript',
