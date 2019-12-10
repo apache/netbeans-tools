@@ -53,7 +53,7 @@ class VerificationController extends AuthenticatedController {
     public function listAction() {
         return new ViewModel([
             'verificationRequests' => $this->_verificationRequestRepository->getVerificationRequestsForVerifier($this->getAuthenticatedUserId()),
-            'isAdmin' => $this->_isAdmin,
+            'isAdmin' => $this->isAdmin(),
         ]);
     }
 
@@ -130,7 +130,7 @@ class VerificationController extends AuthenticatedController {
     private function _handleMasterVote($vote) {
         $verId = $this->params()->fromQuery('id');
         $bailOut = false;
-        if (empty($verId) || !$this->_isAdmin) {
+        if (empty($verId) || !$this->isAdmin()) {
             $bailOut = true;
         }
         $ver = $this->_verificationRepository->find($verId);
@@ -144,7 +144,7 @@ class VerificationController extends AuthenticatedController {
         }
         $ver->setStatus($vote);
         $comment = $this->params()->fromPost('comment');
-        if (!empty($comment)) {
+        if (!empty($comment) && $vote == \Application\Entity\Verification::STATUS_NOGO) {
             $config = HTMLPurifier_Config::createDefault();
             $purifier = new HTMLPurifier($config);
             $comment = $purifier->purify($comment);

@@ -65,11 +65,15 @@ class Verification extends Base\Verification {
 
     public function getStatusBadgeTitle() {
         if ($this->status === self::STATUS_NOGO) {
-            return 'NoGo';
+            return 'Verification declined';
         } elseif ($this->status === self::STATUS_GO) {
-            return 'Go';
+            return 'Verified';
         }
-        return 'Pending';
+        return 'Verification pending';
+    }
+
+    public function isVerified() {
+        return $this->status === self::STATUS_GO;
     }
 
     public function resolveStatus($votesBreakdown) {
