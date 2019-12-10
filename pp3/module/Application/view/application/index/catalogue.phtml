@@ -65,9 +65,14 @@ if ($plugin) {
         foreach ($plugin->getVersions() as $version) {
             echo '<tr><td><span class="badge">'.$version->getVersion().'</span></td><td>';
             foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
-                echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge badge-brown"><i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().'</span></a> &nbsp; ';
-            }    
-            echo '</td></tr>';
+                if ($nbvPv->getVerificationId()) {
+                    echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'" title="Download">
+                    <i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().' - '.$nbvPv->getVerification()->getStatusBadgeTitle().'</span></a> &nbsp; ';
+                } else {
+                    echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge badge-brown"><i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().'</span></a> &nbsp; ';
+                }
+            }
+            echo ' </td></tr>';
         }
         echo '</tbody>
         </table>
