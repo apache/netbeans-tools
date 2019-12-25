@@ -40,7 +40,15 @@ class PluginVersion extends Base\PluginVersion {
     public function addNbVersion($version) {
         $this->nbVersionsPluginVersions[] = $version;
     }
-    
+
+    public function addDigest($algorithm, $value) {
+        $pvd = new PluginVersionDigest();
+        $pvd->setAlgorithm($algorithm);
+        $pvd->setValue($value);
+        $pvd->setPluginVersion($this);
+        $this->digests[] = $pvd;
+    }
+
     private function _getBinaryExtension($baseUrl) {
         // there could be either .nbm or .jar, so check both
         $extension = array('.nbm', '.jar');

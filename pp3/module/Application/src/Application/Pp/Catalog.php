@@ -20,6 +20,8 @@
 
 namespace Application\Pp;
 
+use Applicaton\Entity\PluginVersion;
+
 class Catalog {
     const CATALOG_FILE_NAME = 'catalog.xml';
     const CATALOG_FILE_NAME_EXPERIMENTAL = 'catalog-experimental.xml';
@@ -31,7 +33,10 @@ class Catalog {
     const REQ_ATTRS_MANIFEST_OpenIDE_Module = 'OpenIDE-Module';
     const REQ_ATTRS_MANIFEST_OpenIDE_Module_Name = 'OpenIDE-Module-Name';
     const REQ_ATTRS_MANIFEST_OpenIDE_Module_Specification_Version = 'OpenIDE-Module-Specification-Version';
-    
+
+    const REQ_ATTRS_MESSAGEDIGEST_algorithm = 'algorithm';
+    const REQ_ATTRS_MESSAGEDIGEST_value = 'value';
+
     private $_items;
     private $_version;
     private $_isExperimental;
@@ -48,7 +53,7 @@ class Catalog {
     public function asXml($valiadte = true) {
         $implementation = new \DOMImplementation();
         $dtd = $implementation->createDocumentType('module_updates',
-                                    '-//NetBeans//DTD Autoupdate Catalog 2.6//EN',
+                                    '-//NetBeans//DTD Autoupdate Catalog 2.8//EN',
                                     $this->_dtdPath);
 
         $xml = $implementation->createDocument('', '', $dtd);
@@ -74,6 +79,14 @@ class Catalog {
             $manifestElement->setAttribute('OpenIDE-Module-Long-Description', $item->getPlugin()->getDescription());            
 
             $moduleElement->appendChild($manifestElement);
+
+            foreach($item->getDigests() as $digest) {
+                $messageDigest = $xml->createElement('message_digest');
+                $messageDigest->setAttribute(self::REQ_ATTRS_MESSAGEDIGEST_algorithm, $digest->getAlgorithm());
+                $messageDigest->setAttribute(self::REQ_ATTRS_MESSAGEDIGEST_value, $digest->getValue());
+                $moduleElement->appendChild($messageDigest);
+            }
+
             $modulesEl->appendChild($moduleElement);
         }
         

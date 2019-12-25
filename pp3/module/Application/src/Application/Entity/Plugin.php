@@ -33,8 +33,7 @@ class Plugin extends Base\Plugin {
     const STATUS_PUBLIC = 2;
 
     private $_dataLoader;
-    public $tmpVersions;
-    
+
     public function setDataLoader($dl) {
         $this->_dataLoader = $dl;
     }
@@ -43,28 +42,7 @@ class Plugin extends Base\Plugin {
         $data = $this->_dataLoader->getData($this);
         if ($this->_validateData($data) && $this->artifactid == $data['artifactId']) {
             if (!empty($data['versioning'])) {
-                $versioning = $data['versioning'];
-                if (!empty($versioning['latest'])) {
-                    $this->setLatestVersion($versioning['latest']);
-                }
-                if (!empty($versioning['release'])) {
-                    $this->setReleaseVersion($versioning['release']);
-                }
-                if (!empty($versioning['versions']['version'])) {
-                    $incomingVersions = array_flip($versioning['versions']['version']);
-                    // check for new versions only               
-                    foreach ($this->versions as $registeredVersion) {
-                        unset($incomingVersions[$registeredVersion->getVersion()]);
-                    }
-                    $incomingVersions = array_flip($incomingVersions);
-                    foreach ($incomingVersions as $vers) {
-                        $v = new PluginVersion();
-                        $v->setVersion($vers);
-                        $v->setPlugin($this);
-                        $v->setupUrl();
-                        $this->addVersion($v);
-                    }
-                }
+                $this->updateVersions($data['versioning']);
             }
             return true;
         }
@@ -77,11 +55,8 @@ class Plugin extends Base\Plugin {
             $this->setGroupId($data['groupId']);
             if (!empty($data['versioning'])) {
                 $versioning = $data['versioning'];
-                if (!empty($versioning['latest'])) {
-                    $this->setLatestVersion($versioning['latest']);
-                }
-                if (!empty($versioning['release'])) {
-                    $this->setReleaseVersion($versioning['release']);
+                $this->updateVersions($versioning);
+                if ($this->getReleaseVersion()) {
                     // load additional info from release
                     $releaseData = $this->_dataLoader->getReleaseData($this);
                     if(!empty($releaseData['name'])) {
@@ -99,18 +74,45 @@ class Plugin extends Base\Plugin {
                         $this->setLicense($releaseData['licenses']['license']['name']);
                     }
                 }
-                if (!empty($versioning['versions'])) {
-                    // handle some issues with serialization of xml into array
-                    if (!is_array($versioning['versions']['version'])) {
-                        $this->tmpVersions = array($versioning['versions']['version']);     
-                    } else {
-                        $this->tmpVersions = $versioning['versions']['version'];                    
-                    }
-                }
             }
             return true;
         } else {
             return false;
+        }
+    }
+
+    private function updateVersions($versioning) {
+        if (!empty($versioning['latest'])) {
+            $this->setLatestVersion($versioning['latest']);
+        }
+        if (!empty($versioning['release'])) {
+            $this->setReleaseVersion($versioning['release']);
+        }
+        if (!empty($versioning['versions'])) {
+            if (!is_array($versioning['versions']['version'])) {
+                $versions = array($versioning['versions']['version']);
+            } else {
+                $versions = $versioning['versions']['version'];
+            }
+            $incomingVersions = array_flip($versions);
+            // check for new versions only
+            foreach ($this->versions as $registeredVersion) {
+                unset($incomingVersions[$registeredVersion->getVersion()]);
+            }
+            $incomingVersions = array_flip($incomingVersions);
+            foreach ($incomingVersions as $vers) {
+                $v = new PluginVersion();
+                $v->setVersion($vers);
+                $v->setPlugin($this);
+                $v->setupUrl();
+                // Fetch SHA1 sums from Maven central to make verified downloads possible
+                // SHA1 is currently the best algorithm maven central supports
+                $sha1 = file_get_contents($v->getUrl() . ".sha1");
+                if ($sha1) {
+                    $v->addDigest("SHA-1", $sha1);
+                    $this->addVersion($v);
+                }
+            }
         }
     }
 

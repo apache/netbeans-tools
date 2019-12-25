@@ -128,6 +128,14 @@ CREATE TABLE IF NOT EXISTS `verification_request` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
 
+CREATE TABLE IF NOT EXISTS `plugin_version_digest` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_version_id` int(11) NOT NULL REFERENCES plugin_version(id),
+  `algorithm` varchar(50) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

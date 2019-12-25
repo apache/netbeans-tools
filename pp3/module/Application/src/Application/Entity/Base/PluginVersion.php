@@ -22,6 +22,7 @@ namespace Application\Entity\Base;
 
 use Doctrine\ORM\Mapping as ORM;
 use Application\Entity\Plugin;
+use Application\Entity\PluginVersionDigest;
 use Application\Entity\NbVersionPluginVersion;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -57,8 +58,14 @@ class PluginVersion {
      */
     protected $plugin;
 
+    /**
+     *  @ORM\OneToMany(targetEntity="PluginVersionDigest", mappedBy="pluginVersion", cascade={"persist", "remove"})
+     */
+    protected $digests;
+
     public function __construct() {
         $this->nbVersionsPluginVersions = new ArrayCollection();
+        $this->digests = new ArrayCollection();
         return $this;
     }
 
@@ -112,5 +119,9 @@ class PluginVersion {
     
     public function getNbVersionsPluginVersions() {
         return $this->nbVersionsPluginVersions;
+    }
+
+    public function getDigests() {
+        return $this->digests;
     }
 }
