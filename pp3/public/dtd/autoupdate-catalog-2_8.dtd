@@ -18,10 +18,10 @@
     under the License.
 
 -->
-<!-- -//NetBeans//DTD Autoupdate Catalog 2.6//EN -->
+<!-- -//NetBeans//DTD Autoupdate Catalog 2.8//EN -->
 <!-- XML representation of Autoupdate Modules/Updates Catalog -->
 
-<!ELEMENT module_updates ((notification?, (module_group|module)*, license*)|error)>
+<!ELEMENT module_updates ((notification?, content_description?, (module_group|module)*, license*)|error)>
 <!ATTLIST module_updates timestamp CDATA #REQUIRED>
 
 <!ELEMENT module_group ((module_group|module)*)>
@@ -30,7 +30,10 @@
 <!ELEMENT notification (#PCDATA)>
 <!ATTLIST notification url CDATA #IMPLIED>
 
-<!ELEMENT module (description?, module_notification?, external_package*, (manifest | l10n) )>
+<!ELEMENT content_description (#PCDATA)>
+<!ATTLIST content_description url CDATA #IMPLIED>
+
+<!ELEMENT module (description?, module_notification?, external_package*, (manifest | l10n), message_digest* )>
 <!ATTLIST module codenamebase CDATA #REQUIRED
                  homepage     CDATA #IMPLIED
                  distribution CDATA #REQUIRED
@@ -41,6 +44,7 @@
                  releasedate  CDATA #IMPLIED
                  global       (true|false) #IMPLIED
                  targetcluster CDATA #IMPLIED
+                 preferredupdate (true|false) #IMPLIED
                  eager (true|false) #IMPLIED
                  autoload (true|false) #IMPLIED>
 
@@ -86,3 +90,7 @@
 <!ELEMENT license (#PCDATA)>
 <!ATTLIST license name CDATA #REQUIRED
                   url  CDATA #IMPLIED>
+
+<!ELEMENT message_digest EMPTY>
+<!ATTLIST message_digest algorithm CDATA #REQUIRED
+                         value     CDATA #REQUIRED>

@@ -43,8 +43,15 @@
         $plugin = $pluginVersion->getPlugin();
         echo '<tr>
         <td>
-            <span class="text text-primary" style="font-size:1.2em"><a href="'.$pluginVersion->getUrl().'">'.$plugin->getName().'</a></span>
-        </td>
+            <div class="text text-primary" style="font-size:1.2em"><a href="'.$pluginVersion->getUrl().'">'.$plugin->getName().'</a></div>';
+
+        echo '<table class="table" style="margin: 0">';
+        foreach($pluginVersion->getDigests() as $digest) {
+            printf("<tr><td>%s</td><td>%s</td></tr>\n", $digest->getAlgorithm(), $digest->getValue());
+        }
+        echo '</table>';
+
+        echo '</td>
         <td>
             <span class="badge">'.$pluginVersion->getVersion().'</span> &nbsp; <i class="fas fa-arrow-right"></i> &nbsp;
             <span class="badge">NB '.$nbVersion->getVersion().'</span>

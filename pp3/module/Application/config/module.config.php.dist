@@ -33,7 +33,7 @@ return array(
         'mavenRepoUrl' => 'https://repo1.maven.org/maven2/',
         'catalogSavepath' => '/home/honza/checkout/pp3/public/data',
         'catalogUrlPath' => 'http://localhost/checkout/pp3/public/data',    
-        'dtdPath' => 'http://localhost/checkout/pp3/public/data/autoupdate-catalog-2_6.dtd'
+        'dtdPath' => 'http://localhost/checkout/pp3/public/dtd/autoupdate-catalog-2_8.dtd'
     ),
     'loginConfig' => array (
         array(

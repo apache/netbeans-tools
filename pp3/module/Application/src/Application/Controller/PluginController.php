@@ -163,23 +163,8 @@ class PluginController extends AuthenticatedController {
                 $plugin->setHomepage($validatedData['homepage']);
                 $plugin->setAddedAt(new \DateTime('now'));
                 $plugin->setLastUpdatedAt(new \DateTime('now'));
-                // save also versions
-                if (!empty($plugin->tmpVersions)) {
-                    foreach($plugin->tmpVersions as $vers) {
-                        try {
-                            $v = new PluginVersion();
-                            $v->setVersion($vers);
-                            $v->setPlugin($plugin);
-                            $v->setupUrl();
-                            $plugin->addVersion($v);
-                        } catch (\Exception $e) {
-                            $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                
-                        }
-                    }
-                }
                 // categ
                 $plugin->removeCategories();
-                $this->_pluginRepository->persist($plugin);
                 $cat = $this->_categoryRepository->find($validatedData['category']);
                 if ($cat) {
                     $plugin->addCategory($cat);
