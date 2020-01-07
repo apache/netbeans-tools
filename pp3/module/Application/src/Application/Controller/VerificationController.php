@@ -171,7 +171,7 @@ class VerificationController extends AuthenticatedController {
             $bailOut = true;
         }
         $plugin = $nbVersionPluginVersion->getPluginVersion()->getPlugin();
-        if (!$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
+        if (!$plugin->isOwnedBy($this->getAuthenticatedUserId()) && !$this->isAdmin()) {
             $bailOut = true;
         }
         if ($bailOut) {

@@ -27,7 +27,7 @@
             echo $this->partial('application/plugin-version/_pluginVersion-form.phtml', 
             array('pluginVersion' => $this->pluginVersion, 'nbVersions' => $this->nbVersions, 'verifiedNbVersionIds' => $this->verifiedNbVersionIds)); 
             ?>
-            <a class="btn btn-secondary" href="../plugin/list" role="button">Return</a>
+            <a class="btn btn-secondary" href="<?= $this->return ?>" role="button">Return</a>
             <button type="submit" class="btn btn-primary">Save Plugin Version</button>
             </form>
             

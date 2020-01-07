@@ -41,8 +41,9 @@ class PluginVersionController extends AuthenticatedController {
 
     public function editAction() {
         $pvId = $this->params()->fromQuery('id');
+        $search = $this->params()->fromQuery('search');
         $pluginVersion = $this->_pluginVersionRepository->find($pvId);        
-        if (!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) {
+        if ((!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) && !$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -117,18 +118,25 @@ class PluginVersionController extends AuthenticatedController {
         foreach($verifiedNbVersions as $v) {
             $verifiedNbVersionIds[]=$v['id'];
         }
+
+        if ($this->isAdmin() && !empty($search)) {
+            $backUrl = $this->url()->fromRoute('admin', array('action' => 'index'), array('query' => array('search' => $search)));
+        } else {
+            $backUrl = $this->url()->fromRoute('plugin', array('action' => 'list'));
+        }
         
         return new ViewModel([
             'pluginVersion' => $pluginVersion,
             'nbVersions' => $this->_nbVersionRepository->findAll(),
             'verifiedNbVersionIds' => $verifiedNbVersionIds,
+            'return' => $backUrl, 
         ]);
     }
 
     public function deleteAction() {
         $pId = $this->params()->fromQuery('id');
         $pluginVersion = $this->_pluginVersionRepository->find($pId);        
-        if (!$pluginVersion || empty($pId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) {
+        if ((!$pluginVersion || empty($pId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) && !$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
