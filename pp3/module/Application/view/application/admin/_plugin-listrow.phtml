@@ -64,6 +64,7 @@ echo '</p>
         <thead>
             <tr>
             <th scope="col" style="width: 170px;">Plugin Version</th>
+            <th scope="col"></th>
             <th scope="col">NB Versions</th>
             <th scope="col">Verifications</th>
             </tr>
@@ -73,6 +74,11 @@ echo '</p>
 foreach ($plugin->getVersions() as $version) {
     echo '<tr>
         <td><span class="badge">'.$version->getVersion().'</span></td>
+        <td>
+            <a class="btn btn-default" href="'.$this->url('plugin-version',array('action'=>'edit'),array('query' => array('id'=>$version->getId(), 'search'=>$_GET['search']))).'" role="button" title="Edit">
+                <i class="fas fa-edit text-primary"></i>
+            </a>
+        </td>
         <td>';
     foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
             echo '<span class="badge badge-brown">NB '.$nbvPv->getNbVersion()->getVersion().'</span>&nbsp; ';
