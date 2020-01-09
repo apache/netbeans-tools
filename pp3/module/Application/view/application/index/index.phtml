@@ -100,7 +100,6 @@
     <tr>
       <th>Plugin</th>
       <th>Categories</th>
-      <th>NetBeans compatible</th>
       <th>Description</th>
     </tr>
   </thead>
@@ -109,9 +108,14 @@
     foreach($this->paginator as $plugin) {
         $versionBadges = array();
         foreach ($plugin->getVersions() as $version) {
-            $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
+          foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
+            $verif = $nbvPv->getVerification();
+            if ($verif && $verif->isVerified()) {
+              $versionBadges[]='<span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'" title="'.$nbvPv->getVerification()->getStatusBadgeTitle().'"> 
+                                NB '.$nbvPv->getNbVersion()->getVersion().' - '.$nbvPv->getVerification()->getStatusBadgeTitle().'</span>';
+            }
+          }
         }
-
         echo '<tr>
         <td>
             <h4 class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
@@ -126,16 +130,6 @@
             echo '<span class="badge badge-blue">'.$cat->getName().'</span> &nbsp;';
         }    
         
-        echo '</td><td>';
-        $a = array();
-        foreach ($plugin->getVersions() as $version) {
-            foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
-              $a[]=$nbvPv->getNbVersion()->getVersion();
-            }    
-          }
-        foreach (array_unique($a) as $nbvPv) {
-          echo '<span class="badge badge-brown">NB '.$nbvPv.'</span> &nbsp; ';
-        }
         echo '</td>
         <td>'.$plugin->getShortDescription().'</td>
         </tr>';

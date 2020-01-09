@@ -65,7 +65,7 @@ class Verification extends Base\Verification {
 
     public function getStatusBadgeTitle() {
         if ($this->status === self::STATUS_NOGO) {
-            return 'Verification declined';
+            return 'Verification failed';
         } elseif ($this->status === self::STATUS_GO) {
             return 'Verified';
         }
