@@ -32,14 +32,16 @@ class IndexController extends BaseController {
     private $_paginator;
     private $_categoryRepository;
     private $_nbVersionRepository;
+    private $_verificationRepository;
 
-    public function __construct($pluginRepo, $config, PaginatorInterface $paginator, $nbVersionRepository, $categoryRepository, $pvRepo) {
+    public function __construct($pluginRepo, $config, PaginatorInterface $paginator, $nbVersionRepository, $categoryRepository, $pvRepo, $verificationRepository) {
         parent::__construct($config);
         $this->_pluginRepository = $pluginRepo;
         $this->_paginator = $paginator;
         $this->_nbVersionRepository = $nbVersionRepository;
         $this->_categoryRepository = $categoryRepository;
         $this->_pluginVersionRepository = $pvRepo;
+        $this->_verificationRepository = $verificationRepository;
     }
 
     public function indexAction() {   
@@ -92,4 +94,17 @@ class IndexController extends BaseController {
         }
        
     }
+
+    public function verificationLogAction() {
+        $vId = $this->params()->fromQuery('vId');
+        if ($vId) {
+            $verification = $this->_verificationRepository->find($vId);
+        }
+        $result = new ViewModel([
+            'verification' => $verification,
+        ]);
+        $result->setTerminal(true);
+        return $result;
+    }
+
 }
