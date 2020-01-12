@@ -66,8 +66,9 @@ if ($plugin) {
             echo '<tr><td><span class="badge">'.$version->getVersion().'</span></td><td>';
             foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
                 if ($nbvPv->getVerificationId()) {
-                    echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'" title="Download">
-                    <i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().' - '.$nbvPv->getVerification()->getStatusBadgeTitle().'</span></a> &nbsp; ';
+                    echo '<span class="badge '.$nbvPv->getVerification()->getStatusBadgeClass().'">
+                    <a href="./download?id='.$version->getId().'" title="Download" target="_blank" class="dllink"><i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().'</a> 
+                    - <span class="verifPopupLink" data-toggle="modal" data-verification-id="'.$nbvPv->getVerification()->getId().'" data-target="#verifPopup" title="Show verification details">'.$nbvPv->getVerification()->getStatusBadgeTitle().'</span></span> &nbsp; ';
                 } else {
                     echo '<a href="./download?id='.$version->getId().'" title="Download" target="_blank"><span class="badge badge-brown"><i class="fas fa-download"></i> NB '.$nbvPv->getNbVersion()->getVersion().'</span></a> &nbsp; ';
                 }
@@ -103,6 +104,18 @@ if ($plugin) {
     </div>
     <br/>
     ';
-    
-
 }
+?>
+
+<div class="modal fade" id="verifPopup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Plugin verificaion log</h4>
+            </div>
+            <div class="modal-body" id="verifBody">        
+            </div>
+        </div>
+    </div>
+</div>    

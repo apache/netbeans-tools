@@ -34,4 +34,15 @@ $(function () {
       });
     }, false);
 
+
+    $('#verifPopup').on('show.bs.modal', function (event) {
+      const verificationId = event.relatedTarget.getAttribute('data-verification-id');
+      if (verificationId) {
+        $.get( `../verification-log/?vId=${verificationId}`, function( data ) {
+          $('#verifBody').html( data );
+        });
+      }
+    });
+    
+
 });

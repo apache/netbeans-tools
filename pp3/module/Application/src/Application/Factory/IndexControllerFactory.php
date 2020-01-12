@@ -27,6 +27,7 @@ use Application\Controller\IndexController;
 use Application\Repository\NbVersionRepository;
 use Application\Repository\CategoryRepository;
 use Application\Repository\PluginVersionRepository;
+use Application\Repository\VerificationRepository;
 
 class IndexControllerFactory implements FactoryInterface
 {
@@ -46,6 +47,9 @@ class IndexControllerFactory implements FactoryInterface
         $pvRepository = new PluginVersionRepository();
         $pvRepository->setEntityManager($em);
 
-        return new IndexController($repository, $config, $paginator, $nbVersionRepository, $categoryRepository, $pvRepository);
+        $verificationRepository = new VerificationRepository();
+        $verificationRepository->setEntityManager($em);
+
+        return new IndexController($repository, $config, $paginator, $nbVersionRepository, $categoryRepository, $pvRepository, $verificationRepository);
     }
 }

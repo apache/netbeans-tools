@@ -1,0 +1,20 @@
+<?php
+if ($this->verification) {
+    echo '<table class="table table-striped">';
+    echo '<tr>
+    <td>['.date_format($this->verification->getCreatedAt(), 'Y-m-d H:i').']</td>
+    <td>Verification request created</td>
+    <td></td>
+    </tr>';
+    foreach ($this->verification->getVerificationRequests() as $vRq) {
+        if ($vRq->getVotedAt()) {
+            $txt = $vRq->getVerifier()->getName().' voted <b>'.$vRq->getVoteBadgeTitle().'</b>'; 
+            echo '<tr>
+            <td>['.date_format($vRq->getVotedAt(), 'Y-m-d H:i').']</td>
+            <td>'.$txt.'</td>
+            <td>'.$this->escapeHtml($vRq->getComment()).'</td>
+            </tr>';
+        }
+    }
+    echo '</table>';
+}
