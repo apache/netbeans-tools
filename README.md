@@ -1,7 +1,7 @@
-# incubator-netbeans-tools
+# netbeans-tools
 Mirror of Apache NetBeans Tools.
 
-Repository of tools created and used by the Apache NetBeans community.
+Repository of tools and other utilties created and used by the Apache NetBeans community.
 
 ### Currently Available Tools
 
