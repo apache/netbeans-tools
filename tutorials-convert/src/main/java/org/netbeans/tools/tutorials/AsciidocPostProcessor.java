@@ -53,6 +53,8 @@ public class AsciidocPostProcessor {
 
     private static Pattern EN_CONTENTS_PATTERN = Pattern.compile("^.*Contents.*");
 
+    private static Pattern IS_NUMBERED_LINE = Pattern.compile("^[ ]+[0-9]+\\.");
+
     private static boolean isContentsHeader(String line) {
         return line.contains("*Content")
                 || line.contains("目录")
@@ -89,6 +91,13 @@ public class AsciidocPostProcessor {
                         title = m.group(1);
                     }
                 }
+		{
+			Matcher m = IS_NUMBERED_LINE.matcher(line);
+			if (m.matches()) {
+				System.out.format("Numbered line here!!! '%s'%n", line);
+				line = line.trim();
+			}
+		}
                 switch (state) {
                     case BEFORE_CONTENT_SECTION:
                         if (isContentsHeader(line)) {
