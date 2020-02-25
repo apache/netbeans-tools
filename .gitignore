@@ -14,3 +14,8 @@
 /tutorials-convert/tutorials-asciidoc/**
 /tutorials-convert/target**
 /tutorials-convert/external-links.txt
+/translations/*/release/
+/translations/*/build/
+/translations/*/dist/
+/translations/*/nbproject/private/
+/translations/*/nbproject/genfiles.properties

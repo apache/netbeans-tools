@@ -1,0 +1,266 @@
+<?php
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+// COPY THIS SAMPLE CPNFIG FILE OVER TO module.config.php to apply it
+
+//namespace Application;
+/**
+ * Zend Framework (http://framework.zend.com/)
+ *
+ * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
+ * @copyright Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+return array(   
+    'pp3' => array (
+        'mavenRepoUrl' => 'https://repo1.maven.org/maven2/',
+        'catalogSavepath' => '/home/honza/checkout/pp3/public/data',
+        'catalogUrlPath' => 'http://localhost/checkout/pp3/public/data',    
+        'dtdPath' => 'http://localhost/checkout/pp3/public/dtd/autoupdate-catalog-2_8.dtd'
+    ),
+    'loginConfig' => array (
+        array(
+            'id' => 'github',
+            'name' => 'GitHub',
+            'icon' => '/img/login/github.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'github'
+        ),
+        array(
+            'id' => 'google',
+            'name' => 'Google',
+            'icon' => '/img/login/google.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'google'
+        ),
+        array(
+            'id' => 'amazon',
+            'name' => 'Amazon',
+            'icon' => '/img/login/amazon.svg',
+            'clientId' => 'DO_NOT_COMMIT',
+            'clientSecret' => 'DO_NOT_COMMIT',
+            'type' => 'amazon'
+        )
+    ),
+    'router' => array(
+        'routes' => array(  
+            'home' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Index',
+                        'action' => 'index',
+                    ),
+                ),                
+            ),
+            'catalogue' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/catalogue[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Index',
+                        'action' => 'catalogue',
+                    ),
+                ),                
+            ),  
+            'home' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Index',
+                        'action' => 'index',
+                    ),
+                ),                
+            ),          
+            'plugin' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/plugin[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Plugin',
+                        'action' => 'index',
+                    ),
+                ),                
+            ),   
+            'plugin-version' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/plugin-version[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'PluginVersion',
+                        'action' => 'index',
+                    ),
+                ),                
+            ),   
+            'verification' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/verification[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Verification',
+                        'action' => 'index',
+                    ),
+                ),                
+            ),      
+            'admin' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/admin[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Admin',
+                        'action' => 'index',
+                    ),
+                ),                
+            ), 
+            'login' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/login[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Login',
+                        'action' => 'request',
+                    ),
+                ),                
+            ),       
+        ),
+    ),
+    'service_manager' => array(
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+        ),
+        'factories' => array(
+            'translator' => 'Zend\Mvc\Service\TranslatorServiceFactory',
+            'doctrine.cache.mycache' => function ($sm) {
+                $cache = new \Doctrine\Common\Cache\ApcuCache();
+                return $cache;
+            },
+        ),
+        'alias' => array(
+            'Zend\Authentication\AuthenticationService' => 'my_auth_service',
+        ),
+        'invokables' => array(
+            'my_auth_service' => 'Zend\Authentication\AuthenticationService'
+        ),
+        'services' => array(
+            'paginator' => new Knp\Component\Pager\Paginator(),
+        )
+    ),
+    'translator' => array(
+        'locale' => 'en_US',
+        'translation_file_patterns' => array(
+            array(
+                'type' => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern' => '%s.mo',
+            ),
+        ),
+    ),
+    'controllers' => [
+        'factories' => [
+            // Update the following line:
+            'Application\Controller\Index' => 'Application\Factory\IndexControllerFactory',
+            'Application\Controller\Login' => 'Application\Factory\LoginControllerFactory',
+            'Application\Controller\Plugin' => 'Application\Factory\PluginControllerFactory',
+            'Application\Controller\PluginVersion' => 'Application\Factory\PluginVersionControllerFactory',
+            'Application\Controller\Verification' => 'Application\Factory\VerificationControllerFactory',
+            'Application\Controller\Admin' => 'Application\Factory\AdminControllerFactory',
+        ],
+    ],
+    'view_manager' => array(
+        'display_not_found_reason' => true,
+        'display_exceptions' => true,
+        'doctype' => 'HTML5',
+        'not_found_template' => 'error/404',
+        'exception_template' => 'error/index',
+        'template_map' => array(
+            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+            'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
+            'error/404' => __DIR__ . '/../view/error/404.phtml',
+            'error/index' => __DIR__ . '/../view/error/index.phtml',
+        ),
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
+        ),
+    ),
+    // Placeholder for console routes
+    'console' => array(
+        'router' => array(
+            'routes' => array(
+            ),
+        ),
+    ),
+    // doctrine
+    'doctrine' => array(
+        'driver' => array(
+            'application_entities' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'paths' => array(__DIR__ . '/../src/Application/Entity')
+            ),
+            'orm_default' => array(             
+                'drivers' => array(
+                    'Application\Entity' => 'application_entities'
+                )
+            )),
+        'configuration' => array(
+                'orm_default' => array(
+                   'metadata_cache'    => 'array',
+                   'query_cache'       => 'array',
+                   'result_cache'      => 'array',
+                )
+            ),
+        ),
+);

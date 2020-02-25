@@ -1,0 +1,22 @@
+{
+    "name": "apache/netbeans-pp3",
+    "description": "NetBeans Plugin Portal 3",
+    "license": "BSD-3-Clause",
+    "keywords": [
+        "apache",
+        "netbeans",
+        "pluginportal"
+    ],
+    "config": {
+        "discard-changes": true
+    },
+    "homepage": "https://github.com/apache/netbeans-tools/pp3",
+    "require": {
+        "php": ">=5.5",
+        "zendframework/zendframework": "~2.5",
+        "zendframework/zend-developer-tools": "dev-master",
+        "doctrine/doctrine-orm-module": "^0.9.1",
+        "ezyang/htmlpurifier": "^4.10",
+        "knplabs/knp-paginator-bundle": "^3.0"
+    }
+}

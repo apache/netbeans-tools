@@ -1,0 +1,376 @@
+<?php
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+namespace Application\Controller;
+
+use Zend\View\Model\ViewModel;
+use Zend\Session\Container;
+use Application\Pp\MavenDataLoader;
+use Application\Entity\Plugin;
+use Application\Entity\PluginVersion;
+use Application\Pp\Catalog;
+use Zend\Mail;
+use HTMLPurifier;
+use HTMLPurifier_Config;
+
+define('PLUGIN_SESSION_NAMESPACE', 'pp3_plugin_session');
+
+class PluginController extends AuthenticatedController {
+
+    private $_pluginRepository;
+    private $_pluginVersionRepository;
+    private $_categoryRepository;
+    private $_nbVersionRepository;
+    /**
+     * @var \Application\Repository\UserRepository
+     */
+    private $_userRepository;
+
+    public function __construct($pluginRepo, $pvRepo, $categRepository, $config, $nbVersionRepository, $userRepository) {
+        parent::__construct($config);
+        $this->_pluginRepository = $pluginRepo;
+        $this->_pluginVersionRepository = $pvRepo;
+        $this->_categoryRepository = $categRepository;       
+        $this->_nbVersionRepository = $nbVersionRepository;
+        $this->_userRepository = $userRepository;
+    }
+
+    public function syncAction() {
+        $pId = $this->params()->fromQuery('id');
+        $plugin = $this->_pluginRepository->find($pId);        
+        $plugin->setDataLoader(new MavenDataLoader());
+        if (!$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
+            return $this->redirect()->toRoute('plugin', array(
+                'action' => 'list'
+            ));
+        }
+        try {
+            $plugin->reloadData();
+            $this->_pluginRepository->persist($plugin);            
+            $this->flashMessenger()->setNamespace('success')->addMessage('Plugin data reloaded from maven-metadata.xml file.');            
+        } catch (\Exception $e) {
+            // maven-metadata.xml not found
+            $this->flashMessenger()->setNamespace('error')->addMessage('Sorry, maven-metadata.xml file is missing.');                
+        }
+        return $this->redirect()->toRoute('plugin', array(
+            'action' => 'list'
+        ));        
+    }
+
+    private function handleImgUpload($imgFolder) {
+        $tmp_name = $_FILES["image-file"]["tmp_name"];
+        // basename() may prevent filesystem traversal attacks;
+        // further validation/sanitation of the filename may be appropriate
+        $name = basename($_FILES["image-file"]["name"]);
+        if(!file_exists($imgFolder)) {
+            mkdir($imgFolder, 0777, true);
+        }
+        if(move_uploaded_file($tmp_name, $imgFolder.'/'.$name)) {
+            return $name; 
+        }        
+    }
+
+    public function indexAction() {
+        $req = $this->request;
+        $plugin = new Plugin();
+        if ($req->isPost()) {
+            $config = HTMLPurifier_Config::createDefault();
+            $purifier = new HTMLPurifier($config);
+            $groupId = $purifier->purify($this->params()->fromPost('groupid'));
+            $artifactId = $purifier->purify($this->params()->fromPost('artifactid'));
+            
+            if (!empty($groupId) && !empty($artifactId)) {
+                $url = $this->_config['pp3']['mavenRepoUrl'].str_replace('.','/', $groupId).'/'.$artifactId.'/maven-metadata.xml';
+                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
+                $plugin->setUrl($url);
+                $plugin->setArtifactId($artifactId);
+                $plugin->setGroupId($groupId);
+                $plugin->setStatus(Plugin::STATUS_PRIVATE);
+                $plugin->setAuthor($user);
+                $plugin->setDataLoader(new MavenDataLoader());
+                try {
+                    if ($plugin->loadData()) {
+                        $existingPlugins = $this->_pluginRepository->getPluginsByArtifact($plugin->getArtifactId(), $plugin->getGroupId());
+                        if (count($existingPlugins) == 0) {
+                            // ok, proceed to confirmation
+                            $session = new Container(PLUGIN_SESSION_NAMESPACE);
+                            $session->plugin_registered = $plugin;
+                            return $this->redirect()->toRoute('plugin', array(
+                                'action' => 'confirm'
+                            ));
+                        } else {
+                            $this->flashMessenger()->setNamespace('error')->addMessage('Same plugin already registered.');
+                        }
+                    } else {
+                        // empty data from maven-metadata.xml
+                        $this->flashMessenger()->setNamespace('error')->addMessage('maven-metadata.xml file is missing data.');
+                    }
+                } catch (\Exception $e) {
+                    // maven-metadata.xml not found
+                    $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                
+                }
+            } else {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Missing groupId or atrifactId');                
+            }
+        }
+        return new ViewModel([
+            'plugin' => $plugin
+        ]);
+    }
+
+    public function confirmAction() {
+        $session = new Container(PLUGIN_SESSION_NAMESPACE);
+        $plugin = $session->plugin_registered; 
+        if (!$plugin) {            
+            return $this->redirect()->toRoute('plugin', array(
+                'action' => 'index'
+            ));
+        }
+        $req = $this->request;
+        if ($req->isPost()) {
+            $validatedData = $this->_validateAndCleanPluginData(
+                $this->params()->fromPost('name'),
+                $this->params()->fromPost('license'),
+                $this->params()->fromPost('description'),
+                $this->params()->fromPost('short_description'),
+                $this->params()->fromPost('category'),
+                $this->params()->fromPost('homepage')
+            );
+            if ($validatedData) {
+                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
+                $plugin->setAuthor($user);
+                $plugin->setName($validatedData['name']);
+                $plugin->setLicense($validatedData['license']);
+                $plugin->setDescription($validatedData['description']);
+                $plugin->setShortDescription($validatedData['short_description']);
+                $plugin->setHomepage($validatedData['homepage']);
+                $plugin->setAddedAt(new \DateTime('now'));
+                $plugin->setLastUpdatedAt(new \DateTime('now'));
+                // categ
+                $plugin->removeCategories();
+                $cat = $this->_categoryRepository->find($validatedData['category']);
+                if ($cat) {
+                    $plugin->addCategory($cat);
+                }
+                $cat2 = $this->params()->fromPost('category2');
+                if ($cat2 && (!$cat || ($cat2 != $cat->getId()))) {
+                    $cat2 = $this->_categoryRepository->find($this->params()->fromPost('category2'));
+                    if ($cat2) {
+                        //die(var_dump($cat2, $plugin->getCategories()[1], $validatedData['category']));
+                        $plugin->addCategory($cat2);
+                    }
+                }
+                // save image
+                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
+                if ($im) {                    
+                    $plugin->setImage($im);
+                }
+
+
+                $this->_pluginRepository->persist($plugin);
+                $this->flashMessenger()->setNamespace('success')->addMessage('Plugin registered.');
+                $session->getManager()->getStorage()->clear(PLUGIN_SESSION_NAMESPACE);
+
+                // send mail to admins asking for approval
+                $this->_sendApprovalEmail($plugin);
+
+                return $this->redirect()->toRoute('plugin', array(
+                    'action' => 'list'
+                ));
+            } else {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data.');
+            }            
+        }
+        return new ViewModel([
+            'plugin' => $plugin,
+            'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
+        ]);
+    }
+
+    public function listAction() {
+        $plugins = $this->_pluginRepository->getPluginsByAuthorId($this->getAuthenticatedUserId());
+        return new ViewModel(array(
+            'plugins' => $plugins,
+        ));
+    }
+
+    public function editAction() {
+        $pId = $this->params()->fromQuery('id');
+        $plugin = $this->_pluginRepository->find($pId);        
+        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
+            return $this->redirect()->toRoute('plugin', array(
+                'action' => 'list'
+            ));
+        }
+        $req = $this->request;
+        if ($req->isPost()) {
+            $validatedData = $this->_validateAndCleanPluginData(
+                $this->params()->fromPost('name'),
+                $this->params()->fromPost('license'),
+                $this->params()->fromPost('description'),
+                $this->params()->fromPost('short_description'),
+                $this->params()->fromPost('category'),
+                $this->params()->fromPost('homepage')
+            );
+            if ($validatedData) {
+                $plugin->setName($validatedData['name']);
+                $plugin->setLicense($validatedData['license']);
+                $plugin->setDescription($validatedData['description']);
+                $plugin->setShortDescription($validatedData['short_description']);
+                $plugin->setHomepage($validatedData['homepage']);
+                $plugin->setLastUpdatedAt(new \DateTime('now'));                
+                
+                // save image
+                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
+                if ($im) {                    
+                    $plugin->setImage($im);
+                }
+
+                // categ
+                $plugin->removeCategories();
+                $this->_pluginRepository->persist($plugin);
+                $cat = $this->_categoryRepository->find($validatedData['category']);
+                if ($cat) {
+                    $plugin->addCategory($cat);
+                }
+                $cat2 = $this->params()->fromPost('category2');
+                if ($cat2 && (!$cat || ($cat2 != $cat->getId()))) {
+                    $cat2 = $this->_categoryRepository->find($this->params()->fromPost('category2'));
+                    if ($cat2) {
+                        //die(var_dump($cat2, $plugin->getCategories()[1], $validatedData['category']));
+                        $plugin->addCategory($cat2);
+                    }
+                }
+
+                $this->_pluginRepository->persist($plugin);
+
+                $this->flashMessenger()->setNamespace('success')->addMessage('Plugin updated.');               
+            } else {
+                $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data.');
+            }
+            return $this->redirect()->toUrl('./edit?id='.$plugin->getId());      
+        }
+
+        return new ViewModel(array(
+            'plugin' => $plugin,
+            'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
+        ));
+    }
+
+    public function deleteAction() {
+        $pId = $this->params()->fromQuery('id');
+        $plugin = $this->_pluginRepository->find($pId);    
+        if (!$plugin || empty($pId) || !$plugin->isOwnedBy($this->getAuthenticatedUserId())) {
+            return $this->redirect()->toRoute('plugin', array(
+                'action' => 'list'
+            ));
+        };        
+        $this->flashMessenger()->setNamespace('success')->addMessage('Plugin '.$plugin->getName().' deleted.');
+        $this->_pluginRepository->remove($plugin);
+        $this->rebuildAllCatalogs();
+        return $this->redirect()->toRoute('plugin', array(
+            'action' => 'list'
+        ));
+    }
+
+    private function rebuildAllCatalogs() {
+        $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
+        foreach ($versions as $v) {
+            $version = $v->getVersion();
+            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
+            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
+            $catalog = new Catalog($version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            try {
+                $xml = $catalog->asXml(true);
+                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+            } catch (\Exception $e) { }                 
+            
+            $catalog = new Catalog($version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            try {
+                $xml = $catalog->asXml(true);
+                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+            } catch (\Exception $e) { }                 
+            
+        }
+    }
+
+    private function _getCatalogLink() {
+        return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
+    }
+
+    private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category, $homepage) {
+        if (empty($name) || empty($license) || empty($category) || empty($shortDescription)) {
+            return false;
+        }
+        $config = HTMLPurifier_Config::createDefault();
+        $purifier = new HTMLPurifier($config);
+        return  array(
+            'name' => $purifier->purify($name),
+            'license' => $purifier->purify($license),
+            'description' => $purifier->purify($description),
+            'short_description' => $purifier->purify($shortDescription),
+            'category' => $category,
+            'homepage' => $purifier->purify($homepage),
+        );
+    }
+
+    private function _sendApprovalEmail($plugin) {
+        $mail = new Mail\Message();
+        $link = $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('admin', array('action' => 'approve'));
+        $mail->setBody('Hello administrator,
+somebody published a new Apache NetBeans plugin in the NetBeans Plugin Portal and it is now waiting for approval to become visible for public.
+
+New plugin: '.$plugin->getName().'
+
+It would be great, if you could login to the NetBeans Plugin Portal at your earliest convenience, make sure the plugin can show up in the list of plugins and then approve it.
+
+'.$link.'
+
+Thanks for your help!
+NetBeans development team
+
+P.S.: This is an automatic email. DO NOT REPLY to this email. ');
+
+        $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
+        $mail->setSubject('NetBeans plugin waiting for approval: '.$plugin->getName());
+        $transport = new Mail\Transport\Sendmail();
+        foreach($this->_userRepository->findAdmins() as $verifier) {
+            $mail->addBcc($verifier->getEmail());
+        }
+        $transport->send($mail);
+    }
+
+
+    public function searchAutocompleteAction() {       
+        $term = $this->params()->fromQuery('term');
+        $a = array();
+        $response = $this->getResponse();
+        if (!empty($term)) {
+            $plugins = $this->_pluginRepository->getPluginsByName($term);
+            if (!empty($plugins)) {
+                foreach ($plugins as $p) {
+                    $a[] = array('label' => $p->getName(), 'value' => $p->getName());
+                }
+                $response->setContent(json_encode($a));
+            }
+        }
+        return $response;
+    }
+}
