@@ -231,13 +231,16 @@ public class HTMLConverter {
         checkDirectoryExists("Incorrect clone/src/content directory ", srcContent);
 
 	File platform = new File(srcContent, "platform");
-        checkDirectoryExists("Incorrect clone/src/content/platform directory ", srcContent);
+        checkDirectoryExists("Incorrect clone/src/content/platform directory ", platform);
 
 	File platformTutorials = new File(platform, "tutorials");
-        checkDirectoryExists("Incorrect clone/src/content/platform/tutorials directory ", srcContent);
+        checkDirectoryExists("Incorrect clone/src/content/platform/tutorials directory ", platformTutorials);
 
 	File platformImages = new File(platform, "images");
-        checkDirectoryExists("Incorrect clone/src/content/platform/images directory ", srcContent);
+        checkDirectoryExists("Incorrect clone/src/content/platform/images directory ", platformImages);
+
+	File platformGraph = new File(platform, "graph");
+        checkDirectoryExists("Incorrect clone/src/content/platform/graph directory ", platformGraph);
         
         File currentDirectory = new File(System.getProperty("user.dir"));
         File dest = new File(currentDirectory, "tutorials-asciidoc");
@@ -248,14 +251,25 @@ public class HTMLConverter {
             }
         }
 
-        checkDirectoryExists("Output directory", dest);
-        if (!dest.canWrite()) {
-            throw new IllegalStateException("Cannot write to " + dest.getAbsolutePath());
+	File destTutorials = new File(dest, "tutorials");
+        if (!destTutorials.exists()) {
+            if (!destTutorials.mkdirs()) {
+                throw new IllegalStateException("Cannot create directory " + destTutorials.getAbsolutePath());
+            }
         }
+
+	File destGraph = new File(dest, "graph");
+        if (!destGraph.exists()) {
+            if (!destGraph.mkdirs()) {
+                throw new IllegalStateException("Cannot create directory " + destGraph.getAbsolutePath());
+            }
+        }
+
 
         ExternalLinksMap externalLinks = new ExternalLinksMap();
 
-        convert(platformTutorials, platformImages, dest, externalLinks);
+        convert(platformTutorials, platformImages, destTutorials, externalLinks);
+        convert(platformGraph, platformGraph, destGraph, externalLinks);
          
         // convertTrails(cloneDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
 

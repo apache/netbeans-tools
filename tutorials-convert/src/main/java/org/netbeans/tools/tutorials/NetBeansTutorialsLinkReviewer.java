@@ -257,6 +257,22 @@ public final class NetBeansTutorialsLinkReviewer {
 			"https://netbeans.apache.org/kb/docs"
 		},
 		{
+			"https://graph.netbeans.org",
+			"https://netbeans.apache.org/graph",
+		},
+		{
+			"http://graph.netbeans.org",
+			"https://netbeans.apache.org/graph",
+		},
+		{
+			"https://platform.netbeans.org/graph",
+			"https://netbeans.apache.org/graph"
+		},
+		{
+			"http://platform.netbeans.org/graph",
+			"https://netbeans.apache.org/graph"
+		},
+		{
 			"http://platform.netbeans.org/tutorials",
 			"https://netbeans.apache.org/tutorials"
 		},
@@ -275,7 +291,40 @@ public final class NetBeansTutorialsLinkReviewer {
 		{
     			"http://www.oracle.com/technetwork/java/javafx/overview/index.html",
 			"https://www.oracle.com/technetwork/java/javase/overview/javafx-overview-2158620.html"
-		}
+		},
+		{
+			"https://wiki.netbeans.org/wiki/view/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"http://wiki.netbeans.org/wiki/view/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"http://wiki.netbeans.org/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"https://wiki.netbeans.org/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"https://wiki.netbeans.org/wiki/view/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"http://wiki.netbeans.org/wiki/view/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"http://wiki.netbeans.org/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"https://wiki.netbeans.org/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+
 	};
 
 	public static final String updateHREF(String href) {
