@@ -85,8 +85,11 @@
                 <configuration>
                     <mainClass>org.netbeans.tools.tutorials.HTMLConverter</mainClass>
                     <arguments>
-                      <argument>/home/antonio/REPOS/netbeans-tutorials</argument>
-                      <argument>/home/antonio/REPOS/images/</argument>
+			    <argument>/home/antonio/REPOS/netbeans-static-site</argument>
+				    <!--
+                      <argument>/home/antonio/REPOS/platform-tutorials/tutorials</argument>
+                      <argument>/home/antonio/REPOS/platform-tutorials/images/</argument>
+							  -->
                     </arguments>
                 </configuration>
             </plugin>

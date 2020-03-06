@@ -41,6 +41,12 @@ import org.xml.sax.InputSource;
  */
 public class HTMLConverter {
 
+	/**
+	 * Depth of directory nesting.
+	 * Set to 1 for debugging purposes, big number otherwise.
+	 */
+    private final static int DEPTH = 9999;
+
     private static final String APACHE_LICENSE_HEADER = ""
             + "\n"
             + "    Licensed to the Apache Software Foundation (ASF) under one\n"
@@ -67,7 +73,8 @@ public class HTMLConverter {
     private static void convert(File docsTutorialsDocs, File docsTutorialsImages, File dest, ExternalLinksMap externalLinks) throws Exception {
         LOG.log(Level.INFO, "Converting tutorials from {0} to {1}", new Object[]{docsTutorialsDocs.getAbsolutePath(), dest.getAbsolutePath()});
 
-        List<File> html_files = Files.find(docsTutorialsDocs.toPath(), 999,
+
+        List<File> html_files = Files.find(docsTutorialsDocs.toPath(), DEPTH,
                 (p, bfa) -> bfa.isRegularFile()).map(Path::toFile).filter((f) -> f.getName().endsWith(".html")).collect(Collectors.toList());
 
         URI baseDirectory = docsTutorialsDocs.toURI();
@@ -90,7 +97,7 @@ public class HTMLConverter {
     private static void convertTrails(File docsTutorialsTrailsDirectory, File docsTutorialsImages, File dest, ExternalLinksMap externalLinks) throws Exception {
          LOG.log(Level.INFO, "Converting trails {0} to {1}", new Object[]{docsTutorialsTrailsDirectory.getAbsolutePath(), dest.getAbsolutePath()});
 
-        List<File> html_files = Files.find(docsTutorialsTrailsDirectory.toPath(), 999,
+        List<File> html_files = Files.find(docsTutorialsTrailsDirectory.toPath(), DEPTH,
                 (p, bfa) -> bfa.isRegularFile()).map(Path::toFile).filter((f) -> f.getName().endsWith(".html")).collect(Collectors.toList());
 
         URI baseDirectory = docsTutorialsTrailsDirectory.toURI();
@@ -205,22 +212,36 @@ public class HTMLConverter {
     private static void usage() {
 
         System.err.println("Use: java " + HTMLConverter.class
-                .getName() + " tutorials-directory images-directory");
-        System.err.println("   See README.md for instructions on how to prepare those directories.");
+                .getName() + " directory");
+        System.err.println("   Where directory is the directory were you've clone:");
+	System.err.println("      https://github.com/wadechandler/netbeans-static-site.git");
+	System.err.println("See README.md for details.");
         System.exit(1);
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) {
+        if (args.length != 1) {
             usage();
         }
         
-        File tutorialsDirectory = new File(args[0]);
-        checkDirectoryExists("Incorrect tutorials directory ", tutorialsDirectory);
-        
-        File docsTutorialsImagesDirectory = new File(args[1]);
-        checkDirectoryExists("Incorrect images directory ", docsTutorialsImagesDirectory);
+        File cloneDirectory = new File(args[0]);
+        checkDirectoryExists("Incorrect clone directory ", cloneDirectory);
 
+	File srcContent = new File(new File(cloneDirectory, "src"), "content");
+        checkDirectoryExists("Incorrect clone/src/content directory ", srcContent);
+
+	File platform = new File(srcContent, "platform");
+        checkDirectoryExists("Incorrect clone/src/content/platform directory ", platform);
+
+	File platformTutorials = new File(platform, "tutorials");
+        checkDirectoryExists("Incorrect clone/src/content/platform/tutorials directory ", platformTutorials);
+
+	File platformImages = new File(platform, "images");
+        checkDirectoryExists("Incorrect clone/src/content/platform/images directory ", platformImages);
+
+	File platformGraph = new File(platform, "graph");
+        checkDirectoryExists("Incorrect clone/src/content/platform/graph directory ", platformGraph);
+        
         File currentDirectory = new File(System.getProperty("user.dir"));
         File dest = new File(currentDirectory, "tutorials-asciidoc");
 
@@ -230,16 +251,27 @@ public class HTMLConverter {
             }
         }
 
-        checkDirectoryExists("Output directory", dest);
-        if (!dest.canWrite()) {
-            throw new IllegalStateException("Cannot write to " + dest.getAbsolutePath());
+	File destTutorials = new File(dest, "tutorials");
+        if (!destTutorials.exists()) {
+            if (!destTutorials.mkdirs()) {
+                throw new IllegalStateException("Cannot create directory " + destTutorials.getAbsolutePath());
+            }
         }
+
+	File destGraph = new File(dest, "graph");
+        if (!destGraph.exists()) {
+            if (!destGraph.mkdirs()) {
+                throw new IllegalStateException("Cannot create directory " + destGraph.getAbsolutePath());
+            }
+        }
+
 
         ExternalLinksMap externalLinks = new ExternalLinksMap();
 
-        convert(tutorialsDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
-        
-        convertTrails(tutorialsDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
+        convert(platformTutorials, platformImages, destTutorials, externalLinks);
+        convert(platformGraph, platformGraph, destGraph, externalLinks);
+         
+        // convertTrails(cloneDirectory, docsTutorialsImagesDirectory, dest, externalLinks);
 
         LOG.info("Generating 'external-links.txt' with list of external links...");
         
