@@ -324,6 +324,81 @@ public final class NetBeansTutorialsLinkReviewer {
 			"https://wiki.netbeans.org/Dev",
 			"https://netbeans.apache.org/wiki/Dev"
 		},
+		{
+			"https://wiki.netbeans.info/wiki/view/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"http://wiki.netbeans.info/wiki/view/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"http://wiki.netbeans.info/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"https://wiki.netbeans.info/DevFaq",
+			"https://netbeans.apache.org/wiki/DevFaq"
+		},
+		{
+			"https://wiki.netbeans.info/wiki/view/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"http://wiki.netbeans.info/wiki/view/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"http://wiki.netbeans.info/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"https://wiki.netbeans.info/Dev",
+			"https://netbeans.apache.org/wiki/Dev"
+		},
+		{
+			"http://wiki.netbeans.org/NetBeansDeveloperFAQ#",
+			"https://netbeans.apache.org/wiki/index.asciidoc#_"
+		},
+		{
+			"https://wiki.netbeans.org/NetBeansDeveloperFAQ#",
+			"https://netbeans.apache.org/wiki/index.asciidoc#_"
+		},
+		{
+			"http://wiki.netbeans.org/NetBeansDeveloperFAQ",
+			"https://netbeans.apache.org/wiki/"
+		},
+		{
+			"https://wiki.netbeans.org/NetBeansDeveloperFAQ",
+			"https://netbeans.apache.org/wiki/"
+		},
+
+		{
+			"mailto:nbdocs_feedback@usersguide.netbeans.org",
+			"mailto:dev@netbeans.apache.org",
+		},
+		{
+			"mailto:dkaspar@netbeans.org",
+			"mailto:dev@netbeans.apache.org"
+		},
+		{
+			"mailto:guanminglin@gmail.com",
+			"mailto:dev@netbeans.apache.org"
+		},
+		{
+			"mailto:masaki@netbeans.org",
+			"mailto:dev@netbeans.apache.org"
+		},
+		{
+			"mailto:tpservices@hotmail.com",
+			"mailto:dev@netbeans.apache.org"
+		},
+		{
+			"mailto:users@graph.netbeans.org",
+			"mailto:dev@netbeans.apache.org?subject=NetBeans%20Visual%20Library"
+		}
+
+
 
 	};
 
@@ -344,6 +419,9 @@ public final class NetBeansTutorialsLinkReviewer {
 				}
 				break;
 			}
+		}
+		if (href.indexOf("netbeans.apache.org/wiki") != -1) {
+			href = href.toLowerCase();
 		}
 
 		return href;

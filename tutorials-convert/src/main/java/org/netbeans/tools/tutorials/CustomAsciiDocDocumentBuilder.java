@@ -136,7 +136,7 @@ public class CustomAsciiDocDocumentBuilder extends AsciiDocDocumentBuilder {
 			href = href == null ? "" : href;
 			href = copyImageIfRequired(href, false);
 
-			if (href.startsWith("http")) {
+			if (href.startsWith("http") || href.startsWith("mailto:")) {
 				href = NetBeansTutorialsLinkReviewer.updateHREF(href);
 				externalLinks.addExternalLink(href, CustomAsciiDocDocumentBuilder.this.relativePathToTutorialFile);
 			}
