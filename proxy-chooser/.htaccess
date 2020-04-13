@@ -1,0 +1,10 @@
+Options -Indexes
+
+# Enable proxy chooser
+RewriteEngine on
+RewriteCond "%{REQUEST_URI}" "/uc-proxy-chooser/[^/]*/updates.xml(.gz)?"
+RewriteRule !/uc-proxy-chooser/[^/]*/updates.xml(.gz)?$ ./updates.php$1 [L]
+
+<Files ".*">
+    Deny from all
+</Files>
