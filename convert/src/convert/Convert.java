@@ -109,6 +109,17 @@ public class Convert {
             ")" +
             "\\QTHIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\\E\\s*";
 
+    private static final String LICENSE_INPUT_PATTERN_SUN_PUBLIC_NOTICE = 
+            "\\QSun Public License Notice\\E\\s*" +
+            "\\QThe contents of this file are subject to the Sun Public License\\E\\s*" +
+            "\\QVersion 1.0 (the \"License\"). You may not use this file except in\\E\\s*" +
+            "\\Qcompliance with the License. A copy of the License is available at\\E\\s*" +
+            "\\Qhttp://www.sun.com/\\E\\s*" +
+            "\\QThe Original Code is NetBeans. The Initial Developer of the Original\\E\\s*" +
+            "\\QCode is Sun Microsystems, Inc. Portions Copyright <YEARS> Sun\\E\\s*" +
+            "\\QMicrosystems, Inc. All Rights Reserved.\\E\\s*" +
+            "(\\QIf you wish your version of this file to be governed by only the CDDL or only the GPL Version 2, indicate your decision by adding \"[Contributor] elects to include this software in this distribution under the [CDDL or GPL Version 2] license.\" If you do not indicate a single choice of license, a recipient has the option to distribute your version of this file under either the CDDL, the GPL Version 2 or to extend the choice of license to its licensees as provided above. However, if you add GPL Version 2 code and therefore, elected the GPL Version 2 license, then the option applies only if the new code is made subject to such option by the copyright holder.\\E\\s*)?";
+
     private static final String JAVA_OUTPUT =
             "/*\n" +
             " * Licensed to the Apache Software Foundation (ASF) under one\n" +
@@ -212,6 +223,7 @@ public class Convert {
         }
         Pattern headerPattern1 = Pattern.compile(LICENSE_INPUT_PATTERN1, Pattern.MULTILINE);
         Pattern headerPattern2 = Pattern.compile(LICENSE_INPUT_PATTERN2, Pattern.MULTILINE);
+        Pattern headerPattern3 = Pattern.compile(LICENSE_INPUT_PATTERN_SUN_PUBLIC_NOTICE, Pattern.MULTILINE);
         Path root = Paths.get(args[0]);
         int[] count = new int[1];
         Set<String> converted = new HashSet<>();
@@ -227,7 +239,8 @@ public class Convert {
 
                     if (lic != null) {
                         if (headerPattern1.matcher(lic.header).matches() ||
-                            headerPattern2.matcher(lic.header).matches()) {
+                            headerPattern2.matcher(lic.header).matches() ||
+                            headerPattern3.matcher(lic.header).matches()) {
                             success = fixHeader(p, code, lic);
                             count[0]++;
                         }
