@@ -162,7 +162,7 @@ public class Convert {
             "\n" +
             "-->";
 
-    private static final String BUNDLE_OUTPUT =
+    static final String BUNDLE_OUTPUT =
             "# Licensed to the Apache Software Foundation (ASF) under one\n" +
             "# or more contributor license agreements.  See the NOTICE file\n" +
             "# distributed with this work for additional information\n" +
