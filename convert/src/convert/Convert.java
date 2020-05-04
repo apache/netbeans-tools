@@ -37,7 +37,7 @@ public class Convert {
             "|" +
             "\\QCopyright (c) <YEARS> Oracle and/or its affiliates. All rights reserved.\\E\\s*" +
             "|" +
-            "\\QCopyright \u00A9 <YEARS> Oracle and/or its affiliates. All rights reserved.\\E\\s*" +
+            "\\QCopyright \\u00A9 <YEARS> Oracle and/or its affiliates. All rights reserved.\\E\\s*" +
             "|" +
             "\\QCopyright <YEARS> Sun Microsystems, Inc. All rights reserved.\\E\\s*" +
             ")" +
