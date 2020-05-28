@@ -104,7 +104,7 @@ class VerificationController extends AuthenticatedController {
             $version = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
             $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
             $link = $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
-            $catalog = new Catalog($version, $items, false, $this->_config['pp3']['dtdPath'], $link);            
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, false, $this->_config['pp3']['dtdPath'], $link);
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);

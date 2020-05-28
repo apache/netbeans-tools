@@ -47,6 +47,9 @@ class PluginVersion {
     /** @ORM\Column(type="integer") */
     protected $plugin_id;
 
+    /** @ORM\Column(type="blob") */
+    protected $info_xml;
+
     /**
      *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})     
      */
@@ -124,4 +127,20 @@ class PluginVersion {
     public function getDigests() {
         return $this->digests;
     }
+
+    /**
+     * @return resource
+     */
+    function getInfoXml() {
+        return $this->info_xml;
+    }
+
+    /**
+     * @param resource $info_xml
+     * @return void
+     */
+    function setInfoXml($info_xml) {
+        $this->info_xml = $info_xml;
+    }
+
 }

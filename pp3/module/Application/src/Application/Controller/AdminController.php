@@ -162,7 +162,7 @@ class AdminController extends AuthenticatedController {
             if ($nbv) {
                 $items = $experimental ? $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version) : $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
                 if (count($items)) {                
-                    $catalog = new Catalog($version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+                    $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
                     try {
                         $xml = $catalog->asXml(true);
                         $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
@@ -301,8 +301,8 @@ class AdminController extends AuthenticatedController {
     }
 
     private function _createEmptyCatalogForNbVersion($nbVersion) {
-        $catalog = new Catalog($nbVersion->getVersion(), array(), false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
-        $catalogExp = new Catalog($nbVersion->getVersion(), array(), true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+        $catalog = new Catalog($this->_pluginVersionRepository, $nbVersion->getVersion(), array(), false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+        $catalogExp = new Catalog($this->_pluginVersionRepository, $nbVersion->getVersion(), array(), true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
         try {
             $xml = $catalog->asXml(true);
             $xmlExp = $catalogExp->asXml(true);
@@ -332,13 +332,13 @@ class AdminController extends AuthenticatedController {
             $version = $v->getVersion();
             $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
             $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
             } catch (\Exception $e) { }                 
             
-            $catalog = new Catalog($version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
