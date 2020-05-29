@@ -108,6 +108,8 @@ class Catalog {
 
         foreach ($this->_items as $item) {
             $this->updateInfoXML($item);
+            $this->_pluginVersionRepository->getEntityManager()->refresh($item);
+
             $infoXMLResource = $item->getInfoXml();
 
             if(! $infoXMLResource) {
@@ -133,7 +135,7 @@ class Catalog {
             $licenseSource = $moduleSource[0]->getElementsByTagName(self::LICENSE_ELEMENT);
 
             $moduleElement = $xml->createElement(self::MODULE_ELEMENT);
-            $moduleElement->setAttribute(self::MODULE_ATTR_distribution, $this->_downloadPath.$item->getId());
+            $moduleElement->setAttribute(self::MODULE_ATTR_distribution, $this->_downloadPath.'/'.$item->getId().'/'.$item->getArtifactFilename());
             $moduleElement->setAttribute(self::MODULE_ATTR_downloadsize, intval($item->getArtifactSize()));
             foreach(self::MODULE_ATTRS as $attr) {
                 $inputData = $moduleSource[0]->getAttribute($attr);
@@ -285,7 +287,6 @@ class Catalog {
                 $pluginVersion->setArtifactSize($filesize);
                 $pluginVersion->setInfoXml($stream);
                 $this->_pluginVersionRepository->merge($pluginVersion);
-                $this->_pluginVersionRepository->getEntityManager()->refresh($pluginVersion);
             }
         }
     }

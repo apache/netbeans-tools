@@ -74,4 +74,8 @@ class BaseController extends AbstractActionController {
     protected function getAuthenticatedUserId() {
         return empty($_SESSION['sessionUserId']) ? false : $_SESSION['sessionUserId'];
     }
+
+    protected function getDownloadBaseUrl() {
+        return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download'));
+    }
 }

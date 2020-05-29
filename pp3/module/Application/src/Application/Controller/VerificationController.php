@@ -103,14 +103,13 @@ class VerificationController extends AuthenticatedController {
         } elseif ($verification->getStatus() == \Application\Entity\Verification::STATUS_GO) {
             $version = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
             $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $link = $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, false, $this->_config['pp3']['dtdPath'], $link);
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
             } catch (\Exception $e){
-                $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                        
-            }    
+                $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
+            }
             $this->_sendGoNotification($req->getVerification(), $comment);
         }
         $this->flashMessenger()->setNamespace('success')->addMessage('Vote cast');
