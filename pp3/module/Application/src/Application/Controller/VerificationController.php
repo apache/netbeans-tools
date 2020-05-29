@@ -58,15 +58,15 @@ class VerificationController extends AuthenticatedController {
     }
 
     public function voteGoAction() {
-        $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_GO);
+        return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_GO);
     }
 
     public function voteNoGoAction() {
-        $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_NOGO);
+        return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_NOGO);
     }
 
     public function voteUndecidedAction() {
-        $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_UNDECIDED);
+        return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_UNDECIDED);
     }
 
     private function _handleVote($vote) {
@@ -119,11 +119,11 @@ class VerificationController extends AuthenticatedController {
     }
 
     public function voteMasterGoAction() {
-        $this->_handleMasterVote(\Application\Entity\Verification::STATUS_GO);
+        return $this->_handleMasterVote(\Application\Entity\Verification::STATUS_GO);
     }
 
     public function voteMasterNoGoAction() {
-        $this->_handleMasterVote(\Application\Entity\Verification::STATUS_NOGO);
+        return $this->_handleMasterVote(\Application\Entity\Verification::STATUS_NOGO);
     }
 
     private function _handleMasterVote($vote) {
