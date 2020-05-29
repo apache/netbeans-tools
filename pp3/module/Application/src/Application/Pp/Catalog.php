@@ -24,6 +24,8 @@ use ZipArchive;
 use Zend\Http\Client;
 
 class Catalog {
+    const OSGI_JAR_PARSER = 'java -jar "' . __DIR__ . '/../../../external/osgi-jar-parser.jar"';
+
     const CATALOG_FILE_NAME = 'catalog.xml';
     const CATALOG_FILE_NAME_EXPERIMENTAL = 'catalog-experimental.xml';
     
@@ -34,7 +36,7 @@ class Catalog {
 
     // Attributes from info.xml/module  that can be used in catalog/module
     const MODULE_ELEMENT = 'module';
-    const MODULE_ATTRS = ['codenamebase', 'homepage',  'license', 'downloadsize',
+    const MODULE_ATTRS = ['codenamebase', 'homepage',  'license',
                           'needsrestart', 'moduleauthor', 'releasedate',
                           'global', 'preferredupdate', 'targetcluster'];
     // distribution will always be set by the portal
@@ -132,9 +134,10 @@ class Catalog {
 
             $moduleElement = $xml->createElement(self::MODULE_ELEMENT);
             $moduleElement->setAttribute(self::MODULE_ATTR_distribution, $this->_downloadPath.$item->getId());
+            $moduleElement->setAttribute(self::MODULE_ATTR_downloadsize, intval($item->getArtifactSize()));
             foreach(self::MODULE_ATTRS as $attr) {
                 $inputData = $moduleSource[0]->getAttribute($attr);
-                if($inputData || $attr == self::MODULE_ATTR_downloadsize/* can be 0 */) {
+                if($inputData) {
                     $moduleElement->setAttribute($attr, $inputData);
                 }
             }
@@ -220,8 +223,11 @@ class Catalog {
             }
         }
 
-        // Skip update if info.xml is present (PP3 assumes immutable sources)
-        if($pluginVersion->getInfoXml() != null && $sha256Reference) {
+        // Skip update if:
+        // - info.xml is present (PP3 assumes immutable sources)
+        // - SHA-256 checksum is present
+        // - artifact size is present
+        if($pluginVersion->getInfoXml() != null && $pluginVersion->getArtifactSize() && $sha256Reference) {
             return;
         }
         // Fetch NBM
@@ -238,6 +244,7 @@ class Catalog {
             fclose($fid);
             $response = null;
 
+            $filesize = filesize($archiveFile);
             $sha1 = hash_file("sha1", $archiveFile);
             $sha256 = hash_file("sha256", $archiveFile);
 
@@ -250,18 +257,32 @@ class Catalog {
                 $pluginVersion->addDigest('SHA-256', $sha256);
             }
 
-            // Extract Info/info.xml from archive
-            $archive = new ZipArchive();
-            $archive->open($archiveFile);
-            $infoXML = $archive->getFromName("Info/info.xml");
-            $archive->close();
-            unlink($archiveFile);
+            if(substr(strtolower($pluginVersion->getUrl()), -4) == '.jar') {
+               $execution = self::OSGI_JAR_PARSER . " " . escapeshellarg($archiveFile);
+               $return_var = -1;
+               $output = [];
+               exec($execution, $output, $return_var);
+               $outputString = implode("\n", $output);
+               if(intval($return_var) != 0) {
+                   error_log(sprintf('PluginVersion(id: %d) Failed to extract info from JAR, Got: %s', $pluginVersion->getId(), $outputString));
+                   return;
+               }
+               $infoXML = $outputString;
+            } else {
+                // Extract Info/info.xml from archive
+                $archive = new ZipArchive();
+                $archive->open($archiveFile);
+                $infoXML = $archive->getFromName("Info/info.xml");
+                $archive->close();
+                unlink($archiveFile);
+            }
 
             if ($infoXML) {
                 // Update persistent data to fetch info.xml only once
                 $stream = fopen('php://memory', 'r+');
                 fwrite($stream, $infoXML);
                 rewind($stream);
+                $pluginVersion->setArtifactSize($filesize);
                 $pluginVersion->setInfoXml($stream);
                 $this->_pluginVersionRepository->merge($pluginVersion);
                 $this->_pluginVersionRepository->getEntityManager()->refresh($pluginVersion);

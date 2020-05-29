@@ -50,6 +50,9 @@ class PluginVersion {
     /** @ORM\Column(type="blob") */
     protected $info_xml;
 
+    /** @ORM\Column(type="integer") */
+    protected $artifact_size;
+
     /**
      *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})     
      */
@@ -143,4 +146,11 @@ class PluginVersion {
         $this->info_xml = $info_xml;
     }
 
+    function getArtifactSize() {
+        return $this->artifact_size;
+    }
+
+    function setArtifactSize($artifact_size): void {
+        $this->artifact_size = $artifact_size;
+    }
 }
