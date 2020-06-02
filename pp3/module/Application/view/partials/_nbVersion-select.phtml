@@ -20,6 +20,7 @@
 ?>
 <?php
 $mapping = array();
+$assignedNbVersions = array();
 foreach($this->pluginVersion->getNbVersionsPluginVersions() as $nbvPv) {
     $assignedNbVersions[$nbvPv->getNbVersionId()] = $nbvPv;    
 }

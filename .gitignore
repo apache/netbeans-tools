@@ -19,3 +19,4 @@
 /translations/*/dist/
 /translations/*/nbproject/private/
 /translations/*/nbproject/genfiles.properties
+/pp3/module/Application/external/osgi-jar-parser/target

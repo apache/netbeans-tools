@@ -47,6 +47,12 @@ class PluginVersion {
     /** @ORM\Column(type="integer") */
     protected $plugin_id;
 
+    /** @ORM\Column(type="blob") */
+    protected $info_xml;
+
+    /** @ORM\Column(type="integer") */
+    protected $artifact_size;
+
     /**
      *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})     
      */
@@ -123,5 +129,28 @@ class PluginVersion {
 
     public function getDigests() {
         return $this->digests;
+    }
+
+    /**
+     * @return resource
+     */
+    function getInfoXml() {
+        return $this->info_xml;
+    }
+
+    /**
+     * @param resource $info_xml
+     * @return void
+     */
+    function setInfoXml($info_xml) {
+        $this->info_xml = $info_xml;
+    }
+
+    function getArtifactSize() {
+        return $this->artifact_size;
+    }
+
+    function setArtifactSize($artifact_size): void {
+        $this->artifact_size = $artifact_size;
     }
 }

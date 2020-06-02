@@ -29,6 +29,14 @@ use Zend\Http\Client;
  */
 class PluginVersion extends Base\PluginVersion {
 
+    public function getArtifactFilename() {
+        $url = explode('/', $this->plugin->getUrl());
+        array_pop($url);
+        array_push($url, $this->version);
+        $baseUrl = implode('/', $url).'/';
+        return $this->plugin->getArtifactId().'-'.$this->version.$this->_getBinaryExtension($baseUrl);
+    }
+
     public function setupUrl() {
         $url = explode('/', $this->plugin->getUrl());
         array_pop($url);

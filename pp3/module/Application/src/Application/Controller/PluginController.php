@@ -296,23 +296,19 @@ class PluginController extends AuthenticatedController {
             $version = $v->getVersion();
             $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
             $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
             } catch (\Exception $e) { }                 
             
-            $catalog = new Catalog($version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->_getCatalogLink());
+            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
             try {
                 $xml = $catalog->asXml(true);
                 $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
             } catch (\Exception $e) { }                 
             
         }
-    }
-
-    private function _getCatalogLink() {
-        return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download')).'?id=';
     }
 
     private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category, $homepage) {

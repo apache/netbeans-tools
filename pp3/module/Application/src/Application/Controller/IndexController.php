@@ -70,8 +70,8 @@ class IndexController extends BaseController {
     public function catalogueAction() {
         $pId = $this->params()->fromQuery('id');
         if (!empty($pId)) {
-            $plugin = $this->_pluginRepository->getPublicPluginById($pId);                    
-        };   
+            $plugin = $this->_pluginRepository->getPublicPluginById($pId);
+        }
 
         return new ViewModel([
             'plugin' => $plugin
@@ -79,20 +79,20 @@ class IndexController extends BaseController {
     }
 
     public function downloadAction() {
-        $pId = $this->params()->fromQuery('id');
+        $pId = $this->params()->fromRoute('pathParam');
+        $pluginVersion = false;
         if (!empty($pId)) {
-            $pluginVersion = $this->_pluginVersionRepository->find($pId);                    
-        };   
-        if ($pluginVersion->getPlugin()->isPublic()) {
+            $pluginVersion = $this->_pluginVersionRepository->find($pId);
+        };
+        if ($pluginVersion && $pluginVersion->getPlugin()->isPublic()) {
             $plugin = $pluginVersion->getPlugin();
             $plugin->incrementDownloadCounter();
             $this->_pluginRepository->persist($plugin);
             return  $this->redirect()->toUrl($pluginVersion->getUrl());
-            die($pluginVersion->getUrl());
         } else {
-            die('No plugin found.');
+            $this->getResponse()->setStatusCode(404);
+            return new ViewModel(['message' => 'Plugin was not found']);
         }
-       
     }
 
     public function verificationLogAction() {
