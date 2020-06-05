@@ -245,9 +245,13 @@ class Catalog {
             $sha1 = hash_file("sha1", $archiveFile);
             $sha256 = hash_file("sha256", $archiveFile);
 
-            if(strtolower($sha1) != $sha1Reference) {
+            if($sha1Reference && strtolower($sha1) != $sha1Reference) {
                 error_log(sprintf('PluginVersion(id: %d) SHA-1 message digest does not match artifact. Expected: %s, Got: %s', $pluginVersion->getId(), $sha1Reference, $sha1));
                 return;
+            }
+
+            if(! $sha1Reference) {
+                $pluginVersion->addDigest("SHA-1", $sha1);
             }
 
             if(! $sha256Reference) {
