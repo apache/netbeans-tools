@@ -237,15 +237,10 @@ class Catalog {
             'maxredirects' => 0,
             'timeout' => 30
         ));
+        $archiveFile = tempnam(sys_get_temp_dir(), "mvn-download");
+        $client->setStream("$archiveFile");
         $response = $client->send();
         if ($response->isSuccess()) {
-            // Store result to file to make it processible by ZipArchive
-            $archiveFile = tempnam(sys_get_temp_dir(), "mvn-download");
-            $fid = fopen($archiveFile, "w");
-            fwrite($fid, $response->getBody());
-            fclose($fid);
-            $response = null;
-
             $filesize = filesize($archiveFile);
             $sha1 = hash_file("sha1", $archiveFile);
             $sha256 = hash_file("sha256", $archiveFile);
@@ -276,8 +271,9 @@ class Catalog {
                 $archive->open($archiveFile);
                 $infoXML = $archive->getFromName("Info/info.xml");
                 $archive->close();
-                unlink($archiveFile);
             }
+
+            unlink($archiveFile);
 
             if ($infoXML) {
                 // Update persistent data to fetch info.xml only once
