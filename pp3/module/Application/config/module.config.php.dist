@@ -80,7 +80,7 @@ return array(
             'catalogue' => array(
                 'type' => 'segment',
                 'options' => array(
-                    'route' => '/catalogue[/][:action]',
+                    'route' => '/catalogue[/][:action][/:pathParam][/:pathParam2]',
                     'constraints' => array(
                         'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                     ),
@@ -171,10 +171,24 @@ return array(
                     'defaults' => array(
                         '__NAMESPACE__' => 'Application\Controller',
                         'controller' => 'Login',
-                        'action' => 'request',
+                        'action' => 'index',
                     ),
                 ),                
-            ),       
+            ),
+            'verification-log' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/verification-log[/][:action]',
+                    'constraints' => array(
+                        'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                    ),
+                    'defaults' => array(
+                        '__NAMESPACE__' => 'Application\Controller',
+                        'controller' => 'Index',
+                        'action' => 'verification-log',
+                    ),
+                ),
+            ),
         ),
     ),
     'service_manager' => array(
