@@ -150,7 +150,7 @@ class PluginVersion {
         return $this->artifact_size;
     }
 
-    function setArtifactSize($artifact_size): void {
+    function setArtifactSize($artifact_size) {
         $this->artifact_size = $artifact_size;
     }
 }

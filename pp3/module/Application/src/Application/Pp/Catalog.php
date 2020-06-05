@@ -237,22 +237,21 @@ class Catalog {
             'maxredirects' => 0,
             'timeout' => 30
         ));
+        $archiveFile = tempnam(sys_get_temp_dir(), "mvn-download");
+        $client->setStream("$archiveFile");
         $response = $client->send();
         if ($response->isSuccess()) {
-            // Store result to file to make it processible by ZipArchive
-            $archiveFile = tempnam(sys_get_temp_dir(), "mvn-download");
-            $fid = fopen($archiveFile, "w");
-            fwrite($fid, $response->getBody());
-            fclose($fid);
-            $response = null;
-
             $filesize = filesize($archiveFile);
             $sha1 = hash_file("sha1", $archiveFile);
             $sha256 = hash_file("sha256", $archiveFile);
 
-            if(strtolower($sha1) != $sha1Reference) {
+            if($sha1Reference && strtolower($sha1) != $sha1Reference) {
                 error_log(sprintf('PluginVersion(id: %d) SHA-1 message digest does not match artifact. Expected: %s, Got: %s', $pluginVersion->getId(), $sha1Reference, $sha1));
                 return;
+            }
+
+            if(! $sha1Reference) {
+                $pluginVersion->addDigest("SHA-1", $sha1);
             }
 
             if(! $sha256Reference) {
@@ -276,8 +275,9 @@ class Catalog {
                 $archive->open($archiveFile);
                 $infoXML = $archive->getFromName("Info/info.xml");
                 $archive->close();
-                unlink($archiveFile);
             }
+
+            unlink($archiveFile);
 
             if ($infoXML) {
                 // Update persistent data to fetch info.xml only once
