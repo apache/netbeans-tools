@@ -196,7 +196,7 @@ Comments: '.$comment.'
 
 If your plugin was verified successfully, it should be already available on the Plugin Portal Update Center by now:
 
-http://netbeans-vm.apache.org/pluginportal/data/'.$nbVersion.'/catalog.xml.gz
+https://plugins.netbeans.apache.org/data/'.$nbVersion.'/catalog.xml.gz
 
 Thanks for your contribution!
 NetBeans development team
