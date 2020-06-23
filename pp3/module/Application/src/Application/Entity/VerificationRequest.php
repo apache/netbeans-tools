@@ -43,7 +43,7 @@ NetBeans version: '.$this->getVerification()->getNbVersionPluginVersion()->getNb
 
 Please login to the NetBeans Plugin Portal at your earliest convenience, test the plugin above in Apache NetBeans IDE it was written for and either Approve or Reject publishing the plugin on the target Plugin Portal Update Center. The testing should validate that the plugin can be installed, deactivated, activated and uninstalled smoothly. If it registers its own Update Center, the uninstallation of the plugin removes the Update Center as well. If you decide to reject a plugin, please include appropriate justification in the comments field for the plugin owner.
 
-http://netbeans-vm.apache.org/pluginportal/verification/list
+https://plugins.netbeans.apache.org/verification/list
 
 Thanks for your help!
 NetBeans development team
