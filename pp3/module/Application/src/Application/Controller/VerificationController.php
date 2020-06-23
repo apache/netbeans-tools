@@ -194,11 +194,9 @@ NetBeans version: '.$nbVersion.'
 Verification status: NOGO
 Comments: '.$comment.'
 
-If your plugin was verified successfully, it should be already available on the Plugin Portal Update Center by now:
+Do not give up though. Address the comment(s), upload new binary of your plugin and request the verification again!
 
-https://plugins.netbeans.apache.org/data/'.$nbVersion.'/catalog.xml.gz
-
-Thanks for your contribution!
+Good luck!
 NetBeans development team
 
 P.S.: This is an automatic email. DO NOT REPLY to this email.');
