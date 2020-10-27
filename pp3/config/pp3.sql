@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `plugin` (
   `license` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `author_id` int(11) NOT NULL REFERENCES user(id),
   `added_at` datetime DEFAULT CURRENT_TIMESTAMP,
-  `last_updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_updated_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `approved_at` datetime DEFAULT NULL,
   `url` varchar(255) COLLATE utf8_czech_ci DEFAULT NULL,
   `status` int(11) DEFAULT NULL,
