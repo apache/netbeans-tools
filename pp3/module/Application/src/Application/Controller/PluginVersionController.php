@@ -93,6 +93,9 @@ class PluginVersionController extends AuthenticatedController {
             $this->rebuildAllCatalogs();
             
             if ($showFlash) {
+                $plugin = $pluginVersion->getPlugin();
+                $plugin->setLastUpdatedAt(new \DateTime('now'));
+                $this->_pluginRepository->persist($plugin);
                 $this->flashMessenger()->setNamespace('success')->addMessage('Plugin version updated');
                 return $this->redirect()->toUrl('./edit?id='.$pluginVersion->getId());                
             }
