@@ -31,4 +31,11 @@ class NbVersion extends Base\NbVersion {
     const VERIFIABLE_YES = 1;
     const VERIFIABLE_NO  = 0;
 
+    public function requestCatalogRebuild() {
+        $this->setCatalogRebuildRequested(new \DateTime('now'));
+    }
+
+    public function markCatalogRebuild() {
+        $this->setCatalogRebuild(new \DateTime('now'));
+    }
 }

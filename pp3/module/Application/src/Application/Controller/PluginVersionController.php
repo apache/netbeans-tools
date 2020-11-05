@@ -155,20 +155,8 @@ class PluginVersionController extends AuthenticatedController {
     private function rebuildAllCatalogs() {
         $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
-            $version = $v->getVersion();
-            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }
-
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }
+            $v->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($v);
         }
     }
 }

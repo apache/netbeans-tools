@@ -38,16 +38,18 @@ class VerificationController extends AuthenticatedController {
     private $_userRepository;
     private $_verificationRequestRepository;
     private $_pluginVersionRepository;
+    private $_nbVersionRepository;
 
     public function __construct($nbVersionPluginVersionRepo, $verificationRepo, 
                                 $userRepository, $verificationRequestRepository, $config,
-                                $pluginVersionRepository) {
+                                $pluginVersionRepository, $nbVersionRepository) {
         parent::__construct($config);
         $this->_nbVersionPluginVersionRepository = $nbVersionPluginVersionRepo;
         $this->_verificationRepository = $verificationRepo;
         $this->_userRepository = $userRepository;
         $this->_verificationRequestRepository = $verificationRequestRepository;
         $this->_pluginVersionRepository = $pluginVersionRepository;
+        $this->_nbVersionRepository = $nbVersionRepository;
     } 
 
     public function listAction() {
@@ -101,16 +103,10 @@ class VerificationController extends AuthenticatedController {
         if ($verification->getStatus() == \Application\Entity\Verification::STATUS_NOGO) {
             $this->_sendNoGoNotification($req->getVerification(), $comment);
         } elseif ($verification->getStatus() == \Application\Entity\Verification::STATUS_GO) {
-            $version = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
-            $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e){
-                $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());
-            }
             $this->_sendGoNotification($req->getVerification(), $comment);
+            $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->get;
+            $nbVersion->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($nbVersion);
         }
         $this->flashMessenger()->setNamespace('success')->addMessage('Vote cast');
         return $this->redirect()->toRoute('verification', array(

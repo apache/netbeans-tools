@@ -52,4 +52,15 @@ class NbVersionRepository extends DoctrineEntityRepository {
 
         return $queryBuilder->getQuery()->getResult();
     }
+
+    /**
+     * @return \Application\Entity\Base\NbVersion[]
+     */
+    public function getNbVersionCatalogToBeRebuild() {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder->select('nbv')
+        ->from('Application\Entity\NbVersion', 'nbv')
+        ->where('nbv.catalog_rebuild is null OR nbv.catalog_rebuild < nbv.catalog_rebuild_requested');
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

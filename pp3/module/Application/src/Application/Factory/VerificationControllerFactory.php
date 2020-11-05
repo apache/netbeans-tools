@@ -23,6 +23,7 @@ namespace Application\Factory;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Zend\ServiceManager\FactoryInterface;
 use Application\Controller\VerificationController;
+use Application\Repository\NbVersionRepository;
 use Application\Repository\NbVersionPluginVersionRepository;
 use Application\Repository\VerificationRepository;
 use Application\Repository\UserRepository;
@@ -50,6 +51,11 @@ class VerificationControllerFactory implements FactoryInterface
         $pluginVersionRepository = new PluginVersionRepository();
         $pluginVersionRepository->setEntityManager($em);
 
-        return new VerificationController($repository, $vrepository, $userRepository, $verificationRequestRepository, $config, $pluginVersionRepository);
+        $nbVersionRepository = new NbVersionRepository();
+        $nbVersionRepository->setEntityManager($em);
+
+        return new VerificationController($repository, $vrepository,
+                $userRepository, $verificationRequestRepository, $config,
+                $pluginVersionRepository, $nbVersionRepository);
     }
 }

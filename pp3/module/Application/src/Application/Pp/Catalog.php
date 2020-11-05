@@ -92,7 +92,7 @@ class Catalog {
         $this->_downloadPath = $downloadPath;
     }
 
-    public function asXml($validate = true) {
+    public function asXml($validate, &$validationErrors = null) {
         $implementation = new \DOMImplementation();
         $dtd = $implementation->createDocumentType(
                                     self::MODULE_UPDATES_ELEMENT,
@@ -104,7 +104,24 @@ class Catalog {
         $d = new \DateTime('now');
         $modulesEl->setAttribute(self::MODULE_UPDATES_ATTR_timestamp, $d->format('s/i/h/d/m/Y'));
 
+        $validationErrors = array();
+
         $licenses = array();
+
+        libxml_set_external_entity_loader(
+            function ($public, $system, $context) {
+                if($public === '-//NetBeans//DTD Autoupdate Catalog 2.8//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-catalog-2_8.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.4//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_4.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.5//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_5.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.7//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_7.dtd";
+                }
+                return null;
+            }
+        );
 
         foreach ($this->_items as $item) {
             $this->updateInfoXML($item);
@@ -113,12 +130,29 @@ class Catalog {
             $infoXMLResource = $item->getInfoXml();
 
             if(! $infoXMLResource) {
-                error_log(sprintf('PluginVersion(id: %d) is missing info.xml', $item->getId()));
+                $validationErrors[$item->getId()] = sprintf('PluginVersion(id: %d) is missing info.xml', $item->getId());
                 continue;
             }
 
             $infoXML = new \DOMDocument();
-            $infoXML->loadXML(stream_get_contents($item->getInfoXml()));
+            $data = stream_get_contents($item->getInfoXml());
+            $infoXML->loadXML($data);
+
+            // For infoXML that is missing a doctype, assume a current one
+            if(!$infoXML->doctype) {
+                $doctype = $implementation->createDocumentType('module', '-//NetBeans//DTD Autoupdate Module Info 2.7//EN', 'http://www.netbeans.org/dtds/autoupdate-info-2_7.dtd');
+                $infoXML->insertBefore($doctype, $infoXML->childNodes[0]);
+                $infoXML->loadXML($infoXML->saveXML());
+            }
+            libxml_use_internal_errors(true);
+            if (!$infoXML->validate()) {
+                $validationErrors[$item->getId()] = libxml_get_errors();
+                libxml_clear_errors();
+                libxml_use_internal_errors(false);
+                continue;
+            }
+            libxml_use_internal_errors(false);
+
             $moduleSource = $infoXML->getElementsByTagName(self::MODULE_ELEMENT);
 
             if(count($moduleSource) != 1) {
@@ -138,17 +172,15 @@ class Catalog {
             $moduleElement->setAttribute(self::MODULE_ATTR_distribution, $this->_downloadPath.'/'.$item->getId().'/'.$item->getArtifactFilename());
             $moduleElement->setAttribute(self::MODULE_ATTR_downloadsize, intval($item->getArtifactSize()));
             foreach(self::MODULE_ATTRS as $attr) {
-                $inputData = $moduleSource[0]->getAttribute($attr);
-                if($inputData) {
-                    $moduleElement->setAttribute($attr, $inputData);
+                if($moduleSource[0]->hasAttribute($attr)) {
+                    $moduleElement->setAttribute($attr, $moduleSource[0]->getAttribute($attr));
                 }
             }
 
             $manifestElement = $xml->createElement(self::MANIFEST_ELEMENT);
             foreach (self::MANIFEST_ATTRS as $attr) {
-                $inputData = $manifestSource[0]->getAttribute($attr);
-                if ($inputData) {
-                    $manifestElement->setAttribute($attr, $inputData);
+                if ($manifestSource[0]->hasAttribute($attr)) {
+                    $manifestElement->setAttribute($attr, $manifestSource[0]->getAttribute($attr));
                 }
             }
 
@@ -176,18 +208,19 @@ class Catalog {
         }
 
         $xml->appendChild($modulesEl);
-        if ($validate) {
-            libxml_use_internal_errors(true);
-            if (!$xml->validate()) {
-                $msg = [];
-                foreach (libxml_get_errors() as $error) {
-                    array_push($msg, $error->message);
-                }
-                libxml_clear_errors();
-                throw new \Exception('Catalog for '.$this->_version.' is not valid:<br/>'.implode('<br/>', $msg));
-            }
-            libxml_use_internal_errors(false);
+
+        libxml_use_internal_errors(true);
+        if (!$xml->validate()) {
+            $validationErrors[-1] = libxml_get_errors();
+            libxml_clear_errors(); 
         }
+        libxml_use_internal_errors(false);
+
+        if($validate && isset($validationErrors[-1])) {
+            $xml->formatOutput = true;
+            throw new \Exception('Catalog for '.$this->_version.' is not valid:<br><pre>'.print_r($validationErrors, true) . '</pre><pre><![CDATA[' . $xml->saveXML() .']]></pre>');
+        }
+
         $xml->formatOutput = TRUE;
         return $xml->saveXML();
     }
