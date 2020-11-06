@@ -42,15 +42,19 @@ class PluginVersionController extends AuthenticatedController {
     public function editAction() {
         $pvId = $this->params()->fromQuery('id');
         $search = $this->params()->fromQuery('search');
-        $pluginVersion = $this->_pluginVersionRepository->find($pvId);        
+        $pluginVersion = $this->_pluginVersionRepository->find($pvId);
         if ((!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) && !$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
-        }        
+        }
         $req = $this->request;
         if ($req->isPost()) {
             $relnotes = $this->params()->fromPost('relnotes');
+            if ($pluginVersion->getErrorMessage()) {
+                $pluginVersion->setErrorMessage(null);
+                $this->_pluginVersionRepository->persist($pluginVersion);
+            }
             if (!empty($relnotes)) {
                 $config = HTMLPurifier_Config::createDefault();
                 $purifier = new HTMLPurifier($config);

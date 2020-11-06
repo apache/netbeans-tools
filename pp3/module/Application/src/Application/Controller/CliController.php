@@ -21,7 +21,8 @@
 namespace Application\Controller;
 
 use Application\Pp\Catalog;
-use Application\Repository\UserRepository;
+use Application\Entity\PluginVersion;
+use Zend\Mail;
 use Exception;
 
 class CliController extends BaseController {
@@ -34,40 +35,91 @@ class CliController extends BaseController {
      * @var \Application\Repository\NbVersionRepository
      */
     private $_nbVersionRepository;
+    /**
+     * @var \Application\Repository\NbVersionPluginVersionRepository
+     */
+    private $_nbVersionPluginVersionRepository;
 
-    public function __construct($nbVersionRepository, $pluginVersionRepository, $config) {
+    public function __construct($nbVersionRepository, $pluginVersionRepository, $nbVersionPluginVersionRepository, $config) {
         parent::__construct($config);
         $this->_pluginVersionRepository = $pluginVersionRepository;
         $this->_nbVersionRepository = $nbVersionRepository;
+        $this->_nbVersionPluginVersionRepository = $nbVersionPluginVersionRepository;
     }
 
     public function generateCatalogsAction() {
-        $request = $this->getRequest();
-
         $versions = $this->_nbVersionRepository->getNbVersionCatalogToBeRebuild();
         foreach ($versions as $v) {
             $version = $v->getVersion();
-            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (Exception $e) {
-                echo($e);
-            }
 
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (Exception $e) {
-                echo($e);
-            }
+            $this->createCatalog($version, true);
+            $this->createCatalog($version, false);
 
             $v->markCatalogRebuild();
             $this->_nbVersionRepository->persist($v);
         }
+    }
+
+    private function createCatalog($version, $experimental) {
+        if ($experimental) {
+            $items = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version, true);
+        } else {
+            $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version, true);
+        }
+        $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+        try {
+            $versionErrors = array();
+            $xml = $catalog->asXml(true, $versionErrors);
+            $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+            foreach($versionErrors as $pluginVersionId => $errorList) {
+                $versionErrors = array();
+                foreach($errorList as $errorEntry) {
+                    $versionErrors[] = array(
+                        'code' => $errorEntry->code, 
+                        'message' => $errorEntry->message
+                    );
+                }
+                $pluginVersion = $this->_pluginVersionRepository->find($pluginVersionId);
+                $pluginVersion->setErrorMessage(json_encode($versionErrors));
+                // Remove netbeans version assignments
+                foreach($pluginVersion->getNbVersionsPluginVersions() as $nbvPv) {
+                    $this->_nbVersionPluginVersionRepository->remove($nbvPv);
+                }
+                $this->_pluginVersionRepository->persist($pluginVersion);
+                $this->_sendErrorInformation($pluginVersion, $errorList);
+            }
+        } catch (Exception $e) {
+            echo($e);
+        }
+    }
+
+    private function _sendErrorInformation(PluginVersion $pluginVersion, $errorList) {
+        $errors = '';
+        foreach($errorList as $errorEntry) {
+            $errors .= sprintf(" - %s (Code: %d)\n", trim($errorEntry->message), $errorEntry->code);
+        }
+        $plugin = $pluginVersion->getPlugin();
+        $mail = new Mail\Message();
+        $mail->addTo($plugin->getAuthor()->getEmail());
+        $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
+        $mail->setSubject('Publishing of your plugin '.$plugin->getName().' failed');
+        $mail->setBody('Hello plugin owner,
+
+this is to inform you that publishing of your plugin on the Plugin Portal Update Center failed.
+
+Plugin:  '.$plugin->getName().'
+Version: '.$pluginVersion->getVersion().'
+Errors:
+' . $errors . '
+
+Do not give up though. Address the comment(s), upload new binary of your plugin and request the verification again!
+
+Good luck!
+NetBeans development team
+
+P.S.: This is an automatic email. DO NOT REPLY to this email.');
+        $transport = new Mail\Transport\Sendmail();
+        $transport->send($mail);
     }
 
     protected function getDownloadBaseUrl() {

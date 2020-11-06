@@ -142,6 +142,7 @@ ALTER TABLE plugin_version ADD COLUMN info_xml mediumblob DEFAULT NULL;
 ALTER TABLE plugin_version ADD COLUMN artifact_size integer DEFAULT NULL;
 ALTER TABLE nb_version ADD COLUMN catalog_rebuild_requested datetime DEFAULT NULL;
 ALTER TABLE nb_version ADD COLUMN catalog_rebuild datetime DEFAULT NULL;
+ALTER TABLE plugin_version ADD COLUMN error_message text COLLATE utf8_czech_ci DEFAULT NULL;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

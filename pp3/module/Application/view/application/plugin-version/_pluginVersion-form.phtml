@@ -26,6 +26,7 @@
         <label for="version">Version</label>
         <input type="text" class="form-control" id="version" name="version" placeholder="" value="<?= $this->pluginVersion->getVersion() ?>" readonly="true">
     </div>
+    <?php if (! $this->pluginVersion->getErrorMessage()) { ?>
     <div class="form-group">
         <label for="relnotes">Release notes <span class="text-primary"></span></label>
         <textarea class="form-control" id="relnotes" name="relnotes" rows="5"
@@ -36,3 +37,4 @@
         <?= $this->partial('partials/_nbVersion-select.phtml', 
                 array('nbVersions' => $this->nbVersions, 'pluginVersion' =>$this->pluginVersion, 'verifiedNbVersionIds'=>$this->verifiedNbVersionIds)); ?>
     </div>
+    <?php } ?>

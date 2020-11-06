@@ -22,6 +22,7 @@ namespace Application\Factory;
 
 use Application\Controller\CliController;
 use Application\Repository\NbVersionRepository;
+use Application\Repository\NbVersionPluginVersionRepository;
 use Application\Repository\PluginVersionRepository;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -37,9 +38,12 @@ class CliControllerFactory implements FactoryInterface
         $pluginVersionRepository = new PluginVersionRepository();
         $pluginVersionRepository->setEntityManager($em);
 
+        $nbVersionPluginVersionRepository = new NbVersionPluginVersionRepository();
+        $nbVersionPluginVersionRepository->setEntityManager($em);
+
         $config = $serviceLocator->getServiceLocator()->get('config');
 
         return new CliController(
-                $nbVersionRepository, $pluginVersionRepository, $config);
+                $nbVersionRepository, $pluginVersionRepository, $nbVersionPluginVersionRepository, $config);
     }
 }
