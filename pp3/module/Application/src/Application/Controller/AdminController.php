@@ -164,9 +164,29 @@ class AdminController extends AuthenticatedController {
                 if (count($items)) {                
                     $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
                     try {
-                        $xml = $catalog->asXml(true);
+                        $errors = array();
+                        $xml = $catalog->asXml(true, $errors);
                         $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-                        $this->flashMessenger()->setNamespace('success')->addMessage('Catalog for NB '.$version.' published. Found '.count($items).' plugins.');
+                        if(count($errors) == 0) {
+                            $this->flashMessenger()->setNamespace('success')->addMessage('Catalog for NB '.$version.' published. Found '.count($items).' plugins.');
+                        } else {
+                            $message = 'Catalog for NB '.$version.' published. Found '.count($items).' plugins, not all plugins were valid:<ul style="margin-top: 1ex">';
+                            foreach($errors as $pluginVersionId => $errorList) {
+                                $plugin = $this->_pluginVersionRepository->find($pluginVersionId)->getPlugin();
+                                $message .= '<li>';
+                                $message .= htmlentities($plugin->getName() . ' (ID: ' . $plugin->getId() . ')', ENT_COMPAT | ENT_HTML401, 'UTF-8');
+                                $message .= "<ul>";
+                                foreach($errorList as $errorEntry) {
+                                    $message .= '<li>';
+                                    $message .= htmlentities(sprintf("%s (Code: %d)", $errorEntry->message, $errorEntry->code), ENT_COMPAT | ENT_HTML401, 'UTF-8');
+                                    $message .= '</li>';
+                                }
+                                $message .= "</ul>";
+                                $message .= '</li>';
+                            }
+                            $message .= '</ul>';
+                            $this->flashMessenger()->setNamespace('warning')->addMessage($message);
+                        }
                     } catch (\Exception $e){
                         $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                        
                     }                
