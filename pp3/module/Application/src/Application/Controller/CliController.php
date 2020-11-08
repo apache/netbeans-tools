@@ -48,30 +48,52 @@ class CliController extends BaseController {
     }
 
     public function generateCatalogsAction() {
-        $versions = $this->_nbVersionRepository->getNbVersionCatalogToBeRebuild();
+        printf("Regenerating catalogs " . ((new \DateTime('now'))->format(\DateTimeInterface::ISO8601)). "\n");
+        $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
-            $version = $v->getVersion();
-
-            $this->createCatalog($version, true);
-            $this->createCatalog($version, false);
+            $this->createCatalog($v, true);
+            $this->createCatalog($v, false);
 
             $v->markCatalogRebuild();
             $this->_nbVersionRepository->persist($v);
         }
     }
 
-    private function createCatalog($version, $experimental) {
+    private function createCatalog(\Application\Entity\NbVersion $version, $experimental) {
         if ($experimental) {
-            $items = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version, true);
+            $items = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version->getVersion(), true);
         } else {
-            $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version, true);
+            $items = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version->getVersion(), true);
         }
-        $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+
+        $catalog = new Catalog(
+                $this->_pluginVersionRepository,
+                $version->getVersion(),
+                $items,
+                $experimental,
+                $this->_config['pp3']['dtdPath'],
+                $this->getDownloadBaseUrl(),
+                $this->_config['pp3']['catalogSavepath']
+        );
+
+        $rebuildNeeded = $version->getCatalogRebuildRequested() != null
+            && ( $version->getCatalogRebuild() == null 
+                 || ($version->getCatalogRebuild()->getTimestamp() < $version->getCatalogRebuildRequested()->getTimestamp())
+               );
+
+        $rebuildNeeded |= (! $catalog->catalogFileExits());
+
+        if (! $rebuildNeeded) {
+            printf("Skipping %scatalog for %s\n", $experimental ? 'experimental ' : '', $version->getVersion());
+            return;
+        }
+
+        printf("Generating %scatalog for %s\n", $experimental ? 'experimental ' : '', $version->getVersion());
+
         try {
-            $versionErrors = array();
-            $xml = $catalog->asXml(true, $versionErrors);
-            $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            foreach($versionErrors as $pluginVersionId => $errorList) {
+            $validationErrors = array();
+            $catalog->storeXml(true, $validationErrors);
+            foreach($validationErrors as $pluginVersionId => $errorList) {
                 $versionErrors = array();
                 foreach($errorList as $errorEntry) {
                     $versionErrors[] = array(

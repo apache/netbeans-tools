@@ -78,18 +78,20 @@ class Catalog {
     private $_version;
     private $_isExperimental;
     private $_downloadPath;
+    private $_catalogSavePath;
     /**
      * @var \Application\Repository\PluginVersionRepository
      */
     private $_pluginVersionRepository;
 
-    public function __construct($pluginVersionRepository, $version, $items, $isExperimental, $dtdPath, $downloadPath) {
+    public function __construct($pluginVersionRepository, $version, $items, $isExperimental, $dtdPath, $downloadPath, $catalogSavePath) {
         $this->_pluginVersionRepository = $pluginVersionRepository;
         $this->_version = $version;
         $this->_items = $items;
         $this->_isExperimental = $isExperimental;
         $this->_dtdPath = $dtdPath;
         $this->_downloadPath = $downloadPath;
+        $this->_catalogSavePath = $catalogSavePath;
     }
 
     public function asXml($validate, &$validationErrors = null) {
@@ -225,9 +227,9 @@ class Catalog {
         return $xml->saveXML();
     }
 
-    public function storeXml($destinationFolder, $xml) {
-        $filename = $this->_isExperimental ? self::CATALOG_FILE_NAME_EXPERIMENTAL : self::CATALOG_FILE_NAME;
-        $path = $destinationFolder.'/'.$this->_version.'/'.$filename;
+    public function storeXml($validate, &$errors) {
+        $xml = $this->asXml($validate, $errors);
+        $path = $this->getCatalogPath();
         if(!file_exists(dirname($path))) {
             mkdir(dirname($path), 0777, true);
         }
@@ -239,6 +241,16 @@ class Catalog {
         gzwrite($gz, $xml);
         gzclose($gz);
         return true;
+    }
+
+    public function catalogFileExits() {
+        return file_exists($this->getCatalogPath()) && file_exists($this->getCatalogPath().'.gz');
+    }
+
+    private function getCatalogPath() {
+        $filename = $this->_isExperimental ? self::CATALOG_FILE_NAME_EXPERIMENTAL : self::CATALOG_FILE_NAME;
+        $path = $this->_catalogSavePath.'/'.$this->_version.'/'.$filename;
+        return $path;
     }
 
     /**

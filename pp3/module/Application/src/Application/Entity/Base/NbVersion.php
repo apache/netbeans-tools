@@ -83,19 +83,19 @@ class NbVersion {
         return $this->nbVersionsPluginVersions;
     }
 
-    function getCatalogRebuildRequested() {
+    function getCatalogRebuildRequested(): \DateTime {
         return $this->catalog_rebuild_requested;
     }
 
-    function getCatalogRebuild() {
-        return $this->catalog_rebuild;
-    }
-
-    function setCatalogRebuildRequested($catalog_rebuild_requested): void {
+    function setCatalogRebuildRequested($catalog_rebuild_requested) {
         $this->catalog_rebuild_requested = $catalog_rebuild_requested;
     }
 
-    function setCatalogRebuild($catalog_rebuild): void {
+    function getCatalogRebuild(): \DateTime {
+        return $this->catalog_rebuild;
+    }
+
+    function setCatalogRebuild($catalog_rebuild) {
         $this->catalog_rebuild = $catalog_rebuild;
     }
 }

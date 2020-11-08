@@ -162,11 +162,17 @@ class AdminController extends AuthenticatedController {
             if ($nbv) {
                 $items = $experimental ? $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version) : $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
                 if (count($items)) {                
-                    $catalog = new Catalog($this->_pluginVersionRepository, $version, $items, $experimental, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+                    $catalog = new Catalog(
+                            $this->_pluginVersionRepository,
+                            $version,
+                            $items,
+                            $experimental,
+                            $this->_config['pp3']['dtdPath'],
+                            $this->getDownloadBaseUrl(),
+                            $this->_config['pp3']['catalogSavepath']);
                     try {
                         $errors = array();
-                        $xml = $catalog->asXml(true, $errors);
-                        $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+                        $catalog->storeXml(true, $errors);
                         if(count($errors) == 0) {
                             $this->flashMessenger()->setNamespace('success')->addMessage('Catalog for NB '.$version.' published. Found '.count($items).' plugins.');
                         } else {
@@ -321,13 +327,25 @@ class AdminController extends AuthenticatedController {
     }
 
     private function _createEmptyCatalogForNbVersion($nbVersion) {
-        $catalog = new Catalog($this->_pluginVersionRepository, $nbVersion->getVersion(), array(), false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-        $catalogExp = new Catalog($this->_pluginVersionRepository, $nbVersion->getVersion(), array(), true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+        $catalog = new Catalog(
+                $this->_pluginVersionRepository,
+                $nbVersion->getVersion(),
+                array(),
+                false,
+                $this->_config['pp3']['dtdPath'],
+                $this->getDownloadBaseUrl(),
+                $this->_config['pp3']['catalogSavepath']);
+        $catalogExp = new Catalog(
+                $this->_pluginVersionRepository,
+                $nbVersion->getVersion(),
+                array(),
+                true,
+                $this->_config['pp3']['dtdPath'],
+                $this->getDownloadBaseUrl(),
+                $this->_config['pp3']['catalogSavepath']);
         try {
-            $xml = $catalog->asXml(true);
-            $xmlExp = $catalogExp->asXml(true);
-            $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            $catalogExp->storeXml($this->_config['pp3']['catalogSavepath'], $xmlExp);
+            $catalog->storeXml(true);
+            $catalogExp->storeXml(true);
         } catch (\Exception $e){
             $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                        
         }         
@@ -348,16 +366,28 @@ class AdminController extends AuthenticatedController {
             $version = $v->getVersion();
             $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
             $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+            $catalog = new Catalog(
+                    $this->_pluginVersionRepository,
+                    $version,
+                    $itemsVerified,
+                    false,
+                    $this->_config['pp3']['dtdPath'],
+                    $this->getDownloadBaseUrl(),
+                    $this->_config['pp3']['catalogSavepath']);
             try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+                $catalog->storeXml(true);
             } catch (\Exception $e) { }                 
             
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
+            $catalog = new Catalog(
+                    $this->_pluginVersionRepository,
+                    $version,
+                    $itemsExperimental,
+                    true,
+                    $this->_config['pp3']['dtdPath'],
+                    $this->getDownloadBaseUrl(),
+                    $this->_config['pp3']['catalogSavepath']);
             try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
+                $catalog->storeXml(true);
             } catch (\Exception $e) { }                 
             
         }
