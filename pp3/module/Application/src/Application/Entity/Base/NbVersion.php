@@ -83,7 +83,7 @@ class NbVersion {
         return $this->nbVersionsPluginVersions;
     }
 
-    function getCatalogRebuildRequested(): \DateTime {
+    function getCatalogRebuildRequested() {
         return $this->catalog_rebuild_requested;
     }
 
@@ -91,7 +91,7 @@ class NbVersion {
         $this->catalog_rebuild_requested = $catalog_rebuild_requested;
     }
 
-    function getCatalogRebuild(): \DateTime {
+    function getCatalogRebuild() {
         return $this->catalog_rebuild;
     }
 

@@ -48,7 +48,7 @@ class CliController extends BaseController {
     }
 
     public function generateCatalogsAction() {
-        printf("Regenerating catalogs " . ((new \DateTime('now'))->format(\DateTimeInterface::ISO8601)). "\n");
+        printf("Regenerating catalogs " . ((new \DateTime('now'))->format("Y-m-d\TH:i:sO")). "\n");
         $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
             $this->createCatalog($v, true);
