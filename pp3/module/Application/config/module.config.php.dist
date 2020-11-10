@@ -258,7 +258,7 @@ return array(
             'routes' => array(
                 'generate-catalogs' => array(
                     'options' => array(
-                        'route' => 'generate-catalogs',
+                        'route' => 'generate-catalogs [--force]',
                         'defaults' => array(
                             '__NAMESPACE__' => 'Application\Controller',
                             'controller' => 'Cli',

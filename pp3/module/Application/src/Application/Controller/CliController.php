@@ -48,18 +48,19 @@ class CliController extends BaseController {
     }
 
     public function generateCatalogsAction() {
+        $force = $this->request->getParams()->get('force');
         printf("Regenerating catalogs " . ((new \DateTime('now'))->format("Y-m-d\TH:i:sO")). "\n");
         $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
-            $this->createCatalog($v, true);
-            $this->createCatalog($v, false);
+            $this->createCatalog($v, true, $force);
+            $this->createCatalog($v, false, $force);
 
             $v->markCatalogRebuild();
             $this->_nbVersionRepository->persist($v);
         }
     }
 
-    private function createCatalog(\Application\Entity\NbVersion $version, $experimental) {
+    private function createCatalog(\Application\Entity\NbVersion $version, $experimental, $force) {
         if ($experimental) {
             $items = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version->getVersion(), true);
         } else {
@@ -82,6 +83,8 @@ class CliController extends BaseController {
                );
 
         $rebuildNeeded |= (! $catalog->catalogFileExits());
+
+        $rebuildNeeded |= $force;
 
         if (! $rebuildNeeded) {
             printf("Skipping %scatalog for %s\n", $experimental ? 'experimental ' : '', $version->getVersion());
