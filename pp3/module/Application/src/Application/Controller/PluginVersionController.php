@@ -42,15 +42,19 @@ class PluginVersionController extends AuthenticatedController {
     public function editAction() {
         $pvId = $this->params()->fromQuery('id');
         $search = $this->params()->fromQuery('search');
-        $pluginVersion = $this->_pluginVersionRepository->find($pvId);        
+        $pluginVersion = $this->_pluginVersionRepository->find($pvId);
         if ((!$pluginVersion || empty($pvId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) && !$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
-        }        
+        }
         $req = $this->request;
         if ($req->isPost()) {
             $relnotes = $this->params()->fromPost('relnotes');
+            if ($pluginVersion->getErrorMessage()) {
+                $pluginVersion->setErrorMessage(null);
+                $this->_pluginVersionRepository->persist($pluginVersion);
+            }
             if (!empty($relnotes)) {
                 $config = HTMLPurifier_Config::createDefault();
                 $purifier = new HTMLPurifier($config);
@@ -155,20 +159,8 @@ class PluginVersionController extends AuthenticatedController {
     private function rebuildAllCatalogs() {
         $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
-            $version = $v->getVersion();
-            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }
-
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }
+            $v->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($v);
         }
     }
 }

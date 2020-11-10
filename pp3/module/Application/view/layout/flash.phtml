@@ -27,7 +27,7 @@ $flash->setMessageOpenFormat('<div%s>
 </button>
 <div>')->setMessageCloseString('</div></div>');
 echo $flash->renderCurrent('error', array('alert', 'alert-dismissable', 'alert-danger'));
+echo $flash->renderCurrent('warning', array('alert', 'alert-dismissable', 'alert-warning'));
 echo $flash->renderCurrent('info', array('alert', 'alert-dismissable', 'alert-info'));
 echo $flash->renderCurrent('default', array('alert', 'alert-dismissable', 'alert-info'));
 echo $flash->renderCurrent('success', array('alert', 'alert-dismissable', 'alert-success'));
-?>

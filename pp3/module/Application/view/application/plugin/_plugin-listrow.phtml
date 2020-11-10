@@ -65,17 +65,23 @@ echo '</p>
         <tbody>';
 
 foreach ($plugin->getVersions() as $version) {
-    echo '<tr>
-        <td><span class="badge">'.$version->getVersion().'</span></td>
+    /* @var $version Application\Entity\PluginVersion */
+    printf('<tr>
+        <td><span class="badge %s">%s%s</span></td>
         <td>
-            <a class="btn btn-default" href="'.$this->url('plugin-version',array('action'=>'edit'),array('query' => array('id'=>$version->getId()))).'" role="button" title="Edit">
+            <a class="btn btn-default" href="%s" role="button" title="Edit">
                 <i class="fas fa-edit text-primary"></i>
             </a>
-            <!-- <a class="btn btn-default" href="'.$this->url('plugin-version',array('action'=>'delete'),array('query' => array('id'=>$version->getId()))).'" role="button" title="Edit">
+            <!-- <a class="btn btn-default" href="%s" role="button" title="Edit">
                 <i class="fas fa-trash text-danger"></i>
             </a> -->
         </td>
-        <td>';
+        <td>',
+            $version->getErrorMessage() ? 'badge-red' : '',
+            $version->getVersion(),
+            $version->getErrorMessage() ? ' <i class="fas fa-exclamation-triangle"></i>' : '',
+            $this->url('plugin-version',array('action'=>'edit'),array('query' => array('id'=>$version->getId()))),
+            $this->url('plugin-version',array('action'=>'delete'),array('query' => array('id'=>$version->getId()))));
     foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
             echo '<span class="badge badge-brown">NB '.$nbvPv->getNbVersion()->getVersion().'</span> &nbsp; ';
     }    

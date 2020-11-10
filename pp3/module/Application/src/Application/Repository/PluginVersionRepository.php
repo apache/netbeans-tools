@@ -29,7 +29,7 @@ class PluginVersionRepository extends DoctrineEntityRepository {
         return $this->entityRepository;
     }
 
-    public function getVerifiedVersionsByNbVersion($nbVersion) {
+    public function getVerifiedVersionsByNbVersion($nbVersion, $excludeErrored = false) {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('pluginVersion, plugin')
         ->from('Application\Entity\PluginVersion', 'pluginVersion')
@@ -44,11 +44,15 @@ class PluginVersionRepository extends DoctrineEntityRepository {
         ->setParameter('nbversion', $nbVersion)
         ->setParameter('verifstatus', \Application\Entity\Verification::STATUS_GO)
         ->setParameter('pluginstatus', \Application\Entity\Plugin::STATUS_PUBLIC);
-        
+
+        if($excludeErrored) {
+            $queryBuilder->andWhere('pluginVersion.error_message is null');
+        }
+
         return $queryBuilder->getQuery()->getResult();    
     }
 
-    public function getNonVerifiedVersionsByNbVersion($nbVersion) {
+    public function getNonVerifiedVersionsByNbVersion($nbVersion, $excludeErrored = false) {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('pluginVersion, plugin')
         ->from('Application\Entity\PluginVersion', 'pluginVersion')
@@ -60,7 +64,11 @@ class PluginVersionRepository extends DoctrineEntityRepository {
         ->orderBy('pluginVersion.id', 'ASC')
         ->setParameter('nbversion', $nbVersion)
         ->setParameter('pluginstatus', \Application\Entity\Plugin::STATUS_PUBLIC);
-        
+
+        if($excludeErrored) {
+            $queryBuilder->andWhere('pluginVersion.error_message is null');
+        }
+
         return $queryBuilder->getQuery()->getResult();    
     }
 

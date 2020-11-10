@@ -43,6 +43,12 @@ class NbVersion {
      *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="nbVersion", cascade={"persist", "remove"})     
      */
     protected $nbVersionsPluginVersions;
+
+    /** @ORM\Column(type="datetime") */
+    protected $catalog_rebuild_requested;
+
+    /** @ORM\Column(type="datetime") */
+    protected $catalog_rebuild;
     
     public function __construct() {
         $this->nbVersionsPluginVersions = new ArrayCollection();
@@ -75,5 +81,21 @@ class NbVersion {
 
     public function getNbVersionsPluginVersions() {
         return $this->nbVersionsPluginVersions;
+    }
+
+    function getCatalogRebuildRequested(): \DateTime {
+        return $this->catalog_rebuild_requested;
+    }
+
+    function setCatalogRebuildRequested($catalog_rebuild_requested) {
+        $this->catalog_rebuild_requested = $catalog_rebuild_requested;
+    }
+
+    function getCatalogRebuild(): \DateTime {
+        return $this->catalog_rebuild;
+    }
+
+    function setCatalogRebuild($catalog_rebuild) {
+        $this->catalog_rebuild = $catalog_rebuild;
     }
 }

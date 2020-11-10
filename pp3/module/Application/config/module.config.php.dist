@@ -33,7 +33,8 @@ return array(
         'mavenRepoUrl' => 'https://repo1.maven.org/maven2/',
         'catalogSavepath' => '/home/honza/checkout/pp3/public/data',
         'catalogUrlPath' => 'http://localhost/checkout/pp3/public/data',    
-        'dtdPath' => 'http://localhost/checkout/pp3/public/dtd/autoupdate-catalog-2_8.dtd'
+        'dtdPath' => 'http://localhost/checkout/pp3/public/dtd/autoupdate-catalog-2_8.dtd',
+        'downloadBaseUrl' => 'http://localhost/pp3/catalogue/download'
     ),
     'loginConfig' => array (
         array(
@@ -232,6 +233,7 @@ return array(
             'Application\Controller\PluginVersion' => 'Application\Factory\PluginVersionControllerFactory',
             'Application\Controller\Verification' => 'Application\Factory\VerificationControllerFactory',
             'Application\Controller\Admin' => 'Application\Factory\AdminControllerFactory',
+            'Application\Controller\Cli' => 'Application\Factory\CliControllerFactory'
         ],
     ],
     'view_manager' => array(
@@ -250,10 +252,20 @@ return array(
             __DIR__ . '/../view',
         ),
     ),
-    // Placeholder for console routes
+    // CLI Options
     'console' => array(
         'router' => array(
             'routes' => array(
+                'generate-catalogs' => array(
+                    'options' => array(
+                        'route' => 'generate-catalogs',
+                        'defaults' => array(
+                            '__NAMESPACE__' => 'Application\Controller',
+                            'controller' => 'Cli',
+                            'action'     => 'generateCatalogs'
+                        )
+                    )
+                )
             ),
         ),
     ),

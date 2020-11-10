@@ -20,42 +20,30 @@
 
 namespace Application\Factory;
 
-use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\ServiceManager\FactoryInterface;
-use Application\Controller\VerificationController;
+use Application\Controller\CliController;
 use Application\Repository\NbVersionRepository;
 use Application\Repository\NbVersionPluginVersionRepository;
-use Application\Repository\VerificationRepository;
-use Application\Repository\UserRepository;
-use Application\Repository\VerificationRequestRepository;
 use Application\Repository\PluginVersionRepository;
+use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\ServiceLocatorInterface;
 
-class VerificationControllerFactory implements FactoryInterface
+class CliControllerFactory implements FactoryInterface
 {
     public function createService(ServiceLocatorInterface $serviceLocator) {
         $em = $serviceLocator->getServiceLocator()->get('Doctrine\ORM\EntityManager');
 
-        $repository = new NbVersionPluginVersionRepository();
-        $repository->setEntityManager($em);
-        
-        $vrepository = new VerificationRepository();
-        $vrepository->setEntityManager($em);
-       
-        $userRepository = new UserRepository();
-        $userRepository->setEntityManager($em);
-
-        $verificationRequestRepository = new VerificationRequestRepository();
-        $verificationRequestRepository->setEntityManager($em);
-        $config = $serviceLocator->getServiceLocator()->get('config');
+        $nbVersionRepository = new NbVersionRepository();
+        $nbVersionRepository->setEntityManager($em);
 
         $pluginVersionRepository = new PluginVersionRepository();
         $pluginVersionRepository->setEntityManager($em);
 
-        $nbVersionRepository = new NbVersionRepository();
-        $nbVersionRepository->setEntityManager($em);
+        $nbVersionPluginVersionRepository = new NbVersionPluginVersionRepository();
+        $nbVersionPluginVersionRepository->setEntityManager($em);
 
-        return new VerificationController($repository, $vrepository,
-                $userRepository, $verificationRequestRepository, $config,
-                $pluginVersionRepository, $nbVersionRepository);
+        $config = $serviceLocator->getServiceLocator()->get('config');
+
+        return new CliController(
+                $nbVersionRepository, $pluginVersionRepository, $nbVersionPluginVersionRepository, $config);
     }
 }

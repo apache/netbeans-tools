@@ -1,0 +1,2 @@
+# Regenerate pp3 Catalogs
+*/5 * * * * www-data php /space/pp3/public/index.php generate-catalogs 2>/dev/null > /dev/null

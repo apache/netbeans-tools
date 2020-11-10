@@ -24,8 +24,6 @@ use Zend\View\Model\ViewModel;
 use Zend\Session\Container;
 use Application\Pp\MavenDataLoader;
 use Application\Entity\Plugin;
-use Application\Entity\PluginVersion;
-use Application\Pp\Catalog;
 use Zend\Mail;
 use HTMLPurifier;
 use HTMLPurifier_Config;
@@ -293,21 +291,8 @@ class PluginController extends AuthenticatedController {
     private function rebuildAllCatalogs() {
         $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
         foreach ($versions as $v) {
-            $version = $v->getVersion();
-            $itemsVerified = $this->_pluginVersionRepository->getVerifiedVersionsByNbVersion($version);
-            $itemsExperimental = $this->_pluginVersionRepository->getNonVerifiedVersionsByNbVersion($version);
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsVerified, false, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }                 
-            
-            $catalog = new Catalog($this->_pluginVersionRepository, $version, $itemsExperimental, true, $this->_config['pp3']['dtdPath'], $this->getDownloadBaseUrl());
-            try {
-                $xml = $catalog->asXml(true);
-                $catalog->storeXml($this->_config['pp3']['catalogSavepath'], $xml);
-            } catch (\Exception $e) { }                 
-            
+            $v->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($v);
         }
     }
 

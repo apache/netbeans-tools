@@ -53,6 +53,9 @@ class PluginVersion {
     /** @ORM\Column(type="integer") */
     protected $artifact_size;
 
+    /** @ORM\Column(type="text") */
+    protected $error_message;
+
     /**
      *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})     
      */
@@ -114,7 +117,10 @@ class PluginVersion {
     public function setPluginId($pluginId) {
         $this->plugin_id = $pluginId;
     }
-    
+
+    /**
+     * @return Plugin
+     */
     public function getPlugin() {
         return $this->plugin;
     }
@@ -152,5 +158,13 @@ class PluginVersion {
 
     function setArtifactSize($artifact_size) {
         $this->artifact_size = $artifact_size;
+    }
+
+    function getErrorMessage() {
+        return $this->error_message;
+    }
+
+    function setErrorMessage($error_message) {
+        $this->error_message = $error_message;
     }
 }
