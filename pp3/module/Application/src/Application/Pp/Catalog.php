@@ -114,6 +114,12 @@ class Catalog {
             function ($public, $system, $context) {
                 if($public === '-//NetBeans//DTD Autoupdate Catalog 2.8//EN') {
                     return __DIR__ . "/../../../../../public/dtd/autoupdate-catalog-2_8.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.0//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_0.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.2//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_2.dtd";
+                } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.3//EN') {
+                    return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_3.dtd";
                 } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.4//EN') {
                     return __DIR__ . "/../../../../../public/dtd/autoupdate-info-2_4.dtd";
                 } else if($public === '-//NetBeans//DTD Autoupdate Module Info 2.5//EN') {
