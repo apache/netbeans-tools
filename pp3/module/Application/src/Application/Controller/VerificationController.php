@@ -104,7 +104,7 @@ class VerificationController extends AuthenticatedController {
             $this->_sendNoGoNotification($req->getVerification(), $comment);
         } elseif ($verification->getStatus() == \Application\Entity\Verification::STATUS_GO) {
             $this->_sendGoNotification($req->getVerification(), $comment);
-            $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->get;
+            $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion();
             $nbVersion->requestCatalogRebuild();
             $this->_nbVersionRepository->persist($nbVersion);
         }
