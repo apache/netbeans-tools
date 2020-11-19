@@ -177,7 +177,7 @@ class Catalog {
             $licenseSource = $moduleSource[0]->getElementsByTagName(self::LICENSE_ELEMENT);
 
             $moduleElement = $xml->createElement(self::MODULE_ELEMENT);
-            $moduleElement->setAttribute(self::MODULE_ATTR_distribution, $this->_downloadPath.'/'.$item->getId().'/'.$item->getArtifactFilename());
+            $moduleElement->setAttribute(self::MODULE_ATTR_distribution, rtrim($this->_downloadPath, '/').'/'.$item->getId().'/'.$item->getArtifactFilename());
             $moduleElement->setAttribute(self::MODULE_ATTR_downloadsize, intval($item->getArtifactSize()));
             foreach(self::MODULE_ATTRS as $attr) {
                 if($moduleSource[0]->hasAttribute($attr)) {
