@@ -74,7 +74,7 @@ class AssignmentDAO {
 
     public function getAssignment($assignmentId) {
         DB_DAO::connectDatabase();
-        $handler = DB_DAO::getDB()->prepare("SELECT GROUP_CONCAT( of.tribe_id SEPARATOR  ';' ) AS tribes_id, u.id AS uid, u.username, a.last_updated, a.started, a.issues, a.time_taken, u.first_name,a.keyword_id, u.last_name, p.name, a.state, a.number_of_cases, a.number_of_completed_cases,a.failed_cases,a.passed_cases, a.skipped_cases, k.keyword, a.specification_id,a.id as aid, sp.title as sptitle, a.created_by FROM (test_assignement a, user u, platform p, specification sp) LEFT JOIN keyword k ON k.id=a.keyword_id LEFT JOIN user_is_member_of of ON of.user_id = u.id WHERE a.id=:id AND a.specification_id=sp.id AND p.id=a.platform_id AND a.user_id=u.id GROUP BY a.id ");
+        $handler = DB_DAO::getDB()->prepare("SELECT GROUP_CONCAT( mof.tribe_id SEPARATOR  ';' ) AS tribes_id, u.id AS uid, u.username, a.last_updated, a.started, a.issues, a.time_taken, u.first_name,a.keyword_id, u.last_name, p.name, a.state, a.number_of_cases, a.number_of_completed_cases,a.failed_cases,a.passed_cases, a.skipped_cases, k.keyword, a.specification_id,a.id as aid, sp.title as sptitle, a.created_by FROM (test_assignement a, user u, platform p, specification sp) LEFT JOIN keyword k ON k.id=a.keyword_id LEFT JOIN user_is_member_of mof ON mof.user_id = u.id WHERE a.id=:id AND a.specification_id=sp.id AND p.id=a.platform_id AND a.user_id=u.id GROUP BY a.id ");
 
         $handler->bindValue(":id", $assignmentId);
         if (!$handler->execute()) {
