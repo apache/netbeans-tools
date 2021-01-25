@@ -86,15 +86,18 @@ public class ConvertAndCopy {
                     }
                 } else {
                     final String name = rel.toString();
-                    final String fileEnding = name.substring(name.lastIndexOf("."));
-                    if (IMAGE_FILE_ENDINGS.contains(fileEnding)) {
-                        imageFiles.add(p);
-                        continue;
-                    } else if (".properties".equals(fileEnding)) {
-                        regenerateBundleFile(p, t);
-                        copied++;
-                        System.out.println("Regenerated: " + t);
-                        continue;
+                    // check if filename includes an extension for special cases
+                    if (name.contains(".")) {
+                        final String fileEnding = name.substring(name.lastIndexOf("."));
+                        if (IMAGE_FILE_ENDINGS.contains(fileEnding)) {
+                            imageFiles.add(p);
+                            continue;
+                        } else if (".properties".equals(fileEnding)) {
+                            regenerateBundleFile(p, t);
+                            copied++;
+                            System.out.println("Regenerated: " + t);
+                            continue;
+                        }
                     }
                 }
                 notCopied.add(p);
