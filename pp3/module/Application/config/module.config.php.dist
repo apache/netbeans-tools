@@ -60,6 +60,14 @@ return array(
             'clientId' => 'DO_NOT_COMMIT',
             'clientSecret' => 'DO_NOT_COMMIT',
             'type' => 'amazon'
+        ),
+        array(
+            'id' => 'apache',
+            'name' => 'Apache',
+            'icon' => '/img/login/apache.svg',
+            'clientId' => 'IGNORED',
+            'clientSecret' => 'IGNORED',
+            'type' => 'apache'
         )
     ),
     'router' => array(
