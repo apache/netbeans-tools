@@ -67,7 +67,7 @@ public void actionPerformed(ActionEvent ev) {
     }
     EventQueue.invokeLater(new Runnable() {
         @Override public void run() {
-            // do domething with the gui
+            // do something with the gui
         }
     });
 }
