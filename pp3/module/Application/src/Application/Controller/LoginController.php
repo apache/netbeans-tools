@@ -82,6 +82,9 @@ class LoginController extends BaseController {
 
         $stateBytes = random_bytes(64);
         $state = bin2hex($stateBytes);
+        if($loginConfig['type'] == 'apache') {
+            $state = substr($state, 0, 64);
+        }
         $_SESSION['oauthState'] = $state;
         $_SESSION['oauthConfig'] = $loginConfig['id'];
         $scopeData = self::scopesFromType($loginConfig['type']);
@@ -89,7 +92,7 @@ class LoginController extends BaseController {
             'client_id' => $loginConfig['clientId'],
             'state' => $state,
             'response_type' => 'code',
-            'redirect_uri' => $this->redirectUrl()
+            'redirect_uri' => $this->redirectUrl($loginConfig['type'], $state)
         );
         if($scopeData) {
             $queryData['scope'] = $scopeData;
@@ -124,39 +127,48 @@ class LoginController extends BaseController {
             return $response;
         }
 
-        $tokenRequest = self::tokenRequest($code, $loginConfig);
-        $queryTokenResult = file_get_contents(self::tokenUrlFromType($loginConfig['type']), false, stream_context_create([
-            'http' => [
-                'method' => 'POST',
-                'header' => ["Content-type: application/json", "Accept: application/json"],
-                'content' => json_encode($tokenRequest)
-            ]
-        ]));
+        if($loginConfig['type'] == 'apache') {
+            $queryProfileResult = file_get_contents("https://oauth.apache.org/token?code=" . $_GET['code'], false, stream_context_create([
+                'http' => [
+                    'header' => ['Accept: application/json', 'User-Agent: Netbeans Plugin Portal'],
+                    "ignore_errors" => true,
+                ]
+            ]));
+        } else {
+            $tokenRequest = self::tokenRequest($code, $loginConfig);
+            $queryTokenResult = file_get_contents(self::tokenUrlFromType($loginConfig['type']), false, stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => ["Content-type: application/json", "Accept: application/json"],
+                    'content' => json_encode($tokenRequest)
+                ]
+            ]));
 
-        if(!$queryTokenResult) {
-            error_log("Empty response");
-            $response->setStatusCode(500);
-            $response->setContent(json_encode(array('success' => false, 'reason' => 'INVALID_TOKEN')));
-            return $response;
+            if(!$queryTokenResult) {
+                error_log("Empty response");
+                $response->setStatusCode(500);
+                $response->setContent(json_encode(array('success' => false, 'reason' => 'INVALID_TOKEN')));
+                return $response;
+            }
+
+            $tokenData = json_decode($queryTokenResult, true);
+
+            if((! $tokenData) || (! $tokenData['access_token']) || (strtolower($tokenData['token_type']) != 'bearer')) {
+                error_log("Failed to decode token data: " . $queryTokenResult);
+                $response->setStatusCode(500);
+                $response->setContent(json_encode(array('success' => false, 'reason' => 'INVALID_TOKEN')));
+                return $response;
+            }
+
+            $queryProfileResult = file_get_contents(self::profileUrlFromType($loginConfig['type']), false, stream_context_create([
+                'http' => [
+                    'header' => ['Accept: application/json', 'Authorization: Bearer ' . $tokenData['access_token'], 'User-Agent: Netbeans Plugin Portal'],
+                    "ignore_errors" => true,
+                ]
+            ]));
         }
 
-        $tokenData = json_decode($queryTokenResult, true);
-
-        if((! $tokenData) || (! $tokenData['access_token']) || (strtolower($tokenData['token_type']) != 'bearer')) {
-            error_log("Failed to decode token data: " . $queryTokenResult);
-            $response->setStatusCode(500);
-            $response->setContent(json_encode(array('success' => false, 'reason' => 'INVALID_TOKEN')));
-            return $response;
-        }
-
-        $queryProfileResult = file_get_contents(self::profileUrlFromType($loginConfig['type']), false, stream_context_create([
-            'http' => [
-                'header' => ['Accept: application/json', 'Authorization: Bearer ' . $tokenData['access_token'], 'User-Agent: Netbeans Plugin Portal'],
-                "ignore_errors" => true,
-            ]
-        ]));
-
-        $userinfo = $this->extractUserInfo($loginConfig['type'], $loginConfig['id'], $queryProfileResult);
+        $userinfo = $this->extractUserInfo($loginConfig['type'], $loginConfig['id'], $queryProfileResult, $_SESSION['oauthState']);
 
         if($userinfo == null) {
             error_log("Failed to parse: " . $queryProfileResult);
@@ -212,8 +224,13 @@ class LoginController extends BaseController {
         return $this->redirect()->toRoute("home");
     }
 
-    private function redirectUrl() {
-        return $this->url()->fromRoute("login", array("action" => "callback"), array('force_canonical'=>true));
+    private function redirectUrl($type = '', $state = '') {
+        $url = $this->url()->fromRoute("login", array("action" => "callback"), array('force_canonical' => true));
+        if ($type == 'apache') {
+            return $url . "?state=$state";
+        } else {
+            return $url;
+        }
     }
 
     public function logoutAction() {
@@ -232,6 +249,7 @@ class LoginController extends BaseController {
             case 'github': return 'https://github.com/login/oauth/authorize';
             case 'google': return 'https://accounts.google.com/o/oauth2/v2/auth';
             case 'amazon': return 'https://www.amazon.com/ap/oa';
+            case 'apache': return 'https://oauth.apache.org/auth';
         }
     }
 
@@ -275,7 +293,7 @@ class LoginController extends BaseController {
         return $data;
     }
 
-    private function extractUserInfo($type, $providerId, $data) {
+    private function extractUserInfo($type, $providerId, $data, $state = '') {
         if(! $data) {
             return null;
         }
@@ -297,6 +315,10 @@ class LoginController extends BaseController {
             $userinfo['id'] = "" . $json['user_id'];
             $userinfo['email'] = "" . $json['email'];
             $userinfo['name'] = "" . $json['name'];
+        } else if ($type == 'apache' && $json['state'] == $state) {
+            $userinfo['id'] = "" . $json['uid'];
+            $userinfo['email'] = "" . $json['email'];
+            $userinfo['name'] = "" . $json['fullname'];
         }
         return $userinfo;
     }
