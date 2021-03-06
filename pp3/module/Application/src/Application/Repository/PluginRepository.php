@@ -74,7 +74,7 @@ class PluginRepository extends DoctrineEntityRepository {
                 ->leftJoin('v.nbVersionsPluginVersions', 'nbvPv')
                 ->leftJoin('nbvPv.nbVersion', 'nbv')
                 ->leftJoin('nbvPv.verification', 'verif')
-                ->leftJoin('p.author', 'a')
+                ->leftJoin('p.authors', 'a')
                 ->where('a.id = :author')
                 ->orderBy('p.id', 'DESC')
                 ->setParameter('author', $author);
@@ -100,7 +100,7 @@ class PluginRepository extends DoctrineEntityRepository {
         ->leftJoin('p.versions', 'v')
         ->leftJoin('v.nbVersionsPluginVersions', 'nbvPv')
         ->leftJoin('nbvPv.nbVersion', 'nbv')
-        ->leftJoin('p.author', 'a')
+        ->leftJoin('p.authors', 'a')
         ->where('(p.name LIKE :name) OR (a.email LIKE :name)')->orderBy('p.id', 'ASC')
         ->setParameter('name', '%'.$name.'%');
         return $queryBuilder->getQuery()->getResult();
@@ -115,7 +115,7 @@ class PluginRepository extends DoctrineEntityRepository {
         ->leftJoin('nbvPv.verification', 'verif')
         ->leftJoin('nbvPv.nbVersion', 'nbv')
         ->leftJoin('p.categories', 'cat')
-        ->leftJoin('p.author', 'a')
+        ->leftJoin('p.authors', 'a')
         ->where('p.status = :status')
         ->setParameter('status', \Application\Entity\Plugin::STATUS_PUBLIC);
         if ($name) {

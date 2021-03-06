@@ -106,6 +106,12 @@
   <tbody>
 <?php
     foreach($this->paginator as $plugin) {
+        /* @var $plugin Application\Entity\Plugin */
+        $authors = [];
+        foreach($plugin->getAuthors() as $author) {
+            $authors[] = htmlspecialchars($author->getName(), ENT_COMPAT, "UTF-8");
+        }
+
         $versionBadges = array();
         foreach ($plugin->getVersions() as $version) {
           foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
@@ -119,10 +125,12 @@
         echo '<tr>
         <td>
             <h4 class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
-            <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b> &nbsp; &nbsp; <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' <p>
-            <p>Author: <b>'.$plugin->getAuthor()->getName().'</b></p>
-            <p>License: <b>'.$plugin->getLicense().'</b></p> 
-            <p>'.implode('&nbsp;', $versionBadges).'</p>   
+            <table role="presentation">
+            <tr style="padding-right: 1ex"><td>ArtifactId:</td><td><b>'.$plugin->getArtifactId().'</b> &nbsp; &nbsp; <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).'</td></tr>
+            <tr style="padding-right: 1ex"><td>Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
+            <tr style="padding-right: 1ex"><td>License:</td><td><b>'.$plugin->getLicense().'</b></td></tr>
+            </table>
+            <p>'.implode('&nbsp;', $versionBadges).'</p>
         </td>
         <td>';
 

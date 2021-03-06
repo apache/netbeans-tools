@@ -32,9 +32,21 @@ define('PLUGIN_SESSION_NAMESPACE', 'pp3_plugin_session');
 
 class PluginController extends AuthenticatedController {
 
+    /**
+     * @var \Application\Repository\PluginRepository
+     */
     private $_pluginRepository;
+    /**
+     * @var \Application\Repository\PluginVersionRepository
+     */
     private $_pluginVersionRepository;
+    /**
+     * @var \Application\Repository\CategoryRepository
+     */
     private $_categoryRepository;
+    /**
+     * @var \Application\Repository\NbVersionRepository
+     */
     private $_nbVersionRepository;
     /**
      * @var \Application\Repository\UserRepository
@@ -96,12 +108,10 @@ class PluginController extends AuthenticatedController {
             
             if (!empty($groupId) && !empty($artifactId)) {
                 $url = $this->_config['pp3']['mavenRepoUrl'].str_replace('.','/', $groupId).'/'.$artifactId.'/maven-metadata.xml';
-                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
                 $plugin->setUrl($url);
                 $plugin->setArtifactId($artifactId);
                 $plugin->setGroupId($groupId);
                 $plugin->setStatus(Plugin::STATUS_PRIVATE);
-                $plugin->setAuthor($user);
                 $plugin->setDataLoader(new MavenDataLoader());
                 try {
                     if ($plugin->loadData()) {
@@ -153,7 +163,7 @@ class PluginController extends AuthenticatedController {
             );
             if ($validatedData) {
                 $user = $this->_userRepository->find($this->getAuthenticatedUserId());
-                $plugin->setAuthor($user);
+                $plugin->addAuthor($user);
                 $plugin->setName($validatedData['name']);
                 $plugin->setLicense($validatedData['license']);
                 $plugin->setDescription($validatedData['description']);
@@ -219,56 +229,98 @@ class PluginController extends AuthenticatedController {
         }
         $req = $this->request;
         if ($req->isPost()) {
-            $validatedData = $this->_validateAndCleanPluginData(
-                $this->params()->fromPost('name'),
-                $this->params()->fromPost('license'),
-                $this->params()->fromPost('description'),
-                $this->params()->fromPost('short_description'),
-                $this->params()->fromPost('category'),
-                $this->params()->fromPost('homepage')
-            );
-            if ($validatedData) {
-                $plugin->setName($validatedData['name']);
-                $plugin->setLicense($validatedData['license']);
-                $plugin->setDescription($validatedData['description']);
-                $plugin->setShortDescription($validatedData['short_description']);
-                $plugin->setHomepage($validatedData['homepage']);
-                $plugin->setLastUpdatedAt(new \DateTime('now'));                
-                
-                // save image
-                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
-                if ($im) {                    
-                    $plugin->setImage($im);
+            $queryString = "";
+            if ($this->params()->fromPost('addUserByEMail')) {
+                $queryString='&activeTab=authors';
+                $users = $this->_userRepository->findByEmail($this->params()->fromPost('addUserByEMail'));
+                if (count($users) > 0) {
+                    $added = 0;
+                    foreach ($users as $user) {
+                        if($plugin->addAuthor($user)) {
+                            $added++;
+                        }
+                    }
+                    if ($added > 0) {
+                        $this->flashMessenger()->setNamespace('success')->addMessage('Authors updated.');
+                        $this->_pluginRepository->persist($plugin);
+                    } else {
+                        $this->flashMessenger()->setNamespace('warning')->addMessage('Cannot add the same user twice.');
+                    }
+                } else {
+                    $this->flashMessenger()->setNamespace('error')->addMessage('No user found with specified address.');
                 }
-
-                // categ
-                $plugin->removeCategories();
-                $this->_pluginRepository->persist($plugin);
-                $cat = $this->_categoryRepository->find($validatedData['category']);
-                if ($cat) {
-                    $plugin->addCategory($cat);
-                }
-                $cat2 = $this->params()->fromPost('category2');
-                if ($cat2 && (!$cat || ($cat2 != $cat->getId()))) {
-                    $cat2 = $this->_categoryRepository->find($this->params()->fromPost('category2'));
-                    if ($cat2) {
-                        //die(var_dump($cat2, $plugin->getCategories()[1], $validatedData['category']));
-                        $plugin->addCategory($cat2);
+            } else if ($this->params()->fromPost('removeAuthor')) {
+                $queryString='&activeTab=authors';
+                $user = $this->_userRepository->find($this->params()->fromPost('removeAuthor'));
+                if(! $user) {
+                    $this->flashMessenger()->setNamespace('error')->addMessage('No user found with specified id.');
+                } else {
+                    $plugin->removeAuthor($user);
+                    if (count($plugin->getAuthors()) > 0) {
+                        $this->_pluginRepository->persist($plugin);
+                        $this->flashMessenger()->setNamespace('success')->addMessage('Author was removed.');
+                    } else {
+                        $this->flashMessenger()->setNamespace('error')->addMessage('Last author can not be removed.');
                     }
                 }
-
-                $this->_pluginRepository->persist($plugin);
-
-                $this->flashMessenger()->setNamespace('success')->addMessage('Plugin updated.');               
             } else {
-                $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data.');
+                $validatedData = $this->_validateAndCleanPluginData(
+                        $this->params()->fromPost('name'),
+                        $this->params()->fromPost('license'),
+                        $this->params()->fromPost('description'),
+                        $this->params()->fromPost('short_description'),
+                        $this->params()->fromPost('category'),
+                        $this->params()->fromPost('homepage')
+                );
+                if ($validatedData) {
+                    $plugin->setName($validatedData['name']);
+                    $plugin->setLicense($validatedData['license']);
+                    $plugin->setDescription($validatedData['description']);
+                    $plugin->setShortDescription($validatedData['short_description']);
+                    $plugin->setHomepage($validatedData['homepage']);
+                    $plugin->setLastUpdatedAt(new \DateTime('now'));
+
+                    // save image
+                    $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'] . '/plugins/' . $plugin->getId());
+                    if ($im) {
+                        $plugin->setImage($im);
+                    }
+
+                    // categ
+                    $plugin->removeCategories();
+                    $this->_pluginRepository->persist($plugin);
+                    $cat = $this->_categoryRepository->find($validatedData['category']);
+                    if ($cat) {
+                        $plugin->addCategory($cat);
+                    }
+                    $cat2 = $this->params()->fromPost('category2');
+                    if ($cat2 && (!$cat || ($cat2 != $cat->getId()))) {
+                        $cat2 = $this->_categoryRepository->find($this->params()->fromPost('category2'));
+                        if ($cat2) {
+                            $plugin->addCategory($cat2);
+                        }
+                    }
+
+                    $this->_pluginRepository->persist($plugin);
+
+                    $this->flashMessenger()->setNamespace('success')->addMessage('Plugin updated.');
+                } else {
+                    $this->flashMessenger()->setNamespace('error')->addMessage('Missing required data.');
+                }
             }
-            return $this->redirect()->toUrl('./edit?id='.$plugin->getId());      
+            return $this->redirect()->toUrl('./edit?id='.$plugin->getId() . $queryString);
+        }
+
+        $activeTab = $this->params()->fromQuery("activeTab");
+
+        if(!($activeTab == 'settings' || $activeTab == 'authors')) {
+            $activeTab = 'settings';
         }
 
         return new ViewModel(array(
             'plugin' => $plugin,
             'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
+            'activeTab' => $activeTab
         ));
     }
 

@@ -19,14 +19,51 @@
  */
 ?>
 <h3>Edit Plugin</h3>
-    <div class="row">
-        <div class="col col-sm-6">
-            <?= $this->partial('layout/flash.phtml'); ?>
-            <form method="post" action="" class="needs-validation" enctype="multipart/form-data">
-            <?= $this->partial('application/plugin/_plugin-form.phtml', array('plugin' => $this->plugin, 'categories' => $this->categories)); ?>
-            <a class="btn btn-secondary" href="../plugin/list" role="button">Return</a>
-            <button type="submit" class="btn btn-primary">Save Plugin</button>
-            </form>
-            
+<?= $this->partial('layout/flash.phtml'); ?>
+<div class="">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="<?= $this->activeTab == 'settings' ? 'active' : '' ?>"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Plugin Settings</a></li>
+        <li role="presentation" class="<?= $this->activeTab == 'authors' ? 'active' : '' ?>"><a href="#authors" aria-controls="authors" role="tab" data-toggle="tab">Authors</a></li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane panel panel-default <?= $this->activeTab == 'settings' ? 'active' : '' ?>" style="padding: 2ex 1ex" role="tabpanel" id="settings">
+            <div class="row">
+                <div class="col col-sm-6">
+                    <form method="post" action="" class="needs-validation" enctype="multipart/form-data">
+                        <?= $this->partial('application/plugin/_plugin-form.phtml', array('plugin' => $this->plugin, 'categories' => $this->categories)); ?>
+                        <a class="btn btn-secondary" href="../plugin/list" role="button">Return</a>
+                        <button type="submit" class="btn btn-primary">Save Plugin</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane panel panel-default <?= $this->activeTab == 'authors' ? 'active' : '' ?>" style="padding: 2ex 1ex; position: relative" role="tabpanel" id="authors">
+            <div class="row">
+                <div class="col col-sm-6">
+                    <h4>List of authors</h4>
+                    <table role="presentation">
+                        <?php
+                        foreach ($this->plugin->getAuthors() as $author) {
+                            printf('<tr><td>%s (%s, %d)</td><td><form method="post" action="" enctype="multipart/form-data" style="display: inline-block; margin-left: 1ex"><button class="btn btn-default" role="button" name="removeAuthor" value="%d"><i class="fas fa-trash text-danger"></i></button></a></form></td></tr>',
+                                    htmlspecialchars($author->getName(), ENT_COMPAT, 'UTF-8'),
+                                    htmlspecialchars($author->getEmail(), ENT_COMPAT, 'UTF-8'),
+                                    $author->getId(),
+                                    $author->getId()
+                            );
+                        }
+                        ?>
+                    </table>
+                    <h4>Add author</h4>
+                    <form method="post" action="" enctype="multipart/form-data" style="display: inline">
+                        <div class="form-group">
+                            <label for="urgroupIdl">E-mail</label>
+                            <input type="text" class="form-control" id="addUserByEMail" name="addUserByEMail" placeholder="Please enter e-mail" value="" >
+                        </div>
+                        <a class="btn btn-secondary" href="../plugin/list" role="button">Return</a>
+                        <button type="submit" class="btn btn-primary">Add author</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+</div>

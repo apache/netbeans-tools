@@ -116,6 +116,24 @@ class Plugin extends Base\Plugin {
         }
     }
 
+    public function removeAuthor($user) {
+        $this->authors->removeElement($user);
+    }
+
+    /**
+     * @param User $user
+     * @return boolean true if author was added, false if it already existed
+     */
+    public function addAuthor($user) {
+        foreach($this->authors as $existingUser) {
+            if($user->getId() == $existingUser->getId()) {
+                return false;
+            }
+        }
+        $this->authors[] = $user;
+        return true;
+    }
+
     public function addVersion($version) {
         $this->versions[] = $version;
     }
@@ -162,7 +180,12 @@ class Plugin extends Base\Plugin {
     }
 
     public function isOwnedBy($userId) {
-        return $this->getAuthor()->getId() == $userId;
+        foreach($this->getAuthors() as $author) {
+            if($author->getId() == $userId) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public function setUrl($url) {

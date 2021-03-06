@@ -19,7 +19,12 @@
  */
 ?>
 <?php
-$pluugin = $this->plugin;
+/* @var $plugin Application\Entity\Plugin */
+$authors = [];
+foreach($plugin->getAuthors() as $author) {
+    $authors[] = htmlspecialchars($author->getName(), ENT_COMPAT, "UTF-8");
+}
+
 echo '<tr>
 <td style="text-align: center;"><h4><i class="fas '.$plugin->getStatusIconClass().'" title="'.$plugin->getStatusTitle().'"></i></h4></td>
 <td>
@@ -41,16 +46,16 @@ echo '<tr>
         <i class="fas fa-eye-slash color-red"></i>&nbsp; Hide
         </a>
     </p>
-    <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
-    <div>
-        <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
-        <p>Author: <b>'.$plugin->getAuthor()->getName().'</b><p>
-        <p>
-        <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
-        <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
-        <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
-        </p>                
-    </div>
+    <table role="presentation">
+        <tr><td style="padding-right: 1ex">Status:</td><td><b>'.$plugin->getStatusTitle().'</b></td></tr>
+        <tr><td style="padding-right: 1ex">ArtifactId:</td><td><b>'.$plugin->getArtifactId().'</b></td></tr>
+        <tr><td style="padding-right: 1ex">Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
+    </table>
+    <p>
+    <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
+    <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
+    <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
+    </p>
     <p>';
 
 foreach ($plugin->getCategories() as $cat) {
