@@ -35,15 +35,17 @@ echo '<tr>
             <i class="fas fa-sync"></i>
         </a>                
     </p>
-    <p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
-    <div>
-        <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
+    <table role="presentation">
+        <tr><td style="padding-right: 1ex">Status: </td><td><b>'.$plugin->getStatusTitle().'</b></td></tr>
+        <tr><td style="padding-right: 1ex">GroupId: </td><td><b>'.$plugin->getGroupId().'</b></td></tr>
+        <tr><td style="padding-right: 1ex">ArtifactId: </td><td><b>'.$plugin->getArtifactId().'</b></td></tr>
+    </table>
+        
         <p>
         <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
         <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp; 
         <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).' 
         </p>                
-    </div>
     <p>';
 
 foreach ($plugin->getCategories() as $cat) {

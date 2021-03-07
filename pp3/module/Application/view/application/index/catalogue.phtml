@@ -36,6 +36,7 @@ if ($plugin) {
     <div class="row">
     <div class="col-md-6">
     <table role="presentation">
+    <tr><td style="padding-right: 1ex">GroupId: </td><td><b>'.$plugin->getGroupId().'</b></td></tr>
     <tr><td style="padding-right: 1ex">ArtifactId: </td><td><b>'.$plugin->getArtifactId().'</b></td></tr>
     <tr><td style="padding-right: 1ex">Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
     <tr><td style="padding-right: 1ex">License:</td><td><b>'.$plugin->getLicense().'</b></td></tr>

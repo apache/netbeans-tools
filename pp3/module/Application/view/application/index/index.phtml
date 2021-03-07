@@ -126,6 +126,7 @@
         <td>
             <h4 class="text-primary"><a href="'.$this->url('catalogue', array(), array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
             <table role="presentation">
+            <tr><td style="padding-right: 1ex">GroupId: </td><td><b>'.$plugin->getGroupId().'</b></td></tr>
             <tr style="padding-right: 1ex"><td>ArtifactId:</td><td><b>'.$plugin->getArtifactId().'</b> &nbsp; &nbsp; <i class="fas fa-download"></i> '.number_format($plugin->getDownloads()).'</td></tr>
             <tr style="padding-right: 1ex"><td>Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
             <tr style="padding-right: 1ex"><td>License:</td><td><b>'.$plugin->getLicense().'</b></td></tr>
