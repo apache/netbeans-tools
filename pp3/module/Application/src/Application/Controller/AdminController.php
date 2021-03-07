@@ -323,7 +323,7 @@ class AdminController extends AuthenticatedController {
         }
         return new ViewModel([
             'nbVersions' => $this->_nbVersionRepository->findAll()
-        ]);;
+        ]);
     }
 
     private function _createEmptyCatalogForNbVersion($nbVersion) {
@@ -344,8 +344,9 @@ class AdminController extends AuthenticatedController {
                 $this->getDownloadBaseUrl(),
                 $this->_config['pp3']['catalogSavepath']);
         try {
-            $catalog->storeXml(true);
-            $catalogExp->storeXml(true);
+            $errors = [];
+            $catalog->storeXml(true, $errors);
+            $catalogExp->storeXml(true, $errors);
         } catch (\Exception $e){
             $this->flashMessenger()->setNamespace('error')->addMessage($e->getMessage());                        
         }         
@@ -375,9 +376,10 @@ class AdminController extends AuthenticatedController {
                     $this->getDownloadBaseUrl(),
                     $this->_config['pp3']['catalogSavepath']);
             try {
-                $catalog->storeXml(true);
-            } catch (\Exception $e) { }                 
-            
+                $errors = [];
+                $catalog->storeXml(true, $errors);
+            } catch (\Exception $e) { }
+
             $catalog = new Catalog(
                     $this->_pluginVersionRepository,
                     $version,
@@ -387,9 +389,10 @@ class AdminController extends AuthenticatedController {
                     $this->getDownloadBaseUrl(),
                     $this->_config['pp3']['catalogSavepath']);
             try {
-                $catalog->storeXml(true);
+                $errors = [];
+                $catalog->storeXml(true, $errors);
             } catch (\Exception $e) { }                 
-            
+
         }
     }
 
