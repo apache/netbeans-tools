@@ -125,7 +125,9 @@ class CliController extends BaseController {
         }
         $plugin = $pluginVersion->getPlugin();
         $mail = new Mail\Message();
-        $mail->addTo($plugin->getAuthor()->getEmail());
+        foreach($plugin->getAuthors() as $user) {
+            $mail->addTo($user->getEmail());
+        }
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('Publishing of your plugin '.$plugin->getName().' failed');
         $mail->setBody('Hello plugin owner,

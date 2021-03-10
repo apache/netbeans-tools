@@ -26,21 +26,22 @@ if ($this->plugin) {
 echo '<h3 class="text-primary">'.$h.'</h3>';
 
 if ($plugin) {
+    /* @var $plugin Application\Entity\Plugin */
+    $authors = [];
+    foreach($plugin->getAuthors() as $author) {
+        $authors[] = htmlspecialchars($author->getName(), ENT_COMPAT, "UTF-8");
+    }
+
     echo '
     <div class="row">
     <div class="col-md-6">
-    <p>
-    <p>ArtifactId: <b>'.$plugin->getArtifactId().'</b> &nbsp;&nbsp;
-    ';
-
-        foreach ($plugin->getVersions() as $v) {
-            echo '<span class="badge">'.$v->getVersion().'</span> &nbsp;';
-        }    
-        
-    echo '</p>
-    <p>Author: <b>'.$plugin->getAuthor()->getName().'</b></p>
-    <p>License: <b>'.$plugin->getLicense().'</b></p>
-    <p>Homepage: <a href="'.$plugin->getHomepage().'">'.$plugin->getHomepage().'</a></p>
+    <table role="presentation">
+    <tr><td style="padding-right: 1ex">GroupId: </td><td><b>'.$plugin->getGroupId().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">ArtifactId: </td><td><b>'.$plugin->getArtifactId().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
+    <tr><td style="padding-right: 1ex">License:</td><td><b>'.$plugin->getLicense().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">Homepage:</td><td><a href="'.$plugin->getHomepage().'">'.$plugin->getHomepage().'</a></td></tr>
+    </table>
     <p>
         <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;
         <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').' &nbsp; &nbsp;

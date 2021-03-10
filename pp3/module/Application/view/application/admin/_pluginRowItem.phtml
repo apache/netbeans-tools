@@ -24,15 +24,24 @@ foreach ($plugin->getVersions() as $version) {
     $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
 }
 
+/* @var $plugin Application\Entity\Plugin */
+$authors = [];
+foreach($plugin->getAuthors() as $author) {
+    $authors[] = htmlspecialchars($author->getName(), ENT_COMPAT, "UTF-8");
+}
+
 echo '
 <h4 class="text-primary"><a href="'.$this->url('admin', array('action' => 'edit'),array('query' => array('id'=>$plugin->getId()))).'">'.$plugin->getName().'</a></h4>
 <p>
     '.implode('&nbsp;', $versionBadges).'
 </p>
-<p>ArtifactId: <b>'.$plugin->getArtifactId().'</b><p>
+<table role="presentation">
+    <tr><td style="padding-right: 1ex">Status:</td><td><b>'.$plugin->getStatusTitle().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">GroupId: </td><td><b>'.$plugin->getGroupId().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">ArtifactId:</td><td><b>'.$plugin->getArtifactId().'</b></td></tr>
+    <tr><td style="padding-right: 1ex">Author:</td><td><b>'. implode("<br />", $authors) .'</b></td></tr>
+</table>
 <p>
-<p>Status: <b>'.$plugin->getStatusTitle().'</b></p>
-<i class="fas fa-user"></i> '.$plugin->getAuthor()->getName().' &nbsp; &nbsp;&nbsp;
 <i class="fas fa-asterisk"></i> '.$plugin->getAddedAt()->format('Y-m-d').' &nbsp; &nbsp;&nbsp; 
 <i class="fas fa-edit"></i> '.$plugin->getLastUpdatedAt()->format('Y-m-d').'   &nbsp; &nbsp;  &nbsp;            
 <i class="fas fa-file-contract"></i> '.$plugin->getLicense().'

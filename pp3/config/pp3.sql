@@ -144,6 +144,16 @@ ALTER TABLE nb_version ADD COLUMN catalog_rebuild_requested datetime DEFAULT NUL
 ALTER TABLE nb_version ADD COLUMN catalog_rebuild datetime DEFAULT NULL;
 ALTER TABLE plugin_version ADD COLUMN error_message text COLLATE utf8_czech_ci DEFAULT NULL;
 
+CREATE TABLE `plugin_user` (
+    plugin_id int(11) NOT NULL REFERENCES plugin(id),
+    user_id int(11) NOT NULL REFERENCES user(id),
+    PRIMARY KEY (`plugin_id`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci;
+
+insert into plugin_user SELECT id, author_id FROM plugin;
+
+ALTER TABLE plugin DROP COLUMN author_id;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

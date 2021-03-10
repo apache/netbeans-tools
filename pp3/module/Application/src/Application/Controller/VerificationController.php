@@ -200,7 +200,9 @@ class VerificationController extends AuthenticatedController {
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
         $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion()->getVersion();
         $mail = new Mail\Message();
-        $mail->addTo($plugin->getAuthor()->getEmail());
+        foreach($plugin->getAuthors() as $user) {
+            $mail->addTo($user->getEmail());
+        }
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('Verification of your '.$plugin->getName().' is complete');
         $mail->setBody('Hello plugin owner,
@@ -224,11 +226,14 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.');
     }
 
     private function _sendGoNotification($verification, $comment) {
+        /* @var $plugin Application\Entity\Plugin */
         $plugin = $verification->getNbVersionPluginVersion()->getPluginVersion()->getPlugin();
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion()->getVersion();
         $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion()->getVersion();
         $mail = new Mail\Message();
-        $mail->addTo($plugin->getAuthor()->getEmail());
+        foreach($plugin->getAuthors() as $user) {
+            $mail->addTo($user->getEmail());
+        }
         $mail->setFrom('webmaster@netbeans.apache.org', 'NetBeans webmaster');
         $mail->setSubject('Verification of your '.$plugin->getName().' is complete');
         $mail->setBody('Hello plugin owner,

@@ -50,10 +50,11 @@ class Plugin {
     /** @ORM\Column(type="string", length=255) */
     protected $license;
 
-    /** 
-     * @ORM\ManyToOne(targetEntity="User") 
+    /**
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinTable(name="plugin_user")
      */
-    protected $author;
+    protected $authors;
 
     /** @ORM\Column(type="datetime") */
     protected $added_at;
@@ -99,6 +100,7 @@ class Plugin {
     public function __construct() {
         $this->versions = new ArrayCollection();
         $this->categories = new ArrayCollection();
+        $this->authors = new ArrayCollection();
         return $this;
     }
 
@@ -159,17 +161,10 @@ class Plugin {
     }
 
     /**
-     * @return User
+     * @return User[]
      */
-    public function getAuthor() {
-        return $this->author;
-    }
-
-    /**
-     * @param User $author
-     */
-    public function setAuthor($author) {
-        $this->author = $author;
+    public function getAuthors() {
+        return $this->authors;
     }
 
     public function getAddedAt() {
