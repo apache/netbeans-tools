@@ -242,7 +242,8 @@ class Zend_Console_Getopt
     public function __construct($rules, $argv = null, $getoptConfig = array())
     {
         if (!isset($_SERVER['argv'])) {
-            require_once 'Zend/Console/Getopt/Exception.php';
+            require_once 'Console/GetoptPlus/Exception.php';
+
             if (ini_get('register_argc_argv') == false) {
                 throw new Zend_Console_Getopt_Exception(
                     "argv is not available, because ini option 'register_argc_argv' is set Off"

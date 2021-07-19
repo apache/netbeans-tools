@@ -36,7 +36,7 @@ class Importer {
         // resolve the catalog
         if (!self::$catalogCache[$path]) {
             Db::query("INSERT INTO catalogs (path, source) VALUES ('$path', '$source')");
-            $catalogId = mysql_insert_id();
+            $catalogId = mysqli_insert_id(Db::$link);
             self::$catalogCache[$path] = $catalogId;
         } else {
             $catalogId = self::$catalogCache[$path];
@@ -47,6 +47,8 @@ class Importer {
             $distro_code = "";
             $config = "";
             $config_sig = 0;
+            $warning_count = 0;
+
             if (isset($match[1])) {
                 $distro_code = $match[1];
             }
@@ -65,7 +67,7 @@ class Importer {
         }
         if (!self::$distroCache[$distro_code]) {
             Db::query("INSERT INTO distros (distro) VALUES ('$distro_code')");
-            $distroId = mysql_insert_id();
+            $distroId = mysqli_insert_id(Db::$link);
             self::$distroCache[$distro_code] = $distroId;
         } else {
             $distroId = self::$distroCache[$distro_code];
@@ -74,7 +76,7 @@ class Importer {
         // resolve config
         if (!self::$configCache[$config]) {
             Db::query("INSERT INTO configs (config, signature) VALUES ('$config', $config_sig)");
-            $configId = mysql_insert_id();
+            $configId = mysqli_insert_id(Db::$link);
             self::$configCache[$config] = $configId;
         } else {
             $configId = self::$configCache[$config];
@@ -85,13 +87,13 @@ class Importer {
 //            // lookup db for it
 //            $res = Db::query('SELECT id FROM ips WHERE ip="' . $ip . '" LIMIT 1');
 //            if ($res) {
-//                if (mysql_num_rows($res) > 0) {
-//                    $row = mysql_fetch_assoc($res);
+//                if (mysqli_num_rows($res) > 0) {
+//                    $row = mysqli_fetch_assoc($res);
 //                    $ipId = $row['id'];
 //                    self::$ipCache[$ip] = $ipId;
 //                } else {
 //                    Db::query("INSERT INTO ips (ip, country) VALUES ('$ip' ,'" . getCCByIP($ip) . "')");
-//                    $ipId = mysql_insert_id();
+//                    $ipId = mysqli_insert_id();
 //                    self::$ipCache[$ip] = $ipId;
 //                }
 //            }
@@ -105,8 +107,8 @@ class Importer {
         if (!self::$userCache[$user_id]) {
             $res = Db::query('SELECT id, since, last_seen FROM users WHERE unique_id="' . $user_id . '"');
             if ($res) {
-                if (mysql_num_rows($res) > 0) {
-                    $row = mysql_fetch_assoc($res);
+                if (mysqli_num_rows($res) > 0) {
+                    $row = mysqli_fetch_assoc($res);
                     $userId = $row['id'];
                     // if this ping is newer then one in DB, save it as last seen and calc delay
                     if ($tsInt > $row['last_seen']) {
@@ -120,7 +122,7 @@ class Importer {
                     self::$userCache[$user_id] = array('id' => $userId, 'since' => $row['since'], 'last_seen' => $tsInt, 'catalog_id' => $catalogId, 'delay' => $delay);
                 } else {
                     Db::query("INSERT INTO users (unique_id, since, last_seen, catalog_id, delay) VALUES ('$user_id', '$ts', $tsInt, $catalogId, 9999)");
-                    $userId = mysql_insert_id();
+                    $userId = mysqli_insert_id(Db::$link);
                     self::$userCache[$user_id] = array('id' => $userId, 'since' => $ts, 'last_seen' => $tsInt, 'catalog_id' => $catalogId, 'delay' => 9999);
                 }
             }
@@ -136,8 +138,8 @@ class Importer {
         if (!self::$user2Cache[$user2_id]) {
             $res = Db::query('SELECT id, since, last_seen FROM users2 WHERE unique_id="' . $user2_id . '"');
             if ($res) {
-                if (mysql_num_rows($res) > 0) {
-                    $row = mysql_fetch_assoc($res);
+                if (mysqli_num_rows($res) > 0) {
+                    $row = mysqli_fetch_assoc($res);
                     $user2Id = $row['id'];
                     // if this ping is newer then one in DB, save it as last seen and calc delay
                     if ($tsInt > $row['last_seen']) {
@@ -151,7 +153,7 @@ class Importer {
                     self::$user2Cache[$user2_id] = array('id' => $user2Id, 'since' => $row['since'], 'last_seen' => $tsInt, 'delay' => $delay);
                 } else {
                     Db::query("INSERT INTO users2 (unique_id, since, last_seen, delay) VALUES ('$user2_id', '$ts', $tsInt,9999)");
-                    $user2Id = mysql_insert_id();
+                    $user2Id = mysqli_insert_id(Db::$link);
                     self::$user2Cache[$user2_id] = array('id' => $user2Id, 'since' => $ts, 'last_seen' => $tsInt, 'delay' => 9999);
                 }
             }
@@ -186,23 +188,23 @@ class Importer {
         return $ret;
     }
 
-    private function loadCache() {
+    private static function loadCache() {
         $memBeforeCache = memory_get_usage();
         $res = Db::query('SELECT id, path FROM catalogs WHERE source="' . self::$_source . '"');
         if ($res) {
-            while ($r = mysql_fetch_assoc($res)) {
+            while ($r = mysqli_fetch_assoc($res)) {
                 self::$catalogCache[$r['path']] = $r['id'];
             }
         }
         $res = Db::query('SELECT id, config FROM configs');
         if ($res) {
-            while ($r = mysql_fetch_assoc($res)) {
+            while ($r = mysqli_fetch_assoc($res)) {
                 self::$configCache[$r['config']] = $r['id'];
             }
         }
         $res = Db::query('SELECT id, distro FROM distros');
         if ($res) {
-            while ($r = mysql_fetch_assoc($res)) {
+            while ($r = mysqli_fetch_assoc($res)) {
                 self::$distroCache[$r['distro']] = $r['id'];
             }
         }

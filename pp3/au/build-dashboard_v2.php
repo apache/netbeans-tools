@@ -18,9 +18,9 @@
 // Connection config, edit to match your env
 $connection = array(
     'driver' => 'mysqli',
-    'host' => 'localhost',
+    'host' => '127.0.0.1',
     'username' => 'jchalupa',
-    'password' => 'root',
+    'password' => '',
     'database' => 'root',
     'profiler' => TRUE,
 );
@@ -32,7 +32,7 @@ $delay = 2;
 $debug = false;
 
 // lockfile
-$lockfile = '/tmp/run.lck';
+$lockfile = './tmp/run.lck';
 
 /*
  * == DO NOT EDIT BELOW THIS LINE UNLESS YOU ARE SURE YOU KNOW WHAT YOU ARE DOING ==
@@ -146,7 +146,7 @@ function au($month, $product, $activityOffset, $monthStart) {
             $qr = 'REPLACE INTO results_counts SET  month="' . $month . '", release_id=' . $r['release_id'] . ', results_index_id=1, value="' . $r['count'] . '", product="' . $product . '", pack_signature=0, distro_id=0, country_id=0';
             $res2 = mysqli_query($dbc, $qr);
             if (!$res2) {
-                echo "ERR: " . mysqli_error() . $qr . "\n";
+                echo "ERR: " . mysqli_error($dbc) . $qr . "\n";
             }
         }
     } catch (Exception $e) {
@@ -178,7 +178,7 @@ function au2($month, $product, $activityOffset, $monthStart) {
             $qr = 'REPLACE INTO results_counts SET month="' . $month . '", release_id=' . $r['release_id'] . ', results_index_id=3, value="' . $r['count'] . '", product="' . $product . '", country_id=0, pack_signature=0, distro_id=0';
             $res2 = mysqli_query($dbc, $qr);
             if (!$res2) {
-                echo "ERR: " . mysqli_error() . $qr . "\n";
+                echo "ERR: " . mysqli_error($dbc) . $qr . "\n";
             }
         }
     } catch (Exception $e) {
@@ -217,7 +217,7 @@ function countries($month, $product, $activityOffset, $monthStart) {
             $qr = 'REPLACE INTO results_counts SET month="' . $month . '", country_id=' . $r['country_id'] . ', results_index_id=2, value="' . $r['count'] . '", product="' . $product . '", release_id=0, distro_id=0, pack_signature=0';
             $res2 = mysqli_query($dbc, $qr);
             if (!$res2) {
-                echo "ERR: " . mysqli_error() . $qr . "\n";
+                echo "ERR: " . mysqli_error($dbc) . $qr . "\n";
             }
         }
     } catch (Exception $e) {
@@ -250,7 +250,7 @@ function distros($month, $product, $activityOffset, $monthStart) {
             $qr = 'REPLACE INTO results_counts SET  month="' . $month . '", distro_id=' . $r['distro_id'] . ', results_index_id=4, value="' . $r['count'] . '", product="' . $product . '", release_id=0, pack_signature=0, country_id=0';
             $res2 = mysqli_query($dbc, $qr);
             if (!$res2) {
-                echo "ERR: " . mysqli_error() . $qr . "\n";
+                echo "ERR: " . mysqli_error($dbc) . $qr . "\n";
             }
         }
     } catch (Exception $e) {
@@ -292,7 +292,7 @@ function packs($month, $product, $activityOffset, $monthStart) {
             $res2 = mysqli_query($dbc, $qr);
             echo "\t" . $pack . " : " . $hits . " users\n";
             if (!$res2) {
-                echo "ERR: " . mysqli_error() . $qr . "\n";
+                echo "ERR: " . mysqli_error($dbc) . $qr . "\n";
             }
         }
     } catch (Exception $e) {
