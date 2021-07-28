@@ -12,6 +12,8 @@ Repository of tools and other utilties created and used by the Apache NetBeans c
    * [licensereviewsite](https://github.com/apache/incubator-netbeans-tools/tree/master/licensereviewsite): Tool consisting of a Maven plugin to generate report for crosschecking Jenkins / Confluence for external and licence. ([More details](https://github.com/apache/incubator-netbeans-tools/pull/2).)
    
    * [pp3](https://github.com/apache/incubator-netbeans-tools/tree/master/pp3): Plugin Portal, live at http://netbeans-vm.apache.org/pluginportal/.
+   
+   * [netbeans-javadoc](https://github.com/apache/incubator-netbeans-tools/tree/master/netbeans-javadoc): Tool for publishing documentation at https://bits.netbeans.org/ executed by cron job on NetBeans VM.
 
    * [wiki-export](https://github.com/apache/incubator-netbeans-tools/tree/master/wiki-export): Tool for extracting WikiText data from wiki.netbeans.org. ([More details](https://github.com/apache/incubator-netbeans-tools/pull/4).)
 
