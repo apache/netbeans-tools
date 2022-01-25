@@ -32,6 +32,9 @@ confinement: classic
 grade: @SNAP_GRADE@
 base: core18
 architectures: [ amd64 ]
+compression: lzo
+assumes:
+  - command-chain
 version: "@SNAP_VERSION@"
 
 parts:
@@ -44,9 +47,9 @@ parts:
       - openjdk-11-jdk-headless
     plugin: ant
     source: https://github.com/apache/netbeans.git
-    source-branch: @SNAP_BRANCH@
+    source-branch: "@SNAP_BRANCH@"
     filesets:
-        netbeans: [ netbeans/*, -netbeans/*.built ]
+        netbeans: [ netbeans/*, -netbeans/*.built, -netbeans/extra ]
     override-build: |
         export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64"
         ant -Djavac.compilerargs=-nowarn -Dbuild.compiler.deprecation=false @BUILD_NUMBER@ -Dmetabuild.jsonurl=https://raw.githubusercontent.com/apache/netbeans-jenkins-lib/master/meta/netbeansrelease.json
@@ -62,6 +65,14 @@ parts:
     stage:
         - $netbeans
 
+  launchers:
+    source: snap/local/launchers
+    plugin: dump
+    organize:
+      '*': launchers/
 apps:
   netbeans:
+    command-chain:
+      - launchers/nbjavac-cleanup
     command: netbeans/bin/netbeans
+

@@ -19,7 +19,7 @@
     under the License.
 
 -->
-<project name="netbeans-snapcraft" basedir=".">
+<project name="netbeans-snapcraft" basedir="." default="usage">
     
     <property name="build.dir" location="build"/>
     <property name="dev.dir" location="${build.dir}/netbeans-dev"/>
@@ -32,10 +32,22 @@
     <available property="has.dev.snap" file="${dev.dir}/netbeans-dev_${build.date}_amd64.snap"/>
     <available property="has.rel.snap" file="${rel.dir}/netbeans_${release.version}_amd64.snap"/>
 
+    <target name="usage">
+        <echo><![CDATA[
+        
+        Creating a Release:
+        
+          ant -Dreleaase.version=<version> -Drelease.branch=<branch> snap-rel
+     ]]></echo>
+    </target>
     <target name="prepare-dev">
 
         <mkdir dir="${dev.dir}/snap/gui"/>
         <copy file="../frame512.png" todir="${dev.dir}/snap/gui"/>
+        <copy todir="${dev.dir}/snap/local/launchers" overwrite="true">
+            <fileset dir="../launchers"/>
+        </copy>
+        <chmod dir="${dev.dir}/snap/local/launchers" includes="*" perm="ugo+rx"/>
         <copy file="snapcraft-template.yaml" tofile="${dev.dir}/snap/snapcraft.yaml" overwrite="true">
             <filterchain>
                 <replacetokens>
@@ -78,8 +90,12 @@
                 </or>
             </condition>
         </fail>
-        <mkdir dir="${dev.dir}/snap/gui"/>
+        <mkdir dir="${rel.dir}/snap/gui"/>
         <copy file="../frame512.png" todir="${rel.dir}/snap/gui"/>
+        <copy todir="${rel.dir}/snap/local/launchers" overwrite="true">
+            <fileset dir="../launchers"/>
+        </copy>
+        <chmod dir="${rel.dir}/snap/local/launchers" includes="*" perm="ugo+rx"/>
         <copy file="snapcraft-template.yaml" tofile="${rel.dir}/snap/snapcraft.yaml" overwrite="true">
             <filterchain>
                 <replacetokens>
