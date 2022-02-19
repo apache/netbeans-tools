@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Remove externally installed nbjavac references from the userdir
+find ${SNAP_USER_DATA} -name '*nbjavac.*' -delete || true
+find ${SNAP_USER_DATA} -name '*nbjavac-*' -delete || true
+
+exec $@
+

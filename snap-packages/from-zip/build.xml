@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+
+-->
+<project name="netbeans-snapcraft" basedir="." default="usage">
+    
+    <property name="build.dir" location="build"/>
+    <property name="dev.dir" location="${build.dir}/netbeans-dev"/>
+    <property name="rel.dir" location="${build.dir}/netbeans"/>
+    <property name="root.dir" location="../../.."/>
+    <tstamp>
+        <format property="build.date" pattern="yyyyMMdd"/>
+    </tstamp>        
+    
+    <available property="has.dev.snap" file="${dev.dir}/netbeans-dev_${build.date}_amd64.snap"/>
+    <available property="has.rel.snap" file="${rel.dir}/netbeans_${release.version}_amd64.snap"/>
+
+    <target name="usage">
+        <echo><![CDATA[
+        
+        Creating a Release:
+        
+          ant -Dreleaase.version=<version> -Drelease.binary=<URL> snap-rel
+     ]]></echo>
+    </target>
+
+    <target name="prepare-dev">
+        <fail message="release.binary propertiy must be specified!">
+            <condition>
+                <not><isset property="release.binary"/></not>
+            </condition>
+        </fail>
+
+        <mkdir dir="${dev.dir}/snap/gui"/>
+        <copy file="../frame512.png" todir="${dev.dir}/snap/gui"/>
+        <copy todir="${dev.dir}/snap/local/launchers" overwrite="true">
+            <fileset dir="../launchers"/>
+        </copy>
+        <chmod dir="${dev.dir}/snap/local/launchers" includes="*" perm="ugo+rx"/>
+        <copy file="snapcraft-template.yaml" tofile="${dev.dir}/snap/snapcraft.yaml" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="SNAP_NAME" value="netbeans-dev"/>
+                    <token key="SNAP_SUMMARY" value="Apache NetBeans IDE (Development Build)"/>
+                    <token key="SNAP_GRADE" value="devel"/>
+                    <token key="SNAP_SOURCE" value="${release.binary}"/>
+                    <token key="SNAP_VERSION" value="${build.date}"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <replace file="${dev.dir}/snap/snapcraft.yaml" token="@SNAP_DISCLAIMER@">
+            <replacevalue><![CDATA[
+  Disclaimer:
+  This is an in Development Build of Apache NetBeans IDE , this is for sole
+  testing purposes and shall be not considered as a release.
+  
+  This package is refreshed weekly automatically from the NetBeans master
+  repository. Take it as it is, there are no additional testing is being
+  made on these builds.
+  ]]></replacevalue>
+        </replace>
+        <copy file="netbeans-template.desktop" tofile="${dev.dir}/snap/gui/netbeans.desktop" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="DESKTOP_VERSION" value="(development)"/>
+                    <token key="DESKTOP_EXEC" value="netbeans-dev.netbeans"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+    
+    <target name="prepare-rel">
+        <fail message="release.version and release.binary properties must be specified!">
+            <condition>
+                <or>
+                    <not><isset property="release.version"/></not>
+                    <not><isset property="release.binary"/></not>
+                </or>
+            </condition>
+        </fail>
+        <mkdir dir="${dev.dir}/snap/gui"/>
+        <copy file="../frame512.png" todir="${rel.dir}/snap/gui"/>
+        <copy todir="${rel.dir}/snap/local/launchers" overwrite="true">
+            <fileset dir="../launchers"/>
+        </copy>
+        <chmod dir="${rel.dir}/snap/local/launchers" includes="*" perm="ugo+rx"/>
+        <copy file="snapcraft-template.yaml" tofile="${rel.dir}/snap/snapcraft.yaml" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="SNAP_NAME" value="netbeans"/>
+                    <token key="SNAP_SUMMARY" value="Apache NetBeans IDE"/>
+                    <token key="SNAP_GRADE" value="stable"/>
+                    <token key="SNAP_SOURCE" value="${release.binary}"/>
+                    <token key="SNAP_VERSION" value="${release.version}"/>
+                    <token key="SNAP_DISCLAIMER" value=""/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+        <copy file="netbeans-template.desktop" tofile="${rel.dir}/snap/gui/netbeans.desktop" overwrite="true">
+            <filterchain>
+                <replacetokens>
+                    <token key="DESKTOP_VERSION" value="${release.version}"/>
+                    <token key="DESKTOP_EXEC" value="netbeans"/>
+                </replacetokens>
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="snap-dev" depends="prepare-dev" unless="${has.dev.snap}">
+        <exec executable="snapcraft" dir="${dev.dir}">
+            <arg value="snap"/>
+            <arg value="--use-lxd"/>
+        </exec>
+    </target>
+    
+    <target name="snap-rel" depends="prepare-rel" unless="${has.rel.snap}">
+        <exec executable="snapcraft" dir="${rel.dir}">
+            <arg value="snap"/>
+            <arg value="--use-lxd"/>
+        </exec>
+    </target>
+    
+    <target name="clean-dev">
+        <exec executable="snapcraft" dir="${dev.dir}">
+            <arg value="clean"/>
+            <arg value="--use-lxd"/>
+        </exec>
+        <delete dir="${dev.dir}"/>        
+    </target>
+    
+    <target name="clean-rel">
+        <exec executable="snapcraft" dir="${rel.dir}">
+            <arg value="clean"/>
+            <arg value="--use-lxd"/>
+        </exec>
+        <delete dir="${rel.dir}"/>        
+    </target>
+    
+    <target name="clean" depends="clean-dev, clean-rel">
+        <delete dir="${build.dir}"/>
+    </target>
+
+    <target name="upload-dev" if="${has.dev.snap}" >
+        <exec executable="snapcraft" dir="${dev.dir}">
+            <arg value="upload"/>
+            <arg value="netbeans-dev_${build.date}_amd64.snap"/>
+            <arg value="--release"/>
+            <arg value="edge"/>
+        </exec>
+    </target>
+
+    <target name="upload-rel" if="${has.rel.snap}" >
+        <exec executable="snapcraft" dir="${rel.dir}">
+            <arg value="upload"/>
+            <arg value="netbeans_${release.version}_amd64.snap"/>
+            <arg value="--release"/>
+            <arg value="edge"/>
+        </exec>
+    </target>
+</project>
