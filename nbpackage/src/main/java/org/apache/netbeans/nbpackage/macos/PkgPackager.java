@@ -18,46 +18,35 @@
  */
 package org.apache.netbeans.nbpackage.macos;
 
-import java.nio.file.Path;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.stream.Stream;
 import org.apache.netbeans.nbpackage.ExecutionContext;
 import org.apache.netbeans.nbpackage.Option;
 import org.apache.netbeans.nbpackage.Packager;
+import org.apache.netbeans.nbpackage.Template;
 
 /**
  * Packager for macOS PKG installer.
  */
 public class PkgPackager implements Packager {
-    
-    static final ResourceBundle MESSAGES
-            = ResourceBundle.getBundle(PkgPackager.class.getPackageName() + ".Messages");
 
-    /**
-     * Value for CFBundleIdentifier.
-     */
-    public static final Option<String> MACOS_BUNDLE_ID
-            = Option.ofString("package.macos.bundleid", "",
-                    MESSAGES.getString("option.bundle_id.description"));
-    
-    /**
-     * Path to icon (*.icns) file.
-     */
-    public static final Option<Path> MACOS_ICON
-            = Option.ofPath("package.macos.icon", "",
-                    MESSAGES.getString("option.icon.description"));
-    
-    /**
-     * Optional Info.plist template.
-     */
-    public static final Option<Path> MACOS_INFO_TEMPLATE
-            = Option.ofPath("package.macos.info-template", "",
-                    MESSAGES.getString("option.info_template.description"));
-    
     private static final List<Option<?>> PKG_OPTIONS = List.of(
-            MACOS_BUNDLE_ID, MACOS_ICON);
-    
+            MacOS.BUNDLE_ID,
+            MacOS.ICON_PATH,
+            MacOS.INFO_TEMPLATE_PATH,
+            MacOS.LAUNCHER_TEMPLATE_PATH,
+            MacOS.ENTITLEMENTS_TEMPLATE_PATH,
+            MacOS.SIGNING_FILES,
+            MacOS.SIGNING_JARS,
+            MacOS.CODESIGN_ID,
+            MacOS.PKGBUILD_ID);
+
+    private static final List<Template> PKG_TEMPLATE = List.of(
+            MacOS.INFO_TEMPLATE,
+            MacOS.LAUNCHER_TEMPLATE,
+            MacOS.ENTITLEMENTS_TEMPLATE
+    );
+
     @Override
     public Task createTask(ExecutionContext context) {
         return new PkgTask(context);
@@ -73,4 +62,9 @@ public class PkgPackager implements Packager {
         return PKG_OPTIONS.stream();
     }
 
+    @Override
+    public Stream<Template> templates() {
+        return PKG_TEMPLATE.stream();
+    }
+    
 }
