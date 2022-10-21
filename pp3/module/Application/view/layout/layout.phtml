@@ -64,6 +64,8 @@
                         array('conditional' => 'lt IE 9',))
                 ->prependFile($this->basePath('js/html5shiv.min.js'), 'text/javascript',
                         array('conditional' => 'lt IE 9',))
+                ->prependFile($this->basePath('js/ckeditor/ckeditor.js'))
+                ->prependFile($this->basePath('js/ckeditor/config.js'))
         ;
         ?>
         <script type="text/javascript">

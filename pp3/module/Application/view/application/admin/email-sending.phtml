@@ -1,0 +1,87 @@
+<?php
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+?>
+<?= $this->partial('_nav.phtml'); ?>
+<h4>E-mail sending</h4>
+<p>
+<?= $this->partial('layout/flash.phtml'); ?>
+</p>
+<?php if($this->successMessage) { ?>
+<div class="panel panel-success">
+  <div class="panel-heading">Worked!</div>
+  <div class="panel-body">
+    <?php echo $this->successMessage ?>
+  </div>
+</div>
+<?php } ?>
+<form class="" method="post" action="">
+  <div class="panel panel-default">
+    <div class="panel-heading">Limit NetBeans versions:</div>
+    <div class="panel-body">
+      <p><input type="checkbox" name="onlyVerified" id="onlyVerified" style="margin-right: 1ex" <?php if($this->onlyVerified) {echo 'checked="checked"';} ?>/><label for="onlyVerified">Only consider verified entries</label></p>
+      <div style="max-height: 200px; overflow: auto">
+      <?php
+          foreach ($this->nbVersions as $v) {
+              printf('<input type="checkbox" name="nbVersionId[]" value="%1$s" id="nbVersionId%1$s" style="margin-right: 1ex" %3$s/><label for="nbVersionId%1$s">%2$s</label><br />'
+                      , $v->getId()
+                      , htmlspecialchars($v->getVersion())
+                      , in_array($v->getId(), $this->nbVersionId) ? 'checked="checked"' : ''
+                      );
+          }
+      ?>
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading"><label for="subject">Subject:</label></div>
+    <div class="panel-body">
+      <input type="text" style="width: 100%" name="subject" id="subject" value="<?php echo htmlspecialchars($this->subject); ?>"/>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading">Text:</div>
+    <div class="panel-body">
+      <textarea class="form-control test" name="emailText" id="emailText" placeholder="E-mail text" value="">
+      <?php echo htmlspecialchars($this->emailText);
+      ?>
+      </textarea>
+      <p>
+        The following variables can be used:
+        <dl>
+          <dt>%1$s</dt>
+          <dd>Name of the author</dd>
+          <dt>%2$s</dt>
+          <dd>URL of the plugin portal</dd>
+          <dt>%3$s</dt>
+          <dd>HTML list (ul) of plugins of the author selected by the current query.</dd>
+        </dl>
+      </p>
+      <div style="margin-top: 1ex">
+        <button type="submit" class="btn btn-primary" name="sendEmail" value="sendEmail">Send e-mail</button>
+        <button type="submit" class="btn btn-secondary" name="sendPreview" value="sendPreview">Preview e-mail</button>
+      </div>
+    </div>
+  </div>
+</form>
+</p>
+<br/>
+<script>
+    CKEDITOR.replace( 'emailText', { height: 250 } );
+</script>
