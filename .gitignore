@@ -20,3 +20,7 @@
 /translations/*/nbproject/private/
 /translations/*/nbproject/genfiles.properties
 /pp3/module/Application/external/osgi-jar-parser/target
+/jsstub-generator/out/
+/jsstub-generator/node_modules/
+/jsstub-generator/nbproject/
+/jsstub-generator/out.old/
