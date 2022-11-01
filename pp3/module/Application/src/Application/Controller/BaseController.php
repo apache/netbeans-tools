@@ -78,4 +78,8 @@ class BaseController extends AbstractActionController {
     protected function getDownloadBaseUrl() {
         return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('catalogue', array('action' => 'download'));
     }
+
+    protected function getHomeUrl() {
+        return $_SERVER["REQUEST_SCHEME"].'://'.$_SERVER["HTTP_HOST"].$this->url()->fromRoute('home');
+    }
 }

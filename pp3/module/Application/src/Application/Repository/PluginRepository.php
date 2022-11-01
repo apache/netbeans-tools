@@ -149,4 +149,31 @@ class PluginRepository extends DoctrineEntityRepository {
             
         return $queryBuilder->getQuery()->getOneOrNullResult();
     }
+
+    /**
+     * @param string[] $nbVersionIds
+     * @param boolean $onlyVerified
+     * @return \Application\Entity\Plugin[]
+     */
+    public function getPluginsByNetBeansVersion($nbVersionIds, $onlyVerified = false) {
+
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+
+        $queryBuilder->select('plugin')
+        ->from('Application\Entity\Plugin', 'plugin')
+        ->leftJoin('plugin.versions', 'pv')
+        ->leftJoin('pv.nbVersionsPluginVersions', 'nbvpv')
+        ->leftJoin('nbvpv.nbVersion', 'nbv')
+        ->leftJoin('nbvpv.verification', 'v');
+
+        if($nbVersionIds !== null) {
+            $queryBuilder->andWhere($queryBuilder->expr()->in('nbv.id', $nbVersionIds));
+        }
+
+        if($onlyVerified) {
+            $queryBuilder->andWhere($queryBuilder->expr()->eq('v.status', \Application\Entity\Verification::STATUS_GO));
+        }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

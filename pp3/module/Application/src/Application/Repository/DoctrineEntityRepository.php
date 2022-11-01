@@ -31,9 +31,21 @@ class DoctrineEntityRepository implements
     ServiceManagerAwareInterface,
     EventManagerAwareInterface
 {
+    /**
+     * @var \Zend\ServiceManager\ServiceManager
+     */
     protected $serviceManager;
+    /**
+     * @var \Zend\EventManager\EventManagerInterface
+     */
     protected $eventManager;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
     protected $entityManager;
+    /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
     protected $entityRepository;
 
 

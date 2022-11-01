@@ -30,13 +30,30 @@ use Application\Entity\Category;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 use Zend\Http\PhpEnvironment\Response;
+use Zend\Mail;
+use Zend\Mail\Header\ContentType;
 
 class AdminController extends AuthenticatedController {
 
+    /**
+     * @var \Application\Repository\PluginRepository
+     */
     private $_pluginRepository;
+    /**
+     * @var \Application\Repository\PluginVersionRepository
+     */
     private $_pluginVersionRepository;
+    /**
+     * @var \Application\Repository\NbVersionPluginVersionRepository
+     */
     private $_nbVersionPluginVersionRepository;
+    /**
+     * @var \Application\Repository\VerificationRepository
+     */
     private $_verificationRepository;
+    /**
+     * @var \Application\Repository\VerificationRequestRepository
+     */
     private $_verificationRequestRepository;
     /**
      * @var \Application\Repository\UserRepository
@@ -322,6 +339,124 @@ class AdminController extends AuthenticatedController {
                 ));
         }
         return new ViewModel([
+            'nbVersions' => $this->_nbVersionRepository->findAll()
+        ]);
+    }
+
+    public function emailSendingAction() {
+        $this->_checkAdminUser();
+        $req = $this->request;
+        $successMessage = false;
+
+        $onlyVerified = false;
+        $nbVersionId = [];
+        $subject = '[NetBeans PluginPortal] <SUBJECT>';
+        $emailText = '
+<html>
+<head><title></title></head>
+<body>
+<p>Dear %1$s,</p>
+
+<p>we have some news for you.</p>
+
+<p>&lt;Your message&gt;</p>
+
+<p>
+Your plugins:<br />
+%3$s
+</p>
+
+<p>Direct link to the plugin portal:<br />
+<a href="%2$s">%2$s</a>
+</p>
+
+<p>
+Best wishes<br />
+NetBeans development team
+</p>
+
+<p>P.S.: Please contact dev@netbeans.apache.org for questions.</p>
+</body>
+</html>';
+
+        if ($req->isPost() && ($this->params()->fromPost('sendEmail') || $this->params()->fromPost('sendPreview'))) {
+            $successMessage = '';
+            $onlyVerified = $this->params()->fromPost('onlyVerified');
+            $nbVersionId = $this->params()->fromPost('nbVersionId');
+            $subject = $this->params()->fromPost('subject');
+            $emailText = $this->params()->fromPost('emailText');
+
+            $users = [];
+
+            $plugins = $this->_pluginRepository
+                    ->getPluginsByNetBeansVersion($nbVersionId, $onlyVerified);
+
+            foreach ($plugins as $plugin) {
+                foreach ($plugin->getAuthors() as $author) {
+                    $email = $author->getEmail();
+                    if (!array_key_exists($email, $users)) {
+                        $users[$email] = [
+                            'email' => $email,
+                            'name' => $author->getName(),
+                            'plugins' => []
+                        ];
+                    }
+                    if (!in_array($plugin->getName(), $users[$email]['plugins'])) {
+                        $users[$email]['plugins'][] = $plugin->getName();
+                    }
+                }
+            }
+
+            $successMessage .= sprintf("Generating E-Mails for %d plugins and %d users<br>\n",
+                    count($plugins),
+                    count($users));
+
+            if ($this->params()->fromPost('sendPreview')) {
+                $successMessage .= "Only sending preview email!<br>\n";
+
+                /**
+                 * @var \Application\Entity\User
+                 */
+                $user = $this->_userRepository->find($this->getAuthenticatedUserId());
+                $users = [$user->getEmail() => [
+                    'email' => $user->getEmail(),
+                    'name' => $user->getName(),
+                    'plugins' => ['Demo plugin 1', 'Demo plugin 2']
+                ]];
+            }
+
+            $transport = new Mail\Transport\Sendmail();
+
+            $emailCount = 0;
+            foreach (array_values(($users)) as $entry) {
+                $emailCount++;
+                $list = "<ul>";
+                foreach($entry['plugins'] as $pluginName) {
+                    $list .= sprintf("<li>%s</li>", htmlspecialchars($pluginName));
+                }
+                $list .= "</ul>";
+
+                $mail = new Mail\Message();
+                $mail->setFrom('noreply@netbeans.apache.org', 'NetBeans webmaster');
+                $mail->setSubject($subject);
+                $mail->getHeaders()->addHeader(ContentType::fromString('Content-Type: text/html; charset=utf-8'));
+                $mail->setBody(sprintf($emailText,
+                                htmlspecialchars($entry['name']),
+                                htmlspecialchars($this->getHomeUrl()),
+                                $list
+                ));
+                $mail->addTo($entry['email']);
+                $transport->send($mail);
+            }
+
+            $successMessage .= "E-Mails were successfully sent: " . $emailCount;
+        }
+        return new ViewModel([
+            'onlyVerified' => $onlyVerified,
+            'nbVersionId' => $nbVersionId === null ? [] : $nbVersionId,
+            'subject' => $subject,
+            'emailText' => $emailText,
+            'successMessage' => $successMessage,
             'nbVersions' => $this->_nbVersionRepository->findAll()
         ]);
     }
