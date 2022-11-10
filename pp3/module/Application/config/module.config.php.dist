@@ -36,6 +36,12 @@ return array(
         'dtdPath' => 'http://localhost/checkout/pp3/public/dtd/autoupdate-catalog-2_8.dtd',
         'downloadBaseUrl' => 'http://localhost/pp3/catalogue/download'
     ),
+    'imageTypes' => array (
+        'svg',
+        'png',
+        'jpg',
+        'jpeg'
+    ),
     'loginConfig' => array (
         array(
             'id' => 'github',

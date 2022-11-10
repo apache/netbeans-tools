@@ -84,17 +84,20 @@ class PluginController extends AuthenticatedController {
         ));        
     }
 
-    private function handleImgUpload($imgFolder) {
-        $tmp_name = $_FILES["image-file"]["tmp_name"];
+    private function handleImgUpload($validatedData, $imgFolder) {
+        if(! $validatedData['image']) {
+            return false;
+        }
+        $tmp_name = $validatedData['image']['tmp_name'];
         // basename() may prevent filesystem traversal attacks;
         // further validation/sanitation of the filename may be appropriate
-        $name = basename($_FILES["image-file"]["name"]);
+        $name = $validatedData['image']['name'];
         if(!file_exists($imgFolder)) {
             mkdir($imgFolder, 0777, true);
         }
         if(move_uploaded_file($tmp_name, $imgFolder.'/'.$name)) {
-            return $name; 
-        }        
+            return $name;
+        }
     }
 
     public function indexAction() {
@@ -159,7 +162,8 @@ class PluginController extends AuthenticatedController {
                 $this->params()->fromPost('description'),
                 $this->params()->fromPost('short_description'),
                 $this->params()->fromPost('category'),
-                $this->params()->fromPost('homepage')
+                $this->params()->fromPost('homepage'),
+                array_key_exists('image-file', $_FILES) ? $_FILES['image-file'] : false
             );
             if ($validatedData) {
                 $user = $this->_userRepository->find($this->getAuthenticatedUserId());
@@ -185,12 +189,24 @@ class PluginController extends AuthenticatedController {
                         $plugin->addCategory($cat2);
                     }
                 }
+
+                $imageDir = $this->_config['pp3']['catalogSavepath'] . '/plugins/' . $plugin->getId();
+
+                $oldImage = $plugin->getImage();
+
                 // save image
-                $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'].'/plugins/'.$plugin->getId());
-                if ($im) {                    
+                $im = $this->handleImgUpload($validatedData, $imageDir);
+                if ($im) {
                     $plugin->setImage($im);
                 }
 
+                if($this->params()->fromPost('image-file-delete') == 'true') {
+                    $plugin->setImage(null);
+                }
+
+                if($oldImage && $oldImage != $plugin->getImage()) {
+                    unlink($imageDir . '/' . $oldImage);
+                }
 
                 $this->_pluginRepository->persist($plugin);
                 $this->flashMessenger()->setNamespace('success')->addMessage('Plugin registered.');
@@ -209,6 +225,8 @@ class PluginController extends AuthenticatedController {
         return new ViewModel([
             'plugin' => $plugin,
             'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
+            'imageTypes' => $this->_config['imageTypes'],
+            'editMode' => false
         ]);
     }
 
@@ -270,7 +288,8 @@ class PluginController extends AuthenticatedController {
                         $this->params()->fromPost('description'),
                         $this->params()->fromPost('short_description'),
                         $this->params()->fromPost('category'),
-                        $this->params()->fromPost('homepage')
+                        $this->params()->fromPost('homepage'),
+                        array_key_exists('image-file', $_FILES) ? $_FILES['image-file'] : false
                 );
                 if ($validatedData) {
                     $plugin->setName($validatedData['name']);
@@ -280,10 +299,22 @@ class PluginController extends AuthenticatedController {
                     $plugin->setHomepage($validatedData['homepage']);
                     $plugin->setLastUpdatedAt(new \DateTime('now'));
 
+                    $imageDir = $this->_config['pp3']['catalogSavepath'] . '/plugins/' . $plugin->getId();
+
+                    $oldImage = $plugin->getImage();
+
                     // save image
-                    $im = $this->handleImgUpload($this->_config['pp3']['catalogSavepath'] . '/plugins/' . $plugin->getId());
+                    $im = $this->handleImgUpload($validatedData, $imageDir);
                     if ($im) {
                         $plugin->setImage($im);
+                    }
+
+                    if($this->params()->fromPost('image-file-delete') == 'true') {
+                        $plugin->setImage(null);
+                    }
+
+                    if($oldImage && $oldImage != $plugin->getImage()) {
+                        unlink($imageDir . '/' . $oldImage);
                     }
 
                     // categ
@@ -320,7 +351,9 @@ class PluginController extends AuthenticatedController {
         return new ViewModel(array(
             'plugin' => $plugin,
             'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
-            'activeTab' => $activeTab
+            'activeTab' => $activeTab,
+            'imageTypes' => $this->_config['imageTypes'],
+            'editMode' => true
         ));
     }
 
@@ -348,10 +381,24 @@ class PluginController extends AuthenticatedController {
         }
     }
 
-    private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category, $homepage) {
-        if (empty($name) || empty($license) || empty($category) || empty($shortDescription)) {
+    private function _validateAndCleanPluginData($name, $license, $description, $shortDescription, $category, $homepage, $imageFileData) {
+        $fileType = false;
+        if($imageFileData && $imageFileData['size'] > 0) {
+            $baseName = basename(strtolower($imageFileData['name']));
+            $pathInfo = pathinfo($baseName);
+            $imageFileNameType = $pathInfo["extension"];
+            foreach($this->_config['imageTypes'] as $imageType) {
+                if($imageFileNameType == $imageType) {
+                    $fileType = $imageType;
+                    break;
+                }
+            }
+        }
+
+        if (empty($name) || empty($license) || empty($category) || empty($shortDescription) || ($imageFileData && $imageFileData['size'] > 0 && (!$fileType))) {
             return false;
         }
+
         $config = HTMLPurifier_Config::createDefault();
         $purifier = new HTMLPurifier($config);
         return  array(
@@ -361,6 +408,7 @@ class PluginController extends AuthenticatedController {
             'short_description' => $purifier->purify($shortDescription),
             'category' => $category,
             'homepage' => $purifier->purify($homepage),
+            'image' => $fileType ? ['tmp_name' => $imageFileData['tmp_name'], 'name' => 'image.' . $fileType] : false
         );
     }
 
