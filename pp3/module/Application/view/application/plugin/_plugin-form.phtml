@@ -65,5 +65,14 @@
     </div>
     <div class="form-group">
         <label for="image-file">Image</label>
-        <input type="file" name="image-file" id="image-file">
+        <?php
+            $imageTypes = implode(array_map(function($a) {return '.' . $a;}, $this->imageTypes), ',');
+        ?>
+        <input type="file" name="image-file" id="image-file" accept="<?php echo $imageTypes ?>">
+        <?php if ($this->editMode) { ?>
+        <p>
+            <input type="checkbox" name="image-file-delete" id="image-file-delete" value="true">
+            <label for="image-file-delete" style="font-weight: normal">Remove Image</label>
+        </p>
+        <?php } ?>
     </div>
