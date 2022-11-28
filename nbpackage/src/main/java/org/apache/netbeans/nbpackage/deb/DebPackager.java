@@ -40,62 +40,54 @@ public class DebPackager implements Packager {
      * Defaults to Apache NetBeans icon.
      */
     static final Option<Path> ICON_PATH
-            = Option.ofPath("package.deb.icon", "",
-                    MESSAGES.getString("option.icon.description"));
+            = Option.ofPath("package.deb.icon",
+                    MESSAGES.getString("option.icon.help"));
 
     /**
      * Path to svg icon. Will only be used if DEB_ICON is also set. Defaults to
      * Apache NetBeans icon.
      */
     static final Option<Path> SVG_ICON_PATH
-            = Option.ofPath("package.deb.svg-icon", "",
-                    MESSAGES.getString("option.svg.description"));
+            = Option.ofPath("package.deb.svg-icon",
+                    MESSAGES.getString("option.svg.help"));
 
     /**
      * Name for the .desktop file (without suffix). Defaults to sanitized
      * version of package name.
      */
     static final Option<String> DESKTOP_FILENAME
-            = Option.ofString("package.deb.desktop-filename", "",
-                    MESSAGES.getString("option.desktopfilename.description"));
+            = Option.ofString("package.deb.desktop-filename",
+                    MESSAGES.getString("option.desktopfilename.help"));
 
     /**
      * StartupWMClass to set in .desktop file.
      */
     static final Option<String> DESKTOP_WMCLASS
             = Option.ofString("package.deb.wmclass",
-                    "${package.name}",
-                    MESSAGES.getString("option.wmclass.description"));
+                    MESSAGES.getString("option.wmclass.default"),
+                    MESSAGES.getString("option.wmclass.help"));
 
     /**
      * Category (or categories) to set in .desktop file.
      */
     static final Option<String> DESKTOP_CATEGORY
             = Option.ofString("package.deb.category",
-                    "Development;Java;IDE;",
-                    MESSAGES.getString("option.category.description"));
+                    MESSAGES.getString("option.category.default"),
+                    MESSAGES.getString("option.category.help"));
 
     /**
      * Maintainer name and email for Debian Control file.
      */
     static final Option<String> DEB_MAINTAINER
             = Option.ofString("package.deb.maintainer", "",
-                    MESSAGES.getString("option.maintainer.description"));
-
-    /**
-     * Package description for Debian Control file.
-     */
-    static final Option<String> DEB_DESCRIPTION
-            = Option.ofString("package.deb.description",
-                    "Package of ${package.name} ${package.version}.",
-                    MESSAGES.getString("option.description.description"));
+                    MESSAGES.getString("option.maintainer.help"));
 
     /**
      * Optional path to custom DEB control template.
      */
     static final Option<Path> CONTROL_TEMPLATE_PATH
             = Option.ofPath("package.deb.control-template",
-                    MESSAGES.getString("option.control_template.description"));
+                    MESSAGES.getString("option.control_template.help"));
 
     /**
      * DEB control template.
@@ -109,7 +101,7 @@ public class DebPackager implements Packager {
      */
     static final Option<Path> DESKTOP_TEMPLATE_PATH
             = Option.ofPath("package.deb.desktop-template",
-                    MESSAGES.getString("option.desktop_template.description"));
+                    MESSAGES.getString("option.desktop_template.help"));
 
     /**
      * Desktop file template.
@@ -123,7 +115,7 @@ public class DebPackager implements Packager {
      */
     static final Option<Path> LAUNCHER_TEMPLATE_PATH
             = Option.ofPath("package.deb.launcher-template",
-                    MESSAGES.getString("option.launcher_template.description"));
+                    MESSAGES.getString("option.launcher_template.help"));
 
     /**
      * Launcher script template.
@@ -134,8 +126,8 @@ public class DebPackager implements Packager {
 
     private static final List<Option<?>> DEB_OPTIONS
             = List.of(ICON_PATH, SVG_ICON_PATH, DESKTOP_FILENAME, DESKTOP_WMCLASS,
-                    DESKTOP_CATEGORY, DEB_MAINTAINER, DEB_DESCRIPTION,
-                    CONTROL_TEMPLATE_PATH, DESKTOP_TEMPLATE_PATH, LAUNCHER_TEMPLATE_PATH);
+                    DESKTOP_CATEGORY, DEB_MAINTAINER, CONTROL_TEMPLATE_PATH,
+                    DESKTOP_TEMPLATE_PATH, LAUNCHER_TEMPLATE_PATH);
 
     private static final List<Template> DEB_TEMPLATES
             = List.of(CONTROL_TEMPLATE, DESKTOP_TEMPLATE, LAUNCHER_TEMPLATE);
