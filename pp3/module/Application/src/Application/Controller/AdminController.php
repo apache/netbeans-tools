@@ -229,6 +229,7 @@ class AdminController extends AuthenticatedController {
     }
 
     public function searchUserByEmailAction() {
+        $this->_checkAdminUser();
         /* @var $response Response */
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine("Content-Type", "application/json");
@@ -242,7 +243,7 @@ class AdminController extends AuthenticatedController {
                     'email' => $user->getEmail(),
                     'idpProviderId' => $user->getIdpProviderId(),
                     'verifier' => !!$user->isVerifier(),
-                    'admin' => !!$user->isVerifier()
+                    'admin' => !!$user->isAdmin()
                 );
             }
         }
