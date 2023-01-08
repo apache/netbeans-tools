@@ -37,6 +37,10 @@ class VerificationRequestRepository extends DoctrineEntityRepository {
         );
     }
 
+    /**
+     * @param int $verifierId
+     * @return \Application\Entity\VerificationRequest[]
+     */
     public function getVerificationRequestsForVerifier($verifierId) {
         $queryBuilder = $this->getEntityManager()->createQueryBuilder();
         $queryBuilder->select('vrq, verification, verifier, nbVersionPluginVersion, pluginVersion, plugin, nbVersion')

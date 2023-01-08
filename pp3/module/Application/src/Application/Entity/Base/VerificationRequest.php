@@ -120,7 +120,10 @@ class VerificationRequest {
     public function setVerifierId($vid) {
         $this->verifier_id = $vid;
     }
-    
+
+    /**
+     * @return Verification
+     */
     public function getVerification() {
         return $this->verification;
     }

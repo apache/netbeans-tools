@@ -29,4 +29,24 @@ class VerificationRepository extends DoctrineEntityRepository {
         return $this->entityRepository;
     }
 
+    /**
+     * @param int $id
+     * @return \Application\Entity\Verification
+     */
+    public function find($id) {
+        return parent::find($id);
+    }
+
+    /**
+     * @return \Application\Entity\Verification[]
+     */
+    public function getPendingVerifications() {
+        $queryBuilder = $this->getEntityManager()->createQueryBuilder();
+        $queryBuilder->select('verification')
+        ->from('Application\Entity\Verification', 'verification')
+        ->where('verification.status IN (:status)')
+        ->orderBy('verification.created_at', 'DESC')
+        ->setParameter('status', array(\Application\Entity\Verification::STATUS_REQUESTED, \Application\Entity\Verification::STATUS_PENDING));
+        return $queryBuilder->getQuery()->getResult();
+    }
 }

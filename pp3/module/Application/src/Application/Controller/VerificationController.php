@@ -22,22 +22,36 @@ namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Entity\Verification;
-use Application\Pp\Catalog;
-use Zend\Session\Container;
 use Zend\Mail;
 use HTMLPurifier;
 use HTMLPurifier_Config;
+use \Application\Entity\VerificationRequest;
 
 class VerificationController extends AuthenticatedController {
 
+    /**
+     * @var \Application\Repository\NbVersionPluginVersionRepository
+     */
     private $_nbVersionPluginVersionRepository;
+    /**
+     * @var \Application\Repository\VerificationRepository
+     */
     private $_verificationRepository;
     /**
      * @var \Application\Repository\UserRepository
      */
     private $_userRepository;
+    /**
+     * @var \Application\Repository\VerificationRequestRepository
+     */
     private $_verificationRequestRepository;
+    /**
+     * @var \Application\Repository\PluginVersionRepository
+     */
     private $_pluginVersionRepository;
+    /**
+     * @var \Application\Repository\NbVersionRepository
+     */
     private $_nbVersionRepository;
 
     public function __construct($nbVersionPluginVersionRepo, $verificationRepo, 
@@ -53,39 +67,73 @@ class VerificationController extends AuthenticatedController {
     } 
 
     public function listAction() {
+        if(!$this->_checkVerifierUser()) {
+            return;
+        }
+        /**
+         * @var \Application\Entity\VerificationRequest[]
+         */
+        $verificationRequests = [];
+        foreach($this->_verificationRequestRepository->getVerificationRequestsForVerifier($this->getAuthenticatedUserId()) as $vr) {
+            $verificationRequests[$vr->getVerification()->getId()] = $vr;
+        }
         return new ViewModel([
-            'verificationRequests' => $this->_verificationRequestRepository->getVerificationRequestsForVerifier($this->getAuthenticatedUserId()),
-            'isAdmin' => $this->isAdmin(),
+            'verificationRequests' => $verificationRequests,
+            'pendingVerifications' => $this->_verificationRepository->getPendingVerifications(),
+            'isAdmin' => $this->isAdmin()
         ]);
     }
 
     public function voteGoAction() {
+        if(!$this->_checkVerifierUser()) {
+            return;
+        }
         return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_GO);
     }
 
     public function voteNoGoAction() {
+        if(!$this->_checkVerifierUser()) {
+            return;
+        }
         return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_NOGO);
     }
 
     public function voteUndecidedAction() {
+        if(!$this->_checkVerifierUser()) {
+            return;
+        }
         return $this->_handleVote(\Application\Entity\VerificationRequest::VOTE_UNDECIDED);
     }
 
     private function _handleVote($vote) {
-        $reqId = $this->params()->fromQuery('id');
-        $bailOut = false;
-        if (empty($reqId)) {
-            $bailOut = true;
-        }
-        $req = $this->_verificationRequestRepository->find($reqId);
-        if (!$req || $req->getVerifier()->getId() !== $this->getAuthenticatedUserId()) {
-            $bailOut = true;
-        }
-        if ($bailOut) {
+        $verificationId = $this->params()->fromQuery('id');
+        if (empty($verificationId)) {
             return $this->redirect()->toRoute('verification', array(
                 'action' => 'list'
             ));
         }
+        $verification = $this->_verificationRepository->find($verificationId);
+        if (!$verification) {
+            return $this->redirect()->toRoute('verification', array(
+                'action' => 'list'
+            ));
+        }
+        $req = null;
+        foreach($verification->getVerificationRequests() as $verificationRequest) {
+            if($verificationRequest->getVerifierId() == $this->getAuthenticatedUserId()) {
+                $req = $verificationRequest;
+                break;
+            }
+        }
+        if($req == null) {
+            $req = new VerificationRequest();
+            $req->setCreatedAt(new \DateTime('now'));
+            $req->setVerification($verification);
+            $req->setVerifier($this->_userRepository->find($this->getAuthenticatedUserId()));
+            $req->setVote(VerificationRequest::VOTE_UNDECIDED);
+            $verification->addVerificationRequest($req);
+        }
+
         $req->setVote($vote);
         $req->setVotedAt(new \DateTime('now'));
         $comment = $this->params()->fromPost('comment');
@@ -115,24 +163,28 @@ class VerificationController extends AuthenticatedController {
     }
 
     public function voteMasterGoAction() {
+        if(!$this->_checkAdminUser()) {
+            return;
+        }
         return $this->_handleMasterVote(\Application\Entity\Verification::STATUS_GO);
     }
 
     public function voteMasterNoGoAction() {
+        if(!$this->_checkAdminUser()) {
+            return;
+        }
         return $this->_handleMasterVote(\Application\Entity\Verification::STATUS_NOGO);
     }
 
     private function _handleMasterVote($vote) {
         $verId = $this->params()->fromQuery('id');
-        $bailOut = false;
         if (empty($verId) || !$this->isAdmin()) {
-            $bailOut = true;
+            return $this->redirect()->toRoute('verification', array(
+                'action' => 'list'
+            ));
         }
         $ver = $this->_verificationRepository->find($verId);
         if (!$ver) {
-            $bailOut = true;
-        }
-        if ($bailOut) {
             return $this->redirect()->toRoute('verification', array(
                 'action' => 'list'
             ));
@@ -155,21 +207,21 @@ class VerificationController extends AuthenticatedController {
     }
 
     public function createAction() {
-        $bailOut = false;
         $nbvPvId = $this->params()->fromQuery('nbvPvId');
         if (empty($nbvPvId)) {
-            $bailOut = true;
+            return $this->redirect()->toRoute('plugin', array(
+                    'action' => 'list'
+            ));
         }
         /** @var \Application\Entity\NbVersionPluginVersion $nbVersionPluginVersion   */
         $nbVersionPluginVersion = $this->_nbVersionPluginVersionRepository->find($nbvPvId);
         if (!$nbVersionPluginVersion) {
-            $bailOut = true;
+            return $this->redirect()->toRoute('plugin', array(
+                    'action' => 'list'
+            ));
         }
         $plugin = $nbVersionPluginVersion->getPluginVersion()->getPlugin();
         if (!$plugin->isOwnedBy($this->getAuthenticatedUserId()) && !$this->isAdmin()) {
-            $bailOut = true;
-        }
-        if ($bailOut) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
@@ -255,5 +307,25 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.');
         $transport = new Mail\Transport\Sendmail();
         $transport->send($mail);
         // die(var_dump($mail->getBody()));
+    }
+
+    private function _checkVerifierUser() {
+        if (!$this->isVerifier()) {
+            $this->redirect()->toRoute('home', array(
+                'action' => 'index'
+            ));
+            return false;
+        }
+        return true;
+    }
+
+    private function _checkAdminUser() {
+        if (!$this->isAdmin()) {
+            return $this->redirect()->toRoute('home', array(
+                'action' => 'index'
+            ));
+            return false;
+        }
+        return true;
     }
 }

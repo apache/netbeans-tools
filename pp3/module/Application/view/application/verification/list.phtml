@@ -36,10 +36,10 @@
     </thead>
     <tbody>
 <?php
-    foreach ($this->verificationRequests as $vReq) {
-        $verification = $vReq->getVerification();
+    foreach ($this->pendingVerifications as $verification) {
+        $verificationRequest = $this->verificationRequests[$verification->getId()];
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion();
-        $pluginVersion = $vReq->getVerification()->getNbVersionPluginVersion()->getPluginVersion();
+        $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion();
         $plugin = $pluginVersion->getPlugin();
         echo '<tr>
         <td>
@@ -60,14 +60,18 @@
         <td>
             <span class="badge '.$verification->getStatusBadgeClass().'" title="'.$verification->getStatusBadgeTitle().'">'.$verification->getStatusBadgeTitle().'</span>
         </td>
-        <td>    
-            <span class="badge '.$vReq->getVoteBadgeClass().'" title="'.$vReq->getVoteBadgeTitle().'">'.$vReq->getVoteBadgeTitle().'</span>
-        </td>
+        <td>';
+        printf(
+            '<span class="badge %1$s" title="%2$s">%2$s</span>',
+            htmlspecialchars($verificationRequest ? $verificationRequest->getVoteBadgeClass() : ''),
+            htmlspecialchars($verificationRequest ? $verificationRequest->getVoteBadgeTitle() : 'Undecided')
+        );
+        echo '</td>
         <td>
         <div>
-        <a href="'.$this->url('verification', array('action'=>'vote-go'), array('query' => array('id'=>$vReq->getId()))).'" class="btn btn-success" role="button">Go</a>
-        <a href="'.$this->url('verification', array('action'=>'vote-undecided'), array('query' => array('id'=>$vReq->getId()))).'" class="btn btn-default" role="button">Undecided</a>
-        <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#noGoModal-'.$vReq->getId().'">NoGo</button>
+        <a href="'.$this->url('verification', array('action'=>'vote-go'), array('query' => array('id'=>$verification->getId()))).'" class="btn btn-success" role="button">Go</a>
+        <a href="'.$this->url('verification', array('action'=>'vote-undecided'), array('query' => array('id'=>$verification->getId()))).'" class="btn btn-default" role="button">Undecided</a>
+        <button type="button" class="btn btn-danger" role="button" data-toggle="modal" data-target="#noGoModal-'.$verification->getId().'">NoGo</button>
         
         ';
 
@@ -80,8 +84,8 @@
         }
         echo '
         </div>
-        <div class="modal fade" id="noGoModal-'.$vReq->getId().'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-            <form action="'.$this->url('verification', array('action'=>'vote-nogo'), array('query' => array('id'=>$vReq->getId()))).'" method="post">
+        <div class="modal fade" id="noGoModal-'.$verification->getId().'" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <form action="'.$this->url('verification', array('action'=>'vote-nogo'), array('query' => array('id'=>$verification->getId()))).'" method="post">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                     <div class="modal-header">
