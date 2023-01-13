@@ -23,7 +23,7 @@
 /**
  * @see Zend_Console_Getopt_Exception
  */
-require_once 'Zend/Exception.php';
+require_once 'PEAR/Exception.php';
 
 
 /**
@@ -32,7 +32,7 @@ require_once 'Zend/Exception.php';
  * @copyright  Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Zend_Console_Getopt_Exception extends Zend_Exception
+class Zend_Console_Getopt_Exception extends PEAR_Exception
 {
     /**
      * Usage

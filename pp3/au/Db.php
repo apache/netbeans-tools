@@ -10,16 +10,25 @@ class Db {
     private static $_isConnected = false;
     private static $_insData=array();
     private static $_insCounter=0;
+    public static $link;
 
     private static function connect() {
-        $link = mysql_connect(DB_HOST, DB_USER, DB_PASSWORD);
-        if (!$link) {
+        Db::$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD);
+
+        if (!Db::$link) {
             throw new Exception('Can\'t connect to DB: '.DB_USER.':*****@'.DB_HOST);
+
+            die();
         }
-        $db_selected = mysql_select_db(DB_NAME, $link);
+
+        $db_selected = mysqli_select_db(Db::$link, DB_NAME);
+
         if (!$db_selected) {
             throw new Exception('Can\'t select DB: '.DB_USER.':*****@'.DB_HOST.'/'.DB_NAME);
+
+            die();
         }
+
         self::$_isConnected = true;
     }
 
@@ -32,13 +41,13 @@ class Db {
         if (self::$_isConnected == false) {
             self::connect();
         }
-        $result = mysql_query($sql);
+        $result = mysqli_query(Db::$link, $sql);
         if ($result != false) {
             self::$counter++;
             return $result;
         } else {
             // log error
-            Logger::write(Logger::DEBUG, 'SQL error for: '.$sql.'; ERR: '.mysql_error());
+            Logger::write(Logger::DEBUG, 'SQL error for: '.$sql.'; ERR: '.mysqli_error(Db::$link));
             return false;
         }
     }

@@ -37,8 +37,9 @@ class Runner {
         self::unlock();
     }
 
-    private function procesSource($source) {
+    private static function procesSource($source) {
         Logger::write(Logger::INFO, 'Starting processing soucre: ' . $source);
+
         if (self::grabSourceLogfile($source) == true) {
             // reset Db counter
             Db::$counter = 0;
@@ -50,7 +51,7 @@ class Runner {
 
     //dsd
 
-    private function parseLogfile($source) {
+    private static function parseLogfile($source) {
         $importCounter = 0;
         Logger::write(Logger::INFO, 'Starting parsing of the ' . $source . ' logfile ' . self::$grabbedLogFile);
         $months = array(
@@ -145,7 +146,7 @@ class Runner {
         return true;
     }
 
-    private function grabSourceLogfile($source) {
+    private static function grabSourceLogfile($source) {
         // get the current date
         $currentDate = strtotime('+1 day', self::getLastRunDate($source));
         Logger::write(Logger::INFO, 'Current date set to ' . date('Y-m-d', $currentDate));
@@ -186,7 +187,7 @@ class Runner {
         }
     }
 
-    private function getLastRunDate($source) {
+    private static function getLastRunDate($source) {
         $ld = file(LAST_DATE_FILE_PREFIX . $source);
         if ($ld) {
             Logger::write(Logger::INFO, 'Last run date identified as ' . trim($ld[0], "\n"));
@@ -196,7 +197,7 @@ class Runner {
         }
     }
 
-    private function incrementRunDate($source) {
+    private static function incrementRunDate($source) {
         if (file_put_contents(LAST_DATE_FILE_PREFIX . $source, date('Y-m-d', self::$currentDate)) != false) {
             Logger::write(Logger::INFO, 'Setting the last run date to ' . date('Y-m-d', self::$currentDate));
         } else {
@@ -204,7 +205,7 @@ class Runner {
         }
     }
 
-    private function lock() {
+    private static function lock() {
         if (file_exists(LOCKFILE)) {
             throw new Exception('Previous run still runnig, lockfile ' . LOCKFILE . ' from ' . date("F d Y H:i:s.", filemtime(LOCKFILE)) . ". Remove lockfile first\n");
         }
@@ -216,7 +217,7 @@ class Runner {
         }
     }
 
-    private function unlock() {
+    private static function unlock() {
         if (unlink(LOCKFILE) == true) {
             Logger::write(Logger::INFO, 'Lockfile removed');
         } else {
@@ -224,7 +225,7 @@ class Runner {
         }
     }
 
-    private function removeLogfile() {
+    private static function removeLogfile() {
         if (unlink(self::$grabbedLogFile) == true) {
             Logger::write(Logger::INFO, 'Source logfile removed');
         } else {
