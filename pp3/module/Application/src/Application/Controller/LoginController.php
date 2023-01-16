@@ -218,8 +218,8 @@ class LoginController extends BaseController {
         $_SESSION['sessionUserEmail'] = $user->getEmail();
         $_SESSION['sessionIdpProviderId'] = $user->getIdpProviderId();
         $_SESSION['sessionUserName'] = $user->getName();
-        $_SESSION['isVerifier'] = $user->isVerifier();
-        $_SESSION['isAdmin'] = $user->isAdmin();
+        $_SESSION['isVerifier'] = $user->isVerifier() || $userinfo['committer'];
+        $_SESSION['isAdmin'] = $user->isAdmin() || $userinfo['pmc'];
 
         return $this->redirect()->toRoute("home");
     }
@@ -301,24 +301,32 @@ class LoginController extends BaseController {
         if(! $json) {
             return null;
         }
-        $userinfo = array();
+        $userinfo = [];
         $userinfo['providerId'] = $providerId;
         if($type == 'github') {
             $userinfo['id'] = "" . $json['id'];
             $userinfo['email'] = "" . $json['email'];
             $userinfo['name'] = "" . $json['name'];
+            $userinfo['pmc'] = false;
+            $userinfo['committer'] = false;
         }  else if ($type == 'google') {
             $userinfo['id'] = "" . $json['sub'];
             $userinfo['email'] = "" . $json['email'];
             $userinfo['name'] = "" . $json['name'];
+            $userinfo['pmc'] = false;
+            $userinfo['committer'] = false;
         } else if ($type == 'amazon') {
             $userinfo['id'] = "" . $json['user_id'];
             $userinfo['email'] = "" . $json['email'];
             $userinfo['name'] = "" . $json['name'];
+            $userinfo['pmc'] = false;
+            $userinfo['committer'] = false;
         } else if ($type == 'apache' && $json['state'] == $state) {
             $userinfo['id'] = "" . $json['uid'];
             $userinfo['email'] = "" . $json['email'];
             $userinfo['name'] = "" . $json['fullname'];
+            $userinfo['pmc'] = is_array($json['pmcs']) && in_array("netbeans", $json['pmcs']);
+            $userinfo['committer'] = is_array($json['projects']) && in_array("netbeans", $json['projects']);
         }
         return $userinfo;
     }

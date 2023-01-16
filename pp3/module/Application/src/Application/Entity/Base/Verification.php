@@ -91,7 +91,10 @@ class Verification {
     public function getPluginVersion() {
         return $this->plugin_version;
     }      
-    
+
+    /**
+     * @return \Application\Entity\VerificationRequest[]
+     */
     public function getVerificationRequests() {
         return $this->verification_requests;
     }
