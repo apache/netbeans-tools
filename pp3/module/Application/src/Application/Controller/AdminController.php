@@ -351,32 +351,37 @@ class AdminController extends AuthenticatedController {
 
         $onlyVerified = false;
         $nbVersionId = [];
-        $subject = '[NetBeans PluginPortal] <SUBJECT>';
+        $subject = '[NetBeans PluginPortal] Check your plugin with the new Apache NetBeans <version>!';
         $emailText = '
 <html>
 <head><title></title></head>
 <body>
-<p>Dear %1$s,</p>
+<p>Hey %1$s,</p>
 
-<p>we have some news for you.</p>
-
-<p>&lt;Your message&gt;</p>
+<p>
+have you heard of the new Apache NetBeans version on the horizon?
+Yes, the NetBeans community is going to release version <version> soon!
+In order to have your great plugin(s) available on the NetBeans Update
+Center also for users of the new version please consider testing the
+plugin(s) with the latest RC build and possibly submit new verification
+request(s) via the Plugin Portal website.
+</p>
 
 <p>
 Your plugins:<br />
 %3$s
 </p>
 
-<p>Direct link to the plugin portal:<br />
-<a href="%2$s">%2$s</a>
+<p>Direct link to the list of your plugins:<br />
+<a href="%2$s/plugin/list">%2$s/plugin/list</a>
 </p>
 
 <p>
-Best wishes<br />
-NetBeans development team
+Thanks for your contribution and ongoing support!<br />
+Apache NetBeans Plugin Portal Administrator
 </p>
 
-<p>P.S.: Please contact dev@netbeans.apache.org for questions.</p>
+<p>P.S.: Please contact dev@netbeans.apache.org mailing list for any questions.</p>
 </body>
 </html>';
 
