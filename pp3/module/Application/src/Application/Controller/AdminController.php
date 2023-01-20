@@ -350,7 +350,7 @@ class AdminController extends AuthenticatedController {
 
         $onlyVerified = false;
         $nbVersionId = [];
-        $subject = '[NetBeans PluginPortal] Check your plugin with the new Apache NetBeans %4$s version!';
+        $subject = '[NetBeans PluginPortal] Check your plugin with the new Apache NetBeans <version>!';
         $emailText = '
 <html>
 <head><title></title></head>
@@ -359,7 +359,7 @@ class AdminController extends AuthenticatedController {
 
 <p>
 have you heard of the new Apache NetBeans version on the horizon?
-Yes, the NetBeans community is going to release version %4$s soon!
+Yes, the NetBeans community is going to release version <version> soon!
 In order to have your great plugin(s) available on the NetBeans Update
 Center also for users of the new version please consider testing the
 plugin(s) with the latest RC build and possibly submit new verification
