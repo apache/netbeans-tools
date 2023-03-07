@@ -4,5 +4,7 @@
 find ${SNAP_USER_DATA} -name '*nbjavac.*' -delete || true
 find ${SNAP_USER_DATA} -name '*nbjavac-*' -delete || true
 
+# Remove NetBeans Gradle Tooling if that was patched between releases.
+find ${SNAP_USER_DATA} -name netbeans-gradle-tooling.jar -delete || true
 exec $@
 

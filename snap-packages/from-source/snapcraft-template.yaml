@@ -73,6 +73,6 @@ parts:
 apps:
   netbeans:
     command-chain:
-      - launchers/nbjavac-cleanup
+      - launchers/userdir-cleanup
     command: netbeans/bin/netbeans
 
