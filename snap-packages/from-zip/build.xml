@@ -29,8 +29,8 @@
         <format property="build.date" pattern="yyyyMMdd"/>
     </tstamp>        
     
-    <available property="has.dev.snap" file="${dev.dir}/netbeans-dev_${build.date}_amd64.snap"/>
-    <available property="has.rel.snap" file="${rel.dir}/netbeans_${release.version}_amd64.snap"/>
+    <available property="has.dev.snap" file="${dev.dir}/netbeans-dev_${build.date}_multi.snap"/>
+    <available property="has.rel.snap" file="${rel.dir}/netbeans_${release.version}_multi.snap"/>
 
     <target name="usage">
         <echo><![CDATA[
@@ -160,7 +160,7 @@
     <target name="upload-dev" if="${has.dev.snap}" >
         <exec executable="snapcraft" dir="${dev.dir}">
             <arg value="upload"/>
-            <arg value="netbeans-dev_${build.date}_amd64.snap"/>
+            <arg value="netbeans-dev_${build.date}_multi.snap"/>
             <arg value="--release"/>
             <arg value="edge"/>
         </exec>
@@ -169,7 +169,7 @@
     <target name="upload-rel" if="${has.rel.snap}" >
         <exec executable="snapcraft" dir="${rel.dir}">
             <arg value="upload"/>
-            <arg value="netbeans_${release.version}_amd64.snap"/>
+            <arg value="netbeans_${release.version}_multi.snap"/>
             <arg value="--release"/>
             <arg value="edge"/>
         </exec>
