@@ -31,7 +31,7 @@ icon: snap/gui/frame512.png
 confinement: classic
 grade: @SNAP_GRADE@
 base: core20
-architectures: [ amd64 ]
+architectures: [ amd64, arm64, armhf, i386 ]
 compression: lzo
 assumes:
   - command-chain
