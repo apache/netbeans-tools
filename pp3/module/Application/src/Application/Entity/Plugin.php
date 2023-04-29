@@ -22,6 +22,7 @@ namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Application\Entity\PluginVersion;
+use Application\Pp\MavenDataLoader;
 
 /**
  * @ORM\Entity
@@ -32,6 +33,9 @@ class Plugin extends Base\Plugin {
     const STATUS_PRIVATE = 1;
     const STATUS_PUBLIC = 2;
 
+    /**
+     * @var MavenDataLoader
+     */
     private $_dataLoader;
 
     public function setDataLoader($dl) {
