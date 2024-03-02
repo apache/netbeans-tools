@@ -25,13 +25,17 @@ description: |@SNAP_DISCLAIMER@
   It is free and open source and has a large community of users and developers
   around the world.
   
-  It requires Java 8 or later Java Development Kit installed.
+  It requires Java 11 or later Java Development Kit installed.
 
 icon: snap/gui/frame512.png
 confinement: classic
 grade: @SNAP_GRADE@
-base: core20
-architectures: [ amd64, arm64, armhf, i386 ]
+base: core22
+architectures: 
+  - build-on: [ amd64 ]
+    build-for: [ amd64 ]
+  - build-on: [ amd64 ]
+    build-for: [ arm64 ]
 compression: lzo
 assumes:
   - command-chain
@@ -44,8 +48,6 @@ parts:
     build-attributes: [ no-patchelf ]
     plugin: dump
     source: @SNAP_SOURCE@
-    filesets:
-        netbeans: [ netbeans/*, -netbeans/*.built ]
     override-build: |
         mv netbeans $SNAPCRAFT_PART_INSTALL/netbeans
         # Make the default cache and data directory relative to Snap user directory
@@ -57,7 +59,9 @@ parts:
         chmod a+r $SNAPCRAFT_PART_INSTALL/netbeans/etc/netbeans.conf
         find $SNAPCRAFT_PART_INSTALL/netbeans -type f -name *.sh -exec chmod a+rx {} \;
     stage:
-        - $netbeans
+        - netbeans/*
+        - -netbeans/*.built
+        - -netbeans/extra
 
   launchers:
     source: snap/local/launchers
