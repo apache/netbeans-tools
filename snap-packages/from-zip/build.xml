@@ -125,14 +125,14 @@
 
     <target name="snap-dev" depends="prepare-dev" unless="${has.dev.snap}">
         <exec executable="snapcraft" dir="${dev.dir}">
-            <arg value="snap"/>
+            <arg value="pack"/>
             <arg value="--use-lxd"/>
         </exec>
     </target>
     
     <target name="snap-rel" depends="prepare-rel" unless="${has.rel.snap}">
         <exec executable="snapcraft" dir="${rel.dir}">
-            <arg value="snap"/>
+            <arg value="pack"/>
             <arg value="--use-lxd"/>
         </exec>
     </target>
