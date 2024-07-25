@@ -1,0 +1,2 @@
+# Define some file types explicitly as being binary.
+*.ai              binary
