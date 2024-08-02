@@ -446,11 +446,12 @@ Apache NetBeans Plugin Portal Administrator
                 $mail->setFrom('noreply@netbeans.apache.org', 'NetBeans webmaster');
                 $mail->setSubject($subject);
                 $mail->getHeaders()->addHeader(ContentType::fromString('Content-Type: text/html; charset=utf-8'));
-                $mail->setBody(sprintf($emailText,
-                                htmlspecialchars($entry['name']),
-                                htmlspecialchars($this->getHomeUrl()),
-                                $list
-                ));
+                $htmlBody = str_replace(
+                    ['%1$s', '%2$s', '%3$s'],
+                    [htmlspecialchars($entry['name']), htmlspecialchars($this->getHomeUrl()), $list],
+                    $emailText
+                );
+                $mail->setBody($htmlBody);
                 $mail->addTo($entry['email']);
                 $transport->send($mail);
             }
