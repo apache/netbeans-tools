@@ -37,7 +37,7 @@
     <tbody>
 <?php
     foreach ($this->pendingVerifications as $verification) {
-        $verificationRequest = $this->verificationRequests[$verification->getId()];
+        $verificationRequest = array_key_exists($verification->getId(), $this->verificationRequests) ? $this->verificationRequests[$verification->getId()] : false;
         $nbVersion = $verification->getNbVersionPluginVersion()->getNbVersion();
         $pluginVersion = $verification->getNbVersionPluginVersion()->getPluginVersion();
         $plugin = $pluginVersion->getPlugin();
