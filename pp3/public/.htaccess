@@ -16,6 +16,11 @@
 # under the License.
 
 RewriteEngine On
+
+# Disabling HTTP access to Plugin Portal 3.0 by auto-redirect to HTTPS protocol
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
 RewriteCond %{REQUEST_FILENAME} -s [OR]
