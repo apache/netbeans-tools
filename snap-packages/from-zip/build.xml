@@ -37,7 +37,7 @@
         
         Creating a Release:
         
-          ant -Dreleaase.version=<version> -Drelease.binary=<URL> snap-rel
+          ant -Drelease.version=<version> -Drelease.binary=<URL> snap-rel
      ]]></echo>
     </target>
 
