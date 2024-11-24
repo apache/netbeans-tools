@@ -61,6 +61,9 @@ class VerificationRequest {
      */
     protected $verifier;
 
+    /** @ORM\Column(name="copy", type="boolean") */
+    protected $copy = false;
+
     public function __construct() {
         return $this;
     }
@@ -138,5 +141,20 @@ class VerificationRequest {
 
     public function setVerifier($v) {
         $this->verifier = $v;
+    }
+
+    /**
+     * @return boolean
+     */
+    function isCopy() {
+        return $this->copy;
+    }
+
+    /**
+     * @param boolean $copy
+     * @return void
+     */
+    function setCopy($copy) {
+        $this->copy = $copy;
     }
 }

@@ -107,6 +107,9 @@ class NbVersionPluginVersion {
         return $this->verification_id;
     }
 
+    /**
+     * @return Verification
+     */
     public function getVerification() {
         return $this->verification;
     }

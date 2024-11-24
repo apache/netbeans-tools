@@ -250,25 +250,80 @@ class VerificationController extends AuthenticatedController {
                 'action' => 'list'
             ));
         }
-        // create verification
-        $verification = new Verification();
-        $verification->setStatus(Verification::STATUS_REQUESTED);
-        $verification->setCreatedAt(new \DateTime('now'));
-        $verification->setPluginVersionId($nbvPvId);
-        $this->_verificationRepository->persist($verification);
-        // join it to nbVersionPluginVersion
-        $nbVersionPluginVersion->setVerification($verification);
-        $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
-        $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
-        // generate requests for all verifiers
-        $verifiers = $this->_userRepository->findVerifier();
-        $verification->createRequests($verifiers, $plugin);
-        $this->_verificationRepository->persist($verification);
-        foreach($verification->getVerificationRequests() as $req) {
-            $req->sendVerificationMail($plugin);
+
+        $existingVerification = null;
+        foreach($nbVersionPluginVersion->getPluginVersion()->getNbVersionsPluginVersions() as $nvpv) {
+            if($nvpv->getVerification() != null && $nvpv->getVerification()->getStatus() == Verification::STATUS_GO) {
+                $existingVerification = $nvpv->getVerification();
+            }
         }
-        $this->flashMessenger()->setNamespace('success')->addMessage('Verification Requested.');
-        return $this->redirect()->toUrl('../plugin-version/edit?id='.$nbVersionPluginVersion->getPluginVersion()->getId());
+
+        if ($existingVerification == null) {
+            // create verification
+            $verification = new Verification();
+            $verification->setStatus(Verification::STATUS_REQUESTED);
+            $verification->setCreatedAt(new \DateTime('now'));
+            $verification->setPluginVersionId($nbvPvId);
+            $this->_verificationRepository->persist($verification);
+            // join it to nbVersionPluginVersion
+            $nbVersionPluginVersion->setVerification($verification);
+            $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
+            $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
+            // generate requests for all verifiers
+            $verifiers = $this->_userRepository->findVerifier();
+            $verification->createRequests($verifiers, $plugin);
+            $this->_verificationRepository->persist($verification);
+            foreach ($verification->getVerificationRequests() as $req) {
+                $req->sendVerificationMail($plugin);
+            }
+            $this->flashMessenger()->setNamespace('success')->addMessage('Verification Requested.');
+        } else {
+            // Create a copy of the existing verification
+            $verification = new Verification();
+            $verification->setStatus($existingVerification->getStatus());
+            $verification->setCreatedAt(new \DateTime('now'));
+            $verification->setPluginVersionId($nbvPvId);
+            $this->_verificationRepository->persist($verification);
+            // join it to nbVersionPluginVersion
+            $nbVersionPluginVersion->setVerification($verification);
+            $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
+            $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
+
+            foreach ($existingVerification->getVerificationRequests() as $existingRequest) {
+                // Only transfer votes with decisions
+                if ($existingRequest->getVote() != VerificationRequest::VOTE_UNDECIDED) {
+                    $req = new VerificationRequest();
+                    $req->setCreatedAt(new \DateTime('now'));
+                    $req->setVotedAt($existingRequest->getVotedAt());
+                    $req->setVerification($verification);
+                    $req->setVerifier($existingRequest->getVerifier());
+                    $req->setVote($existingRequest->getVote());
+                    $req->setComment($existingRequest->getComment());
+                    $req->setCopy(true);
+                    $verification->addVerificationRequest($req);
+                }
+            }
+
+            $this->_verificationRepository->persist($verification);
+
+            // Remove all other verifications for this plugin version
+            foreach ($plugin->getVersions() as $pv) {
+                foreach ($pv->getNbVersionsPluginVersions() as $nvpv) {
+                    if ($verification->getNbVersionPluginVersion()->getNbVersionId() == $nvpv->getNbVersionId()
+                        && $nvpv->getVerification() != null
+                        && $nvpv->getVerification()->getNbVersionPluginVersion()->getId() != $nbvPvId) {
+                        $this->_verificationRepository->remove($nvpv->getVerification());
+                        $nvpv->setVerification(null);
+                        $this->_nbVersionPluginVersionRepository->persist($nvpv);
+                    }
+                }
+            }
+
+            $this->flashMessenger()->setNamespace('success')->addMessage('Verification done based on previous verification.');
+
+            $this->rebuildAllCatalogs();
+        }
+        return $this->redirect()->toUrl('../plugin-version/edit?id=' . $nbVersionPluginVersion->getPluginVersion()->getId());
     }
 
     private function _sendNoGoNotification($verification, $comment) {
@@ -351,5 +406,13 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.');
             return false;
         }
         return true;
+    }
+
+    private function rebuildAllCatalogs() {
+        $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
+        foreach ($versions as $v) {
+            $v->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($v);
+        }
     }
 }
