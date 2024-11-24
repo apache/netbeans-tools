@@ -250,25 +250,62 @@ class VerificationController extends AuthenticatedController {
                 'action' => 'list'
             ));
         }
-        // create verification
-        $verification = new Verification();
-        $verification->setStatus(Verification::STATUS_REQUESTED);
-        $verification->setCreatedAt(new \DateTime('now'));
-        $verification->setPluginVersionId($nbvPvId);
-        $this->_verificationRepository->persist($verification);
-        // join it to nbVersionPluginVersion
-        $nbVersionPluginVersion->setVerification($verification);
-        $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
-        $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
-        // generate requests for all verifiers
-        $verifiers = $this->_userRepository->findVerifier();
-        $verification->createRequests($verifiers, $plugin);
-        $this->_verificationRepository->persist($verification);
-        foreach($verification->getVerificationRequests() as $req) {
-            $req->sendVerificationMail($plugin);
+
+        $existingVerification = null;
+        foreach($nbVersionPluginVersion->getPluginVersion()->getNbVersionsPluginVersions() as $nvpv) {
+            if($nvpv->getVerification() != null && $nvpv->getVerification()->getStatus() == Verification::STATUS_GO) {
+                $existingVerification = $nvpv->getVerification();
+            }
         }
-        $this->flashMessenger()->setNamespace('success')->addMessage('Verification Requested.');
-        return $this->redirect()->toUrl('../plugin-version/edit?id='.$nbVersionPluginVersion->getPluginVersion()->getId());
+
+        if ($existingVerification == null) {
+            // create verification
+            $verification = new Verification();
+            $verification->setStatus(Verification::STATUS_REQUESTED);
+            $verification->setCreatedAt(new \DateTime('now'));
+            $verification->setPluginVersionId($nbvPvId);
+            $this->_verificationRepository->persist($verification);
+            // join it to nbVersionPluginVersion
+            $nbVersionPluginVersion->setVerification($verification);
+            $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
+            $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
+            // generate requests for all verifiers
+            $verifiers = $this->_userRepository->findVerifier();
+            $verification->createRequests($verifiers, $plugin);
+            $this->_verificationRepository->persist($verification);
+            foreach ($verification->getVerificationRequests() as $req) {
+                $req->sendVerificationMail($plugin);
+            }
+            $this->flashMessenger()->setNamespace('success')->addMessage('Verification Requested.');
+        } else {
+            // Create a copy of the existing verification
+            $verification = new Verification();
+            $verification->setStatus($existingVerification->getStatus());
+            $verification->setCreatedAt($existingVerification->getCreatedAt());
+            $verification->setPluginVersionId($nbvPvId);
+            $this->_verificationRepository->persist($verification);
+            // join it to nbVersionPluginVersion
+            $nbVersionPluginVersion->setVerification($verification);
+            $this->_nbVersionPluginVersionRepository->persist($nbVersionPluginVersion);
+            $verification->setNbVersionPluginVersion($nbVersionPluginVersion);
+
+            foreach ($existingVerification->getVerificationRequests() as $existingRequest) {
+                // Only transfer votes with decisions
+                if ($existingRequest->getVote() != VerificationRequest::VOTE_UNDECIDED) {
+                    $req = new VerificationRequest();
+                    $req->setCreatedAt($existingRequest->getCreatedAt());
+                    $req->setVerification($verification);
+                    $req->setVerifier($existingRequest->getVerifier());
+                    $req->setVote($existingRequest->getVote());
+                    $verification->addVerificationRequest($req);
+                }
+            }
+
+            $this->_verificationRepository->persist($verification);
+
+            $this->flashMessenger()->setNamespace('success')->addMessage('Verification done based on previous verification.');
+        }
+        return $this->redirect()->toUrl('../plugin-version/edit?id=' . $nbVersionPluginVersion->getPluginVersion()->getId());
     }
 
     private function _sendNoGoNotification($verification, $comment) {
