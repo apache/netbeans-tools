@@ -88,10 +88,6 @@ class Verification {
         $this->plugin_version_id = $pvid;
     }
 
-    public function getPluginVersion() {
-        return $this->plugin_version;
-    }      
-
     /**
      * @return \Application\Entity\VerificationRequest[]
      */
@@ -99,6 +95,9 @@ class Verification {
         return $this->verification_requests;
     }
 
+    /**
+     * @return NbVersionPluginVersion
+     */
     public function getNbVersionPluginVersion() {
         return $this->nbVersionPluginVersion;
     }

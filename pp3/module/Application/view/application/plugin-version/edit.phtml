@@ -23,14 +23,14 @@
         <div class="col col-sm-6">
             <?= $this->partial('layout/flash.phtml'); ?>
             <form method="post" action="" class="needs-validation">
-            <?php 
-            echo $this->partial('application/plugin-version/_pluginVersion-form.phtml', 
-            array('pluginVersion' => $this->pluginVersion, 'nbVersions' => $this->nbVersions, 'verifiedNbVersionIds' => $this->verifiedNbVersionIds)); 
+            <?php
+            echo $this->partial('application/plugin-version/_pluginVersion-form.phtml',
+            array('pluginVersion' => $this->pluginVersion, 'nbVersions' => $this->nbVersions, 'verifiedNbVersionIds' => $this->verifiedNbVersionIds, "verificationPendingNbVersionIds" => $this->verificationPendingNbVersionIds));
             ?>
             <?php
             if($this->pluginVersion->getErrorMessage()) {
-            echo $this->partial('application/plugin-version/_pluginVersion-error-report.phtml', 
-            array('pluginVersion' => $this->pluginVersion, 'nbVersions' => $this->nbVersions, 'verifiedNbVersionIds' => $this->verifiedNbVersionIds));
+            echo $this->partial('application/plugin-version/_pluginVersion-error-report.phtml',
+            array('pluginVersion' => $this->pluginVersion, 'nbVersions' => $this->nbVersions, 'verifiedNbVersionIds' => $this->verifiedNbVersionIds, "verificationPendingNbVersionIds" => $this->verificationPendingNbVersionIds));
             }
             ?>
             <a class="btn btn-secondary" href="<?= $this->return ?>" role="button">Return</a>
@@ -38,7 +38,7 @@
             <button type="submit" class="btn btn-primary">Save Plugin Version</button>
             <?php } ?>
             </form>
-            
+
         </div>
     </div>
     <br/>

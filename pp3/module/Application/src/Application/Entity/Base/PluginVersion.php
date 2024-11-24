@@ -37,13 +37,13 @@ class PluginVersion {
 
     /** @ORM\Column(type="string", length=255) */
     protected $version;
-    
+
     /** @ORM\Column(type="string", length=255) */
     protected $url;
-    
+
     /** @ORM\Column(type="text") */
     protected $relnotes;
-    
+
     /** @ORM\Column(type="integer") */
     protected $plugin_id;
 
@@ -57,10 +57,10 @@ class PluginVersion {
     protected $error_message;
 
     /**
-     *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})     
+     *  @ORM\OneToMany(targetEntity="NbVersionPluginVersion", mappedBy="pluginVersion", cascade={"persist", "remove"})
      */
     protected $nbVersionsPluginVersions;
-    
+
     /**
      * @ORM\ManyToOne(targetEntity="Plugin", inversedBy="versions")
      * @ORM\JoinColumn(name="plugin_id", referencedColumnName="id")
@@ -81,11 +81,11 @@ class PluginVersion {
     public function getId() {
         return $this->id;
     }
-    
+
     public function setId($id) {
         $this->id = $id;
     }
-    
+
     public function setVersion($v) {
         $this->version = $v;
     }
@@ -93,7 +93,7 @@ class PluginVersion {
     public function getVersion() {
         return $this->version;
     }
-    
+
     public function getUrl() {
         return $this->url;
     }
@@ -101,7 +101,7 @@ class PluginVersion {
     public function setUrl($url) {
         $this->url = $url;
     }
-    
+
     public function getRelnotes() {
         return $this->relnotes;
     }
@@ -109,7 +109,7 @@ class PluginVersion {
     public function setRelnotes($relnotes) {
         $this->relnotes = $relnotes;
     }
-    
+
     public function getPluginId() {
         return $this->plugin_id;
     }
@@ -128,7 +128,10 @@ class PluginVersion {
     public function setPlugin($plugin) {
         $this->plugin = $plugin;
     }
-    
+
+    /**
+     * @return NbVersionPluginVersion[]
+     */
     public function getNbVersionsPluginVersions() {
         return $this->nbVersionsPluginVersions;
     }
