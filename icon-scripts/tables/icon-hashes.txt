@@ -38,7 +38,6 @@
 02833b5ad9e0f569b54a4f60c326ac4ff94cd3b8268599642f60de45683c103f  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/search_history.png
 02c9dfb6cb04c5f55fb2f894f09b1ae31391da3a3d190b2d8e5a823d64471345  java/beans/src/org/netbeans/modules/beans/resources/bifEventSetUC_S.gif
 030952ef1fd019b6d3eec0dd174d5aa33bc4bec5a304901d5a39a0717dcd9b6a  enterprise/websvc.restapi/src/org/netbeans/modules/websvc/rest/spi/resources/cg.gif
-03304ea471b578d5af574449216111f944840a00a7abd1553ae27d61a24528df  nb/welcome/release/docs/images/down-left.png
 0333fad750f443708a068ce1c279428dfca3bcfa5fc5ddcdefcd2610cc6ea641  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/metal_slidebottom_rollover.png
 03374418f4d25117ba82d6b7de9989f9bf23c3a59ce4aa61915f1beee75f2c82  enterprise/websvc.design/src/org/netbeans/modules/websvc/design/view/resources/notification_operation.png
 033b4c0c0964e9371141cab6a0923d17d5d7461e97f3864b90846228d127ddc1  profiler/profiler.heapwalker/src/org/netbeans/modules/profiler/heapwalk/ui/icons/impl/instances.png
@@ -62,8 +61,10 @@
 04ac72aafa0b75241e6908804373a648075809a03c171d194f582e0ec70acb98  java/java.navigation/src/org/netbeans/modules/java/navigation/resources/inherited.gif
 04b363503fae9da774ec2a02660f7fb882df2995ded09168e4c8563999466162  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/facelets/resources/template2-selected.png
 04c5c2f3997baadae2a195a523bfacdca536038cf5029107f94609f346064ef8  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/start_macro_recording.png
+04d26f25572d512a49e76f8f52e2319050162dce0a4e21ee14fc03903342cacc  nb/ide.branding/release/apache-netbeans256.png
 04d26f25572d512a49e76f8f52e2319050162dce0a4e21ee14fc03903342cacc  platform/core.startup/src/org/netbeans/core/startup/frame256.png
 04d4aba14644a88e437dc589defa7fa95a9b259e55c06c898642a7c14bc4a6d6  java/form/src/org/netbeans/modules/form/resources/alignment_l.gif
+04d91f8d56603190ad0e15b689ccf32c362b59f586e41cd419568de6a3b4ef15  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/newFolder.png
 04f03ad7f05b4f077a7dcf374df675611c2da30a20e1be065bb03ca273b1104e  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/editor/MultiBreakpoint_stroke.png
 04f7db80e0d2ce9796c97f6c1c21fa74dde80a8cefc3e05746e03ec81624500b  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/sample_icon2.gif
 051ab1c652f2a3c7505f74f760e4c11e14d2e0e1d7522605899db0d40848b154  java/form/src/org/netbeans/modules/form/layoutsupport/resources/w.gif
@@ -103,7 +104,6 @@
 062a32d7a145c4e2d575fd2d22bbaa0abc1f58578ad09350d6980be9ece38344  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/debuggingView/resume_button_pressed_16.png
 063b2b327b4e39ed04129984ed125e2425fb691f2758a72bc4dcb4b2e803ca85  enterprise/web.monitor/src/org/netbeans/modules/web/monitor/client/icons/other.gif
 064529c81b71dcfcee53eb5244c1acb43c127801730f93e4af90c8fe218ee71f  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/jdbc_resources.png
-0658017642fd5cb58681a13608f940b8c2e9a356d64295f31bdb89792a8d1371  nb/welcome/src/org/netbeans/modules/welcome/resources/broken_image.gif
 06776c5f228752e0874cadbdcfe6e47df045f9afb678ed0f645a04fdbe29732a  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/runButton.gif
 06818f18bd750252445d6c5ab6c16e5f77a57db9b12aba37a5f34292e4393d76  java/form/src/org/netbeans/modules/form/beaninfo/swing/flowLayout.gif
 06b9bee10121e50bf8a7bdccce66fb829f3bf1957c6b6ac867dab19e6e95c83e  platform/lib.uihandler/src/org/netbeans/lib/uihandler/key32.png
@@ -178,6 +178,7 @@
 0a9f6ee467a5c9d456a2999516c61b7306964816af502c780f887c5d3a579e39  ide/bugzilla/src/org/netbeans/modules/bugzilla/resources/repository.png
 0a9f6ee467a5c9d456a2999516c61b7306964816af502c780f887c5d3a579e39  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/repository.png
 0ada520716482c4ae394ace93f51fded9441c207505028a55dd0f3bc50182c4c  ide/selenium2.server/src/org/netbeans/modules/selenium2/server/resources/selenium16.png
+0adfd0fa61c333086b884dbc45210af187a864f3ba57d38e6e06c8dcaea28a0d  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/error32.png
 0ae6394fe140bce364f93ae852b70fbf48fc1c720851c0c10b79c2b1ccc8a4c1  ide/git/src/org/netbeans/modules/git/resources/icons/index_vs_working.png
 0ae6394fe140bce364f93ae852b70fbf48fc1c720851c0c10b79c2b1ccc8a4c1  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/index_vs_working.png
 0aedbc7990fe848b5f4fac3d1ede0c4391467bfbf61ea120ccb66d77f000b04a  java/beans/src/org/netbeans/modules/beans/resources/bifPropertyWO_S.gif
@@ -282,13 +283,13 @@
 10d1d981a0e10281e3a5ee198d51a94b636fb8ef0c745fe2a3f7068de494b35e  java/form/src/org/netbeans/modules/form/beaninfo/awt/scrollbar32.gif
 10f5bf900e74d832573776d931e90b9601ff50aa976a886cfe0239b419afdfca  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/mac_popup_rollover.png
 11136ad7da5c5921a2bc24cf6e8d017e756337ab0c2db5562c7880c96ed3af80  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_maximize_rollover_dark.png
+11254a8adc039d44ec59cdcc8f774217444fa459dda98621b3e03468522396d5  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/question32.png
 114e18975a1529f2a8b0e7589c6fd1d276435f15fe1d01c476010b17698f2b50  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/vline.png
 118bc452bb3e1f16abfaf6a205a7641afd817e821bf7b94ee66b7569c3f547a3  ide/tasklist.projectint/src/org/netbeans/modules/tasklist/projectint/opened_projects_scope.png
 118cf39546c53ae74fc6ac997fb84351756acdcb80d67fab6d5e00f97bbcf8a9  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/get_clean.png
 11abea6f26b6fb4a646dd9a6582291a1c738de9005115d17a43b20266c14c757  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/win_popup_pressed.png
 11b764c9a14e293ac708be7839828d004eb3f55fed5b4035909a44bfac1d9699  ide/bugtracking/src/org/netbeans/modules/bugtracking/tasks/resources/search_repo.png
 11b764c9a14e293ac708be7839828d004eb3f55fed5b4035909a44bfac1d9699  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/search_repo.png
-11cb9c1645989f4161f70812038ba217e2afc31f0177f0adbfd7f9f400f78821  nb/welcome/src/org/netbeans/modules/welcome/resources/sel_btn_right.png
 11cc3226168fff36e416887b89399266bb5f0f49a02d2b68d20e1718ba851468  php/php.samples/samples_src/TodoList/web/img/NB-IDE-logo.png
 11f08aa25a084fa02a726009b0624433fce929aafd08188cdc207ce983275ffd  java/form/src/org/netbeans/modules/form/layoutsupport/griddesigner/resources/vertical.png
 11f1d78001cc1fb0252a8662d4a809517c252eea61edd089dccc569c6e219d18  ide/web.browser.api/src/org/netbeans/modules/web/browser/ui/resources/selectionMode.png
@@ -440,13 +441,12 @@
 191d997ad8137a3974cf365df67e5e1722d6c80e1594065672137d280c922db3  webcommon/javascript.nodejs/src/org/netbeans/modules/javascript/nodejs/ui/resources/new-nodejs-project.png
 194af01ee79066eee36741abf87c545abc02f57171d5da5c2f229fd904a7b77a  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/javadoc-alphasort.gif
 194af01ee79066eee36741abf87c545abc02f57171d5da5c2f229fd904a7b77a  java/javadoc/src/org/netbeans/modules/javadoc/resources/alphaSort.gif
-19522d4fb1f83198ea0df59d971154834f262445b87be15de1d8f9a75dd8ca6d  nb/welcome/src/org/netbeans/modules/welcome/resources/startpage.gif
-19522d4fb1f83198ea0df59d971154834f262445b87be15de1d8f9a75dd8ca6d  nb/welcome/src/org/netbeans/modules/welcome/resources/welcome.gif
 1952de18112fc5ddbc05b16f3acfc73383ccbdf131716b1cd87a3c670e9ea6ca  ide/xml.text/src/org/netbeans/modules/xml/text/navigator/resources/content.png
 197706f869d9df9afc6b38a3e504333fb335b564fb78afe75f6e3f903aa44b85  java/form/src/org/netbeans/modules/form/resources/palette.png
 197706f869d9df9afc6b38a3e504333fb335b564fb78afe75f6e3f903aa44b85  java/form/src/org/netbeans/modules/form/resources/palette_manager.png
 197d85a4a068d9ab03f948b91778bbb80dfd969fdc30cd3372c5c3f767db1f73  enterprise/gradle.javaee/src/org/netbeans/modules/gradle/javaee/resources/javaeeProjectIcon.png
 197d85a4a068d9ab03f948b91778bbb80dfd969fdc30cd3372c5c3f767db1f73  extide/gradle/src/org/netbeans/modules/gradle/resources/gradle.png
+197d85a4a068d9ab03f948b91778bbb80dfd969fdc30cd3372c5c3f767db1f73  groovy/gradle.groovy/src/org/netbeans/modules/gradle/groovy/resources/groovyProjectIcon.png
 197d85a4a068d9ab03f948b91778bbb80dfd969fdc30cd3372c5c3f767db1f73  java/gradle.java/src/org/netbeans/modules/gradle/java/resources/javaseProjectIcon.png
 197fd2b27da66cb80d2449bfdfd380749bdb6ac3646468b1c4961980bfa8ac08  enterprise/web.project/src/org/netbeans/modules/web/project/ui/resources/servletUri.gif
 198fff754b47a3e4a56eda33aa1e4cf9d305cbb2a7dd51071517fd100b3f4b8c  groovy/groovy.editor/src/org/netbeans/modules/groovy/editor/resources/interface.png
@@ -504,7 +504,6 @@
 1bd8c342b9f49a982e53437f922286679919a7a059c8a772ad49cf7362dca376  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/brick/magenta.png
 1bdc8bf01bee2e5f2a4d2a0610854e20c616b56b3d41899e8c81e4cbf6d17aa1  ide/db.sql.editor/src/org/netbeans/modules/db/sql/editor/completion/resources/table.png
 1c08020ddcb55d8bc71ef8190c8cbdec59242e9d43da49ed95e6e6f41751681d  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/xp_minimize_pressed.png
-1c0bd7507a55756679af1141ab64ddf0a3dd0837932a99971be0611979efef6b  nb/welcome/src/org/netbeans/modules/welcome/resources/btn_right.png
 1c394c90ac24791be6fc3c0be02b086ab83d70b55a6577e966fb235167cff14a  ide/spi.palette/src/org/netbeans/modules/palette/resources/cancel.png
 1c394c90ac24791be6fc3c0be02b086ab83d70b55a6577e966fb235167cff14a  platform/api.progress/src/org/netbeans/progress/module/resources/buton.png
 1c394c90ac24791be6fc3c0be02b086ab83d70b55a6577e966fb235167cff14a  platform/o.n.swing.plaf/src/org/netbeans/swing/plaf/resources/cancel_task_win_xp.png
@@ -777,7 +776,6 @@
 2cec1249768e449741de699ea8ba4f56ae934008d78d5e4f4754325893480e7c  ide/git/src/org/netbeans/modules/git/resources/icons/diff.png
 2cec1249768e449741de699ea8ba4f56ae934008d78d5e4f4754325893480e7c  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/diff.png
 2cec1249768e449741de699ea8ba4f56ae934008d78d5e4f4754325893480e7c  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/diff.png
-2cee32608dcd6f8b9eaa5f07abd3e40a313981ffe4838b97e42347e7ad07a3ff  nb/welcome/release/docs/images/circle4.gif
 2cf108a03d823e034e9acd3fe7be6b3b0111af9aa9484be47c1ab0168f45a243  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/ready.png
 2cf1fb223b62aa633cdf2174fa8e71b7c4cb562b20245a5a5c899bcc9b2ae36e  php/php.code.analysis/src/org/netbeans/modules/php/analysis/ui/resources/coding-standards-fixer.png
 2d0d1cc188a130e7d6fe9948930344bed199ff856ea0636b4b947ef260e84195  rust/rust.sources/src/org/netbeans/modules/rust/sources/rs/templates/rust-file.png
@@ -806,12 +804,10 @@
 2edb6f12db1091ce9e3bd3db840d6a4b8291186828eb30e69f969bc97a27f3de  ide/editor.autosave/src/org/netbeans/modules/editor/autosave/auto_save24.png
 2ee9ac3cfed37f1cef90359f36eec5d87efce5df1ae4614a4d12980aa437807f  javafx/javafx2.project/src/org/netbeans/modules/javafx2/project/ui/resources/jfxjava.png
 2f0037475c5331488a9c8220bb531bf7670071c7d52f73386c36e051ae075696  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/mac_minimize_enabled.png
-2f1541f461fed66de69085c299681347f51b2c2ebdabfda8f15e1c57536b9c4b  nb/welcome/src/org/netbeans/modules/welcome/resources/sel_btn_left.png
 2f26d9e9d6072b456125a1409fa2d0c7346a0596e677296794d2cd3e9fe3199b  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/breakpointsView/DisabledBreakpointHit.gif
 2f26d9e9d6072b456125a1409fa2d0c7346a0596e677296794d2cd3e9fe3199b  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/editor/DisabledBreakpoint+PC.png
 2f408768eb525f7eb32ade01c55d7e8981c3b7f08602fb996a96d3b856116dab  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/properties24.png
 2f408768eb525f7eb32ade01c55d7e8981c3b7f08602fb996a96d3b856116dab  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/properties24.png
-2f40ac605e4a2cb8cee3621f312ac6c68faca4ced9bc82330791a77e6d013842  nb/welcome/src/org/netbeans/modules/welcome/resources/sel_btn_center.png
 2f48f8ac7e6b881261419d64600b89eb872d364dee67389714de52dfc24cf12e  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/palette/items/resources/JsfMeta32.png
 2f48f8ac7e6b881261419d64600b89eb872d364dee67389714de52dfc24cf12e  ide/html/src/org/netbeans/modules/html/palette/items/resources/META32.png
 2f4dd0b1649b702d04baa756bf8dbe38a34131bd4a1762df713897bf4cd4c504  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/breakpointsView/NonLineBreakpoint_broken.gif
@@ -944,6 +940,7 @@
 362f5adea889bae64cb9404388441a5b4fb6083ff3ecbf00b04415161d805edf  platform/o.n.core/src/org/netbeans/core/resources/actions.gif
 366959c5a340d554796eb63f813310f1201b64ba304d283e191bd8f4e3372c94  platform/o.n.core/src/org/netbeans/core/resources/actions/nextOutJump.gif
 3674f89fdbf6ea4f65f2251cef8b52649996ae4621ab1a065172c67e102d7753  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/snapshotDataObjectMemory.gif
+3690f19156531fae08e294545f57db55a3f06212c6f4640770048adfd7305bdd  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/filePlain.png
 36a8b90c584f412323b42917bc31b76a135f07e37afd96e87af7663791388518  ide/git/src/org/netbeans/modules/git/resources/icons/fetch.png
 36a8b90c584f412323b42917bc31b76a135f07e37afd96e87af7663791388518  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/pull.png
 36a8b90c584f412323b42917bc31b76a135f07e37afd96e87af7663791388518  java/maven.indexer.ui/src/org/netbeans/modules/maven/indexer/fetch.png
@@ -1287,6 +1284,7 @@
 4d7d80b6bbe570d34c4d17e6dc9e08e4199a2ed548a1f6e837c3a01617fd6147  ide/editor/src/org/netbeans/modules/editor/resources/var_is.gif
 4d7fda5667b94b121acf24f3e551fa3fd290cdf40d0ee2ced7d6627d011e0a7c  ide/html/src/org/netbeans/modules/html/palette/items/resources/IMG16.png
 4d8be05b12e6375a24228ce8d662ed3e924445638eb1edbcc335be4e9b4b76ea  java/form/src/org/netbeans/modules/form/beaninfo/awt/popupmenu.gif
+4da17a32d0793f7ae06582a107057e209bebabe814de6a4112a5d3000dc9f564  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/home.png
 4dc68005fb3e64a8e9d4a0b108ebb5ce5403b5530ece40e71520474aa23d2adc  java/java.debug/src/org/netbeans/modules/java/debug/resources/tree.png
 4dc7f5b2948b66cc36b42f00c9b1e77472a40324e3faaa8fd029c9ff5756886d  ide/bugtracking.commons/src/org/netbeans/modules/bugtracking/commons/resources/seen-header.png
 4dca2643d71a4ee7ee85d8fba701196c0f71cd82da41a48a5a278b7a8b5771ee  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_popup_pressed_dark.png
@@ -1299,7 +1297,6 @@
 4e94bd07adaebe3e9dd7951d2d6fffe7c6dae8f9f10b968804069b91377494b6  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/watchesView/watch_16.png
 4ea3cadb63d50677930529e916851bba6cb497ea9dc0bfc705036879f101ac7c  java/spring.beans/src/org/netbeans/modules/spring/beans/resources/spring-bean.png
 4eae2cb17d403f2a675e528de46010594b38ebf1a34d9a7daffae667b05dac1a  java/form/src/org/netbeans/modules/form/resources/palette/option_pane_32.png
-4ebb016e1435f74735aa725399b61a00bb5807322a0ed7e7dc4d4275faf1b9f8  nb/welcome/release/docs/images/blue.png
 4ee03db28ff92f467f26eb450322e9cb4645ab9496dfaa394a08fa7561a5aa17  ide/web.browser.api/src/org/netbeans/modules/web/browser/ui/resources/browser_ie_16x.png
 4eefadc2eac0ead3cfb5f0f3331b8e8d082313cfa402b8dfcb18d74c725cc1f5  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/exprarguments.gif
 4f035cc0b27992c9fb2c077b03fec83936908d1826805d11cc06aa8364dd3daa  php/php.project/src/org/netbeans/modules/php/project/ui/resources/reset.png
@@ -1379,6 +1376,7 @@
 537e5e00ebe1c6dbf455da42a8dc0db48c58205f8c0737a7f6141b27f46a5738  ide/xml.text/src/org/netbeans/modules/xml/text/navigator/resources/tag.png
 537e5e00ebe1c6dbf455da42a8dc0db48c58205f8c0737a7f6141b27f46a5738  webcommon/web.inspect/src/org/netbeans/modules/web/inspect/resources/domElement.png
 537f7509d8a5faee3d95c15aad322537a5b28e461aab4aeeec1cb1438d88b01d  enterprise/websvc.rest/src/org/netbeans/modules/websvc/rest/nodes/resources/httpmethods.png
+53ad2f33ef10d19e0fc6dfc7861505ba31d1dd6f04d260036fc2316b7bb67516  java/java.lsp.server/vscode/images/cloud_assets.png
 53b22478831f603667ea48fb9f17e09ef6b452bf5fca25533a47e6b0bf323c9a  java/form/src/org/netbeans/modules/form/resources/palette/toggle_button_32.png
 540c0f1a0cae89b027a564fa121558c630a35dfe65408f31e2569ac60ef946f8  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/show_inherited_methods.png
 54236d40c73aeba751a3be29d147172090187b3ce9844eeedeb2f5b41abfe0b0  enterprise/cloud.amazon/src/org/netbeans/modules/cloud/amazon/ui/resources/terminated.png
@@ -1512,7 +1510,6 @@
 5b36797b43d06651f2c340917ea13814a680897a0684c33a5af57441cb67afb1  platform/print/src/org/netbeans/modules/print/util/image/font.gif
 5b37aa7588368316093ed0bfdf4a27b94c5849aff4bcc5487e3debc80ccb9023  java/javadoc/src/org/netbeans/modules/javadoc/resources/JavadocSettings32.gif
 5b49448b762f40cdb8ad96079bfc26b68a50d5e07329181e79d816aeb996c3f9  ide/html/src/org/netbeans/modules/html/palette/items/resources/OL32.png
-5b557301ae1d25815a635becd4c482114a8b96a53004ac109f570efe37d1eb66  nb/welcome/release/docs/images/banner-right.png
 5b5831c4b1330a4d8db885af3155cb11f3af45e4714ea8db5a96c0867183e209  ide/csl.api/src/org/netbeans/modules/csl/source/resources/icons/database.gif
 5b5831c4b1330a4d8db885af3155cb11f3af45e4714ea8db5a96c0867183e209  ide/css.visual/src/org/netbeans/modules/css/visual/resources/database.gif
 5b68ecf7062551ef527b3cf3c006dba1ba8ce943b7876f287ca2644bb0312492  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/actions/Pause.gif
@@ -1615,7 +1612,6 @@
 5f9bc86d6a816892592192cc22ebc81b894704b13b8d9af39f599090a87b6ef0  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/vista_scrollleft_rollover.png
 5fa11df5b0d605e51ad5779725e923cbaeea7f7bc71f3bad5997c43d9df972ff  java/refactoring.java/src/org/netbeans/modules/refactoring/java/resources/who_is_called.png
 5fd65d32a9d826adcd95b8e8f7b5d5e2d9ade591d01a81142927b56ade7fce82  ide/web.browser.api/src/org/netbeans/modules/web/browser/ui/resources/tabletPortrait_dark.png
-5fe00c6bc6464d6211401783347dd92158e9f558d70b1b5f6e5dea744fc5213d  nb/welcome/src/org/netbeans/modules/welcome/resources/btn_center.png
 5fe564316cb9293dc97d4844cee987184144659afba52353f91e757434a22418  java/form/src/org/netbeans/modules/form/resources/connection_mode.png
 60123776f5d56b8dadb88ab6091727778e1c30cf669984068fe6e13f25239dd0  nb/ide.branding/autoupdate.services/libsrc/org/netbeans/updater/resources/updatersplash_nb.gif
 602f84a3ce2a1a884637cc8699a21eb8a90f57534549f4aa1b2edca0fa05d343  platform/uihandler/src/org/netbeans/modules/uihandler/tachometer.png
@@ -1696,7 +1692,6 @@
 654c2ddae91ec82a00f8d828399fc420cf0a3b28061924fdd707b1510fbc3e17  java/java.editor/src/org/netbeans/modules/java/editor/resources/overrides-badge.png
 654f3f4e28f72702b427b08588cb81b486234ec4cc698c98f5d04c10fc034bf0  platform/api.visual/src/org/netbeans/modules/visual/resources/vmd-expand-60.png
 6551e807fee788257c5fa67ed58dd90fd15921dc793662ce69daf137b529d2d7  platform/uihandler/src/org/netbeans/modules/uihandler/logs.gif
-65ac674ff7dcef37293be4bc864f6670375c4bc3a0226df6c019594bc4231994  nb/welcome/src/org/netbeans/modules/welcome/resources/btn_left.png
 65b394fee2f82396917d1c290c0acfce5a3fae53295dec2b1728431bcddf96e8  enterprise/j2ee.ddloaders/src/org/netbeans/modules/j2ee/ddloaders/resources/SessionNodeIcon.gif
 65b394fee2f82396917d1c290c0acfce5a3fae53295dec2b1728431bcddf96e8  enterprise/j2ee.ejbcore/src/org/netbeans/modules/j2ee/ejbcore/ui/logicalview/ejb/session/SessionNodeIcon.gif
 65b394fee2f82396917d1c290c0acfce5a3fae53295dec2b1728431bcddf96e8  enterprise/j2ee.ejbcore/src/org/netbeans/modules/j2ee/ejbcore/ui/logicalview/ejb/session/SessionNodeIconOpen.gif
@@ -1798,8 +1793,6 @@
 6bcdd4dcea3096335653ae68dad01dad3a402cc9b1d66c55809a8d126b157589  java/refactoring.java/src/org/netbeans/modules/refactoring/java/resources/found_item_source.png
 6bde559ce9a331eff4775d64efe501cf7ad8b93929dc7dbee14bddb6f06576b5  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/zoom.png
 6bf284a32a2e12c82cf808829b209a4eca86b43e06671941c414dd697b1b8019  ide/html/src/org/netbeans/modules/html/palette/items/resources/INPUT16.png
-6c11b6f32e4c56fa684914fe57082215e6cd6af894942e67b2411e942aaaf479  nb/welcome/src/org/netbeans/modules/welcome/resources/nb_logo.png
-6c11b6f32e4c56fa684914fe57082215e6cd6af894942e67b2411e942aaaf479  nb/welcome/src/org/netbeans/modules/welcome/resources/nb_logo_dark.png
 6c12f3c2e7244a8962e07b9bf96967f61e476cfcb756e43b77712a9db04d8499  webcommon/javascript2.editor/src/org/netbeans/modules/javascript2/editor/resources/methodCallback.png
 6c214a24110f5137cb168bacbe25117ea6779098f3f7dfc3e037fa80911d5201  ide/web.browser.api/src/org/netbeans/modules/web/browser/ui/resources/handheldPortrait.png
 6c214a24110f5137cb168bacbe25117ea6779098f3f7dfc3e037fa80911d5201  webcommon/extbrowser.chrome/plugins/chrome/img/presets/SMARTPHONE_PORTRAIT.png
@@ -1861,7 +1854,6 @@
 6ebc5036afa7f5d7100f0e72212c2dc926e11074b6f1bb56041d5982be4c3724  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/method.png
 6ee7526c4a75313c0789c170a7b6b34166f2163fb1085d5a97da866849d4f5eb  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/ball/ball2.png
 6f06edc636d0668fd13e186ab4f0802d7ce5539774bbff4dc367de63cec362ad  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/gtk_maximize_enabled.png
-6f3c09c10584d57c0efdef952387cf40740aad949e41701b69c1fc543446a863  nb/welcome/release/docs/images/banner-left.png
 6fb1e79502f11e9d7f25e4eb9e8c41b06dbc8c3ec46d6a011085896ce0506506  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/actions/StepOver.gif
 6fbf02b1af53cd3d7867f541f0cbbb7080d5057d318609824a195c6632b26630  platform/openide.actions/src/org/openide/resources/actions/redo24.gif
 6fc42b3ee180f66b5abc7d062d7966f010c0ce5737a5ba4c9491fb7e5d7fd623  java/java.editor/src/org/netbeans/modules/java/editor/resources/implement_badge.png
@@ -1958,6 +1950,7 @@
 75e913555b738fe20292efd6158043b038ff67836018041be79517e98ba4bc24  platform/favorites/src/org/netbeans/modules/favorites/resources/actionView.png
 75eab70f6e669168d4591d61721c6bacc6a07a0ba59a8104a466b51e157beb5e  enterprise/gradle.javaee/src/org/netbeans/modules/gradle/javaee/resources/javaeeProjectIcon_dark.png
 75eab70f6e669168d4591d61721c6bacc6a07a0ba59a8104a466b51e157beb5e  extide/gradle/src/org/netbeans/modules/gradle/resources/gradle_dark.png
+75eab70f6e669168d4591d61721c6bacc6a07a0ba59a8104a466b51e157beb5e  groovy/gradle.groovy/src/org/netbeans/modules/gradle/groovy/resources/groovyProjectIcon_dark.png
 75eab70f6e669168d4591d61721c6bacc6a07a0ba59a8104a466b51e157beb5e  java/gradle.java/src/org/netbeans/modules/gradle/java/resources/javaseProjectIcon_dark.png
 76c72b52d6e2007edae1a702db96c59a70803ab996d010cfa6768d41bae42a61  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/breakpointsView/DisabledBreakpoint.gif
 76c72b52d6e2007edae1a702db96c59a70803ab996d010cfa6768d41bae42a61  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/editor/DisabledBreakpoint.png
@@ -2173,7 +2166,6 @@
 82cf9fc31d367c33e056835969b5439c52a9f0a4451f919820e4237404f7ca82  ide/git/src/org/netbeans/modules/git/resources/icons/diff24.png
 82cf9fc31d367c33e056835969b5439c52a9f0a4451f919820e4237404f7ca82  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/diff24.png
 82cf9fc31d367c33e056835969b5439c52a9f0a4451f919820e4237404f7ca82  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/diff24.png
-82dddef451db1d130b5a3a1f514f7671a406008599943931280ef9e2826c03d0  nb/welcome/release/docs/images/circle3.gif
 82ee2b5d96dd1e95d7a72941f8f71465d0a0787c867b91a4facace30383237c4  java/refactoring.java/src/org/netbeans/modules/refactoring/java/resources/found_item_comment.png
 82f42cf7ba40be389a1c9a785d54e1fa58b44d7671125d907b4a483559e8a23f  ide/csl.api/src/org/netbeans/modules/csl/source/resources/icons/methodStaticPrivate.png
 82f42cf7ba40be389a1c9a785d54e1fa58b44d7671125d907b4a483559e8a23f  ide/editor/src/org/netbeans/modules/editor/resources/completion/method_static_private_16.png
@@ -2342,7 +2334,6 @@
 8d3470c27b6b4a8371fb2953dbf29ad5a2bc9fe670fa767216f98d822a6e54b1  ide/csl.api/src/org/netbeans/modules/csl/navigation/resources/filterHideStatic.png
 8d3c97dea1dcdc5e5b081697b6fc24de1ada0b659534bcf1b96b523099546f78  java/form/src/org/netbeans/modules/form/resources/palette.gif
 8d3c97dea1dcdc5e5b081697b6fc24de1ada0b659534bcf1b96b523099546f78  java/form/src/org/netbeans/modules/form/resources/palette32.gif
-8d3cf4661bc6f4ed52598cf67b41988a207fadced7d09b461dcea1a4bfac3a88  nb/welcome/src/org/netbeans/modules/welcome/resources/tab_rollover.png
 8d4008c470bcde604a1132a1c0574010f6848ed597383f31cbdd0043d7163b41  ide/javascript2.debug.ui/src/org/netbeans/modules/javascript2/debug/ui/resources/global_variable_16.png
 8d4bcd24412463655a6564ee02a08a37bb79dccb797c609efb61e41241314c88  enterprise/glassfish.common/src/org/netbeans/modules/glassfish/common/resources/profiling.png
 8d4bcd24412463655a6564ee02a08a37bb79dccb797c609efb61e41241314c88  enterprise/j2eeserver/src/org/netbeans/modules/j2ee/deployment/impl/ui/resources/profiling.png
@@ -2364,7 +2355,6 @@
 8df6bec21468882a9b75f367ddd9e83c3f508f6e2a7fa699681795c5b35ef027  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/CallStackFrameGroup.gif
 8df6bec21468882a9b75f367ddd9e83c3f508f6e2a7fa699681795c5b35ef027  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/callstack-framegroup.gif
 8df6bec21468882a9b75f367ddd9e83c3f508f6e2a7fa699681795c5b35ef027  java/debugger.jpda.ui/src/org/netbeans/modules/debugger/jpda/resources/CallStackFrameGroup.gif
-8e072fa2e19c9842431d502b8e87df89fdd7c2234b6024cbdb9a21e0a0305838  enterprise/jakarta.web.beans/src/org/netbeans/modules/jakarta/web/beans/resources/injection_point.png
 8e072fa2e19c9842431d502b8e87df89fdd7c2234b6024cbdb9a21e0a0305838  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/injection_point.png
 8e1813b670410857274db3223853da3d1b499d3a56096eee5617256c44ca3efa  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/cpu_gc_icon.gif
 8e1a6b8003484c0d3de5c789caa6c44541e55eb8f9bee95dd722028d16d63cf3  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/xp_popup_pressed.png
@@ -2380,7 +2370,6 @@
 8f13342a898a0176ccd0abdc412a5d6f5e81fc65c3eee3c701059dd1eedc6f34  java/performance/actionsframework/src/org/netbeans/actions/examples/icons/undo.gif
 8f7880a3c6b1f665464f0bfe0fbc3f5178e8a1eadcd393321b5b91ea7503c81f  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/xp_pin_enabled.png
 8fd22e248981ac669dad1bafeab4ba07d18bff4b22ae810aa853a6230cc15cd1  java/java.editor/src/org/netbeans/modules/java/editor/resources/gotosource.gif
-8fd4c8869a87840a88c4d4af3c4dd6d02c373bc3b6330299bf6c7732d22cc37d  nb/welcome/release/docs/images/background.png
 8fe875b6c061dd82e0e5f5ffff6aa169b1125c8484e7a2301948026ccda8c6d1  java/form/src/org/netbeans/modules/form/resources/palette/color_chooser_16.png
 900655af9a7dfd3a9637d5f4416f5fdbf5b0fd6841908b976310522ab132d098  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/gtk_restore_group_pressed.png
 9006bba26537453085086e9f12f89d2348454772013452fc5e3a83ac8a75036d  platform/openide.options/src/org/openide/options/doc-files/options.gif
@@ -2400,7 +2389,6 @@
 9086c01ac24478a7f0608c4958dba288baca91f2f8061450992fcd6c84fb9c5a  ide/refactoring.api/src/org/netbeans/modules/refactoring/api/resources/colapseTree.png
 9086c01ac24478a7f0608c4958dba288baca91f2f8061450992fcd6c84fb9c5a  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/ref-collapse-tree.png
 9086c01ac24478a7f0608c4958dba288baca91f2f8061450992fcd6c84fb9c5a  platform/api.search/src/org/netbeans/modules/search/res/collapseTree.png
-90a9ad569dafc1046e62c6655a5fd0dad743d0959b7645b755e38939769c766c  nb/welcome/src/org/netbeans/modules/welcome/resources/picture_frame.png
 90b48256b2a63e37b0f980b030bc175447caf98ff924f2c7818bdd565afea880  enterprise/gradle.javaee/src/org/netbeans/modules/gradle/javaee/resources/WebPagesBadge.png
 90b48256b2a63e37b0f980b030bc175447caf98ff924f2c7818bdd565afea880  enterprise/maven.j2ee/src/org/netbeans/modules/maven/j2ee/ui/resources/WebPagesBadge.png
 90d969f1ffd797baf6d4eb3de5563a886871d6de342da883d2f775e83796d928  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/win_restore_group_rollover.png
@@ -2441,8 +2429,6 @@
 93ce35c7ad5245777fd336b95c55c15357946d06375a56c0e6130d0773e1aa0a  ide/git/src/org/netbeans/modules/git/resources/icons/conflict-resolve.png
 93ce35c7ad5245777fd336b95c55c15357946d06375a56c0e6130d0773e1aa0a  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/conflict-resolve.png
 93ce35c7ad5245777fd336b95c55c15357946d06375a56c0e6130d0773e1aa0a  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/conflict-resolve.png
-93da5559aa36c62db663cff29688b5e11e53c7c5c9bc72658d21dd237c471b14  nb/welcome/src/org/netbeans/modules/welcome/resources/apache_feather.png
-93da5559aa36c62db663cff29688b5e11e53c7c5c9bc72658d21dd237c471b14  nb/welcome/src/org/netbeans/modules/welcome/resources/apache_feather_dark.png
 93f3a4cc11169d06e86f954dfeef30029b14631ec42e6704d8ff52c99d319129  apisupport/apisupport.wizards/src/org/netbeans/modules/apisupport/project/ui/wizard/codegenerator/newCodeGenerator.png
 94055de6320af9fdb439b2a9ace96258ee5b0c8dfe5b152db3f62e149689bfc4  ide/projectui/src/org/netbeans/modules/project/ui/resources/runCurrentProject.gif
 941870b17429e8521ea60571188fe9deaf19302eabd816bf5703e239bc0260b8  ide/projectui/src/org/netbeans/modules/project/ui/resources/buildProject.png
@@ -2490,6 +2476,7 @@
 976cf41b44a8926f14942204789aa5fe9c300069a44aeba7223b78ec446a7465  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/fragment.png
 977f843a2b0bdd3b04b3be0c14cbe73fde54a575a00000fb600ac036e63d8c33  ide/editor.completion/src/org/netbeans/modules/editor/completion/resources/open_in_external_browser.png
 977f843a2b0bdd3b04b3be0c14cbe73fde54a575a00000fb600ac036e63d8c33  java/java.navigation/src/org/netbeans/modules/java/navigation/resources/open_in_external_browser.png
+978d7bee76081b2d09cf3922911e50b04ce75f7468bb469088a8f970ce7c4ca2  php/php.code.analysis/src/org/netbeans/modules/php/analysis/ui/resources/psalm.png
 978d7bee76081b2d09cf3922911e50b04ce75f7468bb469088a8f970ce7c4ca2  platform/api.search/src/org/netbeans/modules/search/res/textDetail.png
 97903d9a38502cca0e2cb9588aa90fa927e9a64f7642a550849a26c4b0d63c69  platform/openide.awt/src/org/openide/awt/resources/toolbar_arrow_vertical.png
 97aceaba8b3335fde47c5b89e1c9c9b09fab92b6689f17805e2aa42d01e373b3  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/bonus/ballreduce.png
@@ -2503,7 +2490,6 @@
 98af1c6e8c0b313693e4a68683524fd49786c0541a7ff4f38b2d90a33a2d6568  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/actions/Kill24.gif
 98c121f0970a71f1c95685df82365f228bb7b51dc472f73c7571f593b0c55dec  ide/git/src/org/netbeans/modules/git/resources/icons/tag_sm.png
 98e13f78eb2a86b39ba61981705eeff4b9f2f9fa6c99f739fbf4cd2eb497dbcd  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/metal_slidebottom_pressed.png
-98e85294ef8dc6d90742436d7a61a555c3d455f751cf2a2148bb82f3d3eca3e2  nb/welcome/release/docs/images/circle1.gif
 98eb3bd0132954930cf203c1f28eaf60b3bf621c0299cf9f45222572a965e5c7  java/performance/actionsframework/src/org/netbeans/actions/examples/icons/redo.gif
 98ee15ac0112839a027b3594b0c7d239dd43ee5a7249464de0a042d82c119284  ide/projectui/src/org/netbeans/modules/project/ui/resources/runProject.png
 98ee15ac0112839a027b3594b0c7d239dd43ee5a7249464de0a042d82c119284  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/start.png
@@ -2516,6 +2502,7 @@
 99ee0549ea15cc22dc129cf07d042f66d2ab736ea749a0118abc0955c7213193  platform/openide.awt/src/org/openide/resources/html/forward_disabled.png
 99f31a44817e770b1bcc424637c451d7edad0bcb0694712b25cf4cadf0fb5408  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/facelets/resources/template4-selected.png
 99f6b2867dde684b0a429f72210fa930d6937cd5ff4bafc420dafb0907a9962e  java/form/src/org/netbeans/modules/form/resources/palette/scroll_pane_16.png
+9a20ccde217fde0f37f61486a6de006735ca63736c0282df8082b1ca3f4c536f  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/expandTree.png
 9a20ccde217fde0f37f61486a6de006735ca63736c0282df8082b1ca3f4c536f  ide/refactoring.api/src/org/netbeans/modules/refactoring/api/resources/expandTree.png
 9a20ccde217fde0f37f61486a6de006735ca63736c0282df8082b1ca3f4c536f  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/ref-expand-tree.png
 9a20ccde217fde0f37f61486a6de006735ca63736c0282df8082b1ca3f4c536f  platform/api.search/src/org/netbeans/modules/search/res/expandTree.png
@@ -2589,6 +2576,7 @@
 9ec5385e291c4c9335338980d16be536fe00976c2653b7af953c735ec65b61a7  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/runningthread.gif
 9ecfb55393c963f9ddbe73527431c0cd54070998340bea8c921e325293a98cce  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/facelets/resources/template6-selected.png
 9edb55139cefee4e58e862590bd64e6248d4474d504ea5f3576548efdc3786e4  java/debugger.jpda.visual/src/org/netbeans/modules/debugger/jpda/visual/resources/hierarchy.png
+9ee635e0584abf7036ac2045ce02bb829fbf68a672c04342902acb582bcf339d  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/info32.png
 9f292a29d550b8f32fc99335211c7b93263bb5f0f08facc88944ccf468c80a61  platform/o.n.core/src/org/netbeans/core/resources/sdi.gif
 9f33614da75e2e46c17e66dff4bf410e13726232c63a11696c5c3c763fdeb378  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/deltaValues.png
 9f4a49ddef1713e90ed50772f9edea00cd74e6aa10125f205637af5d74cc4d93  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_popup_disabled_dark.png
@@ -2598,7 +2586,6 @@
 9ff9ef9819369146b9e868f037bf884f331292d18756b2ebd6cd6cc5386cd566  ide/csl.api/src/org/netbeans/modules/csl/source/resources/icons/constantProtected.png
 a057f3d031b527c551b7d548a117832c842fe5704b89f3f779f67361d20e82e9  profiler/profiler.ppoints/src/org/netbeans/modules/profiler/ppoints/ui/icons/resetResultsProfilingPointD.png
 a064e3ffea45798b76a7e0e43458692537ccb3c66415b97b287e8e051c53add8  java/beans/src/org/netbeans/modules/beans/resources/bifEventSetMC_S.gif
-a07c6e20d85cbc932b6aa6acbcba63788c769a00690230c7c8fdd6edfdbec76a  nb/welcome/src/org/netbeans/modules/welcome/resources/tab_rollover_dark.png
 a0859839c077851408b2d56ee4178b0b35bfe2c644f77d558ef48d43214ffe9f  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/gtk_scrollright_enabled.png
 a094895db41a12fe74f5bbc4c72107d9c68b52edd0675ccbbd4b121e0362ca48  profiler/profiler.snaptracer/src/org/netbeans/modules/profiler/snaptracer/impl/icons/hmwheel.png
 a09f2d959b76bf64aaa4702306537b4535cc96cff687e780a404d8bd9b959c9e  ide/xml.multiview/src/org/netbeans/modules/xml/multiview/resources/arrowright.gif
@@ -2613,6 +2600,7 @@ a1022f9e693571405b716a5b824d7bab47ef52eeb71969af0b53ee95d9f9506d  java/form/src/
 a14aec820471f0531f58dcadd58e4c84dad186244f7546db89b68971c4e34b42  enterprise/web.freeform/src/org/netbeans/modules/web/freeform/resources/alert_32.png
 a14aec820471f0531f58dcadd58e4c84dad186244f7546db89b68971c4e34b42  java/ant.freeform/src/org/netbeans/modules/ant/freeform/resources/alert_32.png
 a14aec820471f0531f58dcadd58e4c84dad186244f7546db89b68971c4e34b42  java/java.freeform/src/org/netbeans/modules/java/freeform/resources/alert_32.png
+a14d854238e795b005e9dfd0e93518f2d8b32088abde3c7a3bcd157c33dc8dd4  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/fqn.png
 a14d854238e795b005e9dfd0e93518f2d8b32088abde3c7a3bcd157c33dc8dd4  java/java.navigation/src/org/netbeans/modules/java/navigation/resources/fqn.png
 a14efc591805a6d485e68933d0b6c55e5b67f0329ddc386f95e5aef6b5d7beb0  javafx/javafx2.samples/BrickBreaker/src/brickbreaker/images/desktop/ball/ball3.png
 a158b3900fe702ada8acb7c294633647e15549103f4709f39ceb38bd247eb812  enterprise/glassfish.common/src/org/netbeans/modules/glassfish/common/resources/start.png
@@ -2729,7 +2717,6 @@ a77c3b37ed26ef5399b39eeb60f2b53c4a78b4986001a84bb13b8e7c243429ab  java/maven/src
 a7889615c1729afe67a1bb88cb8a3daba97e946ad227c0ce465e9735b0247754  nbbuild/installer/infra/build/web/img/download_d.gif
 a792de5ae507aeecc50d5c7238466d6f92b982715887104b62d5dfedb93648dd  php/php.twig/src/org/netbeans/modules/php/twig/resources/filter.png
 a79677c8667a70e1b3d2cdd476b3dbb20fea529a9ef442ce6f139f7889b28cb5  platform/api.visual/src/org/netbeans/modules/visual/resources/vmd-pin.png
-a798c878faec827db7196c2f7fbb25c264e5c7af8f709e12a49800eb12a5c5c9  nb/welcome/release/docs/images/circle2.gif
 a7af327884ceed7cd81c74eed973f67142dcd884e94c2cc9aad70816a1c7a7bc  ide/git/src/org/netbeans/modules/git/resources/icons/destinations.png
 a7af327884ceed7cd81c74eed973f67142dcd884e94c2cc9aad70816a1c7a7bc  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/destinations.png
 a7b7df6760286e59ca54fdabb550453f9d99cf4705bcedb13d0efd1abb6b3d43  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/facelets/resources/template3-unselected.png
@@ -2752,6 +2739,7 @@ a93f9deb09d108f9c5239e4e9c5057dcfc0738829a8e00fbaf45bb1a5a8e3037  ide/spi.debugg
 a948c03dcb97bcbed00685f77e9b5a348910063b45da8b277840612c28e1d31d  java/debugger.jpda.truffle/src/org/netbeans/modules/debugger/jpda/truffle/resources/PauseInGraalScript24.png
 a964371b539898d18a0703995c1890108f980d6bb43a9470965d6ef6099367f4  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/javadoc-typesort.gif
 a964371b539898d18a0703995c1890108f980d6bb43a9470965d6ef6099367f4  java/javadoc/src/org/netbeans/modules/javadoc/resources/typeSort.gif
+a9689f2dacbf978914a5e18aada82259fee557a6be6ff73be1f33ecf997d3ca9  java/java.lsp.server/vscode/images/java_jdk_configuration.png
 a9d069ba85717d767705ff79710aa7d7380e91b377bd2e5188c69f1f023dda2f  enterprise/j2ee.ddloaders/src/org/netbeans/modules/j2ee/ddloaders/web/multiview/resources/EnterpriseJavaBean16.gif
 a9ee47448dfe481baa54af4f880b313759abcc5c0f7f983b5219bb7fbd408525  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_minimize_pressed.png
 a9fe8bd5e3f4022aedb4d42302721a1f45e9eb00a4fea0dd839a7a8dff8419f3  ide/css.visual/src/org/netbeans/modules/css/visual/resources/build.png
@@ -2803,6 +2791,7 @@ ad56cb9e53a0d2ce2f6f20c18f6d41fd139aabe4f02682a8a0be9c85b4e270e9  ide/bugtrackin
 ad56cb9e53a0d2ce2f6f20c18f6d41fd139aabe4f02682a8a0be9c85b4e270e9  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/add_repo.png
 ad7997f9025169078cf1a3ade252f88141e87be4998c05aaddd7f94473a59996  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/show_dependies_packages.png
 adacaa7c8e07fcc5f858d0fd47c3e8b31eafd145f13b2d10e67e06266609134e  ide/xml.multiview/src/org/netbeans/modules/xml/multiview/resources/arrowbottom.gif
+adbbba64816ef925982fa8492042e4d5acf471a2c331bbe674c4f55dab4588f2  nb/ide.branding/release/apache-netbeans48.png
 adbbba64816ef925982fa8492042e4d5acf471a2c331bbe674c4f55dab4588f2  platform/autoupdate.services/libsrc/org/netbeans/updater/resources/frame48.gif
 adbbba64816ef925982fa8492042e4d5acf471a2c331bbe674c4f55dab4588f2  platform/core.startup/src/org/netbeans/core/startup/frame48.gif
 adbbba64816ef925982fa8492042e4d5acf471a2c331bbe674c4f55dab4588f2  platform/core.startup/src/org/netbeans/core/startup/frame48_dark.gif
@@ -2835,7 +2824,6 @@ afccd9f3adbff0c9f3ca58a5de972c3f4308ee4528d92ad671aeb02a26d7f7b4  ide/derby/src/
 afd1296b33656410bded8b7b5a9538323fec9be4a100b03369a433195047a206  platform/openide.actions/src/org/openide/resources/actions/nextTab.gif
 afd2073adde40c6961ce926fc734f31eaa656d0f7e20897aea0bdbf572cf775a  ide/xml.text/src/org/netbeans/modules/xml/text/completion/resources/attTypeNMTOKEN.gif
 afd5b09feb1f23ab7a9027f366d79df88c2b6e9000a1faaa809d282e13d0ec2a  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/actions/Finish.gif
-b0179328bfacc8fcd7971f259ea9e84e76269f78f8c6aad4cae0bf0076fa7d2f  nb/welcome/release/docs/images/up-left.png
 b01cf2796d54e7e696ad8a487a28c31f1a0e26fbab377c658299bb7611773a2c  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/debugProject.png
 b0364807257bf4cb3edf962c43c8a960ed05fe3e012b73f48a994c5b9c5c625f  java/form/src/org/netbeans/modules/form/resources/palette/menu_16.png
 b05f4703f299878a7a8ccae7be56cbb844d46a73f88fc6bdb48c0743bce1e6d0  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/win8_minimize_rollover.png
@@ -2864,7 +2852,6 @@ b22d6c1dc21d7de360d337e10403cb28b1257359be084f929bd1d267bb06f7dc  java/java.sour
 b22d6c1dc21d7de360d337e10403cb28b1257359be084f929bd1d267bb06f7dc  php/php.editor/src/org/netbeans/modules/php/editor/resources/methodProtected.png
 b22d6c1dc21d7de360d337e10403cb28b1257359be084f929bd1d267bb06f7dc  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/methodProtected.png
 b22e98b2ffe89ecb8f72e521ecac59499134d7d5edb52257112566e501a5b020  extide/gradle/src/org/netbeans/modules/gradle/resources/gradle-badge_dark.png
-b2a239fbe8ac73ecac53722ffde4a31dc13aa329c39c3637deff43e012caec57  nb/welcome/release/docs/images/circle6.gif
 b2c618fda6d9f4cd940d28ae12733da4d9bf3cc66d00909b2ef3313476799bf1  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/metal_popup_pressed.png
 b2f2e591baf31d050f504fd3cc15c724771215b3b30d098a897a679f59b81bb8  apisupport/apisupport.project/src/org/netbeans/modules/apisupport/project/spi/layerObject.gif
 b2f306bf6f8f62edd7a62246a47bfaccca577d329ce12d738064c475ab8e9245  enterprise/payara.common/src/org/netbeans/modules/payara/common/resources/show-password.png
@@ -2965,7 +2952,6 @@ b7ff6a63640f8c05bafacd543a13227865e54d86509dbffc0352e4c848445e14  platform/api.h
 b8045eb4ea4e964c2afa55044c47025e09d663dd5da86829583a090c0a6764ab  ide/gsf.testrunner/src/org/netbeans/modules/gsf/testrunner/resources/run.gif
 b80f6b1aaf9d19dd94c377d6a90d51bb564e764fe09aa968b61e96104ded0170  enterprise/web.core/src/org/netbeans/modules/web/core/resources/servletSettings32.gif
 b81694360b0acbac32ee1d9a363e5f28542c1eba97fa311fd981b9d91a0d3522  platform/openide.actions/src/org/openide/resources/actions/openLocalExplorer.gif
-b8312ec26369485dc4abae702ada7a4e8bc82dfa0e79e692ebf9f78ec4e29185  nb/welcome/src/org/netbeans/modules/welcome/resources/tab_selected_dark.png
 b85d796eb12c5c37a908f9221ebe31435e05ca1ac24dcc33fcec14486a7ea329  enterprise/j2ee.sun.ddui/src/org/netbeans/modules/j2ee/sun/ddloaders/resources/BoundAnnotation.png
 b85d796eb12c5c37a908f9221ebe31435e05ca1ac24dcc33fcec14486a7ea329  enterprise/j2ee.sun.ddui/src/org/netbeans/modules/j2ee/sun/ddloaders/resources/BoundStandardDD.png
 b863331e4b6c8648b56e83468645efc81766e8a56d4fccfe10191f4b85aee8ce  ide/editor/src/org/netbeans/modules/editor/resources/last_edit_location_24.png
@@ -3078,7 +3064,6 @@ beec0b20553ef47630ea4310f92b4bdbd0867a4b850c6d7507699c0ec366bf1d  enterprise/j2e
 befbb72d0c2f2d6a304d4102a353237ffefc01e7357b1fe8754a97d7df9eaf0c  ide/git/src/org/netbeans/modules/git/resources/icons/annotate24.png
 befbb72d0c2f2d6a304d4102a353237ffefc01e7357b1fe8754a97d7df9eaf0c  ide/mercurial/src/org/netbeans/modules/mercurial/resources/icons/annotate24.png
 befbb72d0c2f2d6a304d4102a353237ffefc01e7357b1fe8754a97d7df9eaf0c  ide/subversion/src/org/netbeans/modules/subversion/resources/icons/annotate24.png
-bf2a23f37ff66cd95e0bfaa35248d1c6c7307907474a9b5f549223f1eb90ca09  nb/welcome/release/docs/images/down-right.png
 bf63cc623819170380f2b47cc652f755fd11526ad87404d2e8f245a363c1ca52  java/java.navigation/src/org/netbeans/modules/java/navigation/resources/hierarchy_window.png
 bf77378cedd4bab2598d9ac7a08ac8749e2bc2e677c1ea079a84191e69577fe5  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/vista_slideright_rollover.png
 bf880e693acb5d77482c26bf7538188f0b46e24458267eaff5ca846bc7edbb41  platform/openide.loaders/src/org/openide/loaders/saveAll24.gif
@@ -3189,7 +3174,6 @@ c5d745a5ded58d763a25409aadb159e703f52e6d701fe9012972b039d3725137  enterprise/web
 c5d745a5ded58d763a25409aadb159e703f52e6d701fe9012972b039d3725137  websvccommon/websvc.saas.ui/src/org/netbeans/modules/websvc/saas/ui/resources/webservice.png
 c5d98cf516b8b56c57fd23ab2a8fe858e571d4054f7c2ff1a9910d3baa46722a  profiler/profiler.heapwalker/src/org/netbeans/modules/profiler/heapwalk/ui/icons/impl/snapshotDataObject.png
 c5d98cf516b8b56c57fd23ab2a8fe858e571d4054f7c2ff1a9910d3baa46722a  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/snapshotDataObject.png
-c5e240cdbb660ec08708f4dd5b3fb7a8d0ba916a0d90acbcc4dc0f5eae84c872  enterprise/jakarta.web.beans/src/org/netbeans/modules/jakarta/web/beans/resources/event.png
 c5e240cdbb660ec08708f4dd5b3fb7a8d0ba916a0d90acbcc4dc0f5eae84c872  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/event.png
 c5e9a2ab9b63d0b464290cd18dcf4a4b1dfa51ecde1df87b6f8c593807de6358  ide/db/src/org/netbeans/modules/db/resources/function-invalid.png
 c5f405b4573cdbf455f5117d9e28ef39e07ffb8e89891d42b7182f45fe5f2ba1  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/breakpointsView/BreakpointHit.gif
@@ -3222,10 +3206,8 @@ c693c49aaf51444601df63fb778399048429892ee6b9532d939ca099bb62800d  nbi/infra/serv
 c693c49aaf51444601df63fb778399048429892ee6b9532d939ca099bb62800d  nbi/infra/server/modules/war-client/web/img/tree-handle-closed.png
 c6aab049cd7d80194fd9bd7003822baee3d4e87be5b4ac30294bcef06211b67b  ide/git/src/org/netbeans/modules/git/resources/icons/pull-setting24.png
 c6bde66097b49702a2d2a06ef423867f73975a2d5490e1c05b5c035ec2277b77  java/beans/src/org/netbeans/modules/beans/resources/bifEventSetUC_N.gif
-c6e39f16c104739bb7ea488747ee2a855c54546b25cc7075b8a4451c184c15ca  nb/welcome/release/docs/images/spacer.png
 c6f2d8513ad071fb1f4c75a665b4fade20b6cc97e37c8eed6d40c9b7bcdb549c  javafx/javafx2.samples/AdvancedMedia/src/advancedmedia/pausebutton.png
 c6f552d9cd105102893c7bea722ebfcfe8505b6fd02c339fee23886fb1c40bfe  java/beans/src/org/netbeans/modules/beans/resources/bifPropertyRO_S.gif
-c6fbe4aca0d62c6725abe7cc45a302617c737b5fb9a094523f7ca749a2bb9e55  enterprise/jakarta.web.beans/src/org/netbeans/modules/jakarta/web/beans/resources/observer.png
 c6fbe4aca0d62c6725abe7cc45a302617c737b5fb9a094523f7ca749a2bb9e55  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/observer.png
 c7214f7a140186b55c10ef20f71596422216001fd8d5118b2233116ca8df325e  ide/bugtracking/src/org/netbeans/modules/bugtracking/tasks/resources/schedule_alarm.png
 c7234b02521f1a8043fe6d34298e1757f692910a1605fe2bbff35865cfb217aa  webcommon/typescript.editor/src/org/netbeans/modules/typescript/editor/icon.png
@@ -3282,7 +3264,6 @@ c9e3a7329aba8f5fbf6020faedaf47602375c814221c15825ce4872bc8a982ae  java/form/src/
 c9ef0387fe3194b0f916ff8bd839cf44dfedb8b9646e426d623b3c97eeef2cf6  java/maven/src/org/netbeans/modules/maven/resources/Maven2IconRun6.png
 ca3112ebdc7a9a74d88dfa02f548b0b1ff4994579d789782ed9cc2ebaa2cb4a8  php/php.editor/src/org/netbeans/modules/php/editor/resources/trait.png
 ca33162031f424c3ee87c24841deba5d45bcfbcbd109de9c88e1a7a6135582e0  java/java.lsp.server/vscode/images/Test_explorer.png
-ca357abeecd1910bb63f6ef7018290c098c27717602d3b59d3e94e9d136df44e  nb/welcome/release/docs/images/circle5.gif
 ca4a0f1ab830d0923ff818ba0c1839def1b485a3ed687ac2afec2cbeedc08d04  java/refactoring.java/src/org/netbeans/modules/refactoring/java/resources/newFile.png
 ca4a0f1ab830d0923ff818ba0c1839def1b485a3ed687ac2afec2cbeedc08d04  platform/openide.nodes/src/org/openide/nodes/defaultNode.png
 ca4a0f1ab830d0923ff818ba0c1839def1b485a3ed687ac2afec2cbeedc08d04  platform/templates/src/org/netbeans/modules/templates/resources/newFile.png
@@ -3328,8 +3309,6 @@ cbec9bfa589ff0384fa31c1c16202c862da238840cd9f156e049cd2185422761  java/java.proj
 cbec9bfa589ff0384fa31c1c16202c862da238840cd9f156e049cd2185422761  java/java.project/src/org/netbeans/spi/java/project/support/ui/templates/annotation.png
 cbec9bfa589ff0384fa31c1c16202c862da238840cd9f156e049cd2185422761  java/java.source/src/org/netbeans/modules/java/resources/annotation_file.png
 cbec9bfa589ff0384fa31c1c16202c862da238840cd9f156e049cd2185422761  nbbuild/javadoctools/siteresource/annotation.png
-cbf6865553dafa4ebe7655750d8b913742ecfa8efcc945805d541fef3ff45c99  nb/welcome/src/org/netbeans/modules/welcome/resources/incubator_logo.png
-cbf6865553dafa4ebe7655750d8b913742ecfa8efcc945805d541fef3ff45c99  nb/welcome/src/org/netbeans/modules/welcome/resources/incubator_logo_dark.png
 cc09b3701fa9bc75da3f94225098158d1e5ebb95d57f3edfbfe626b0d7c86e10  java/form/src/org/netbeans/modules/form/layoutsupport/griddesigner/resources/gap_height.png
 cc1b599e9e90c54b807c1e625aabd0bdadbe4aba9c2fcca9029fb074c5f638b7  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/show_inherited_methods_icon.gif
 cc3486d06e5e33d1a8b41e6453a151209b636dfc29337dcbdd3824a74eb91cce  java/form/src/org/netbeans/modules/form/resources/sameboth.png
@@ -3395,7 +3374,6 @@ cfe196987c16305a2272e2d5eb8728a9d4fec4f83df86da4b1061b67cfcb30d9  platform/o.n.s
 cffcb93093f95a4afca8cec449e262bb5f5734fdec11c37e4d77ec4dcf8cdf30  java/form/src/org/netbeans/modules/form/resources/palette/tree_32.png
 d00915e739e1b03f88f9e033183e985d3a0a2ca69a4f9cba8831a7f18259e1f4  java/java.navigation/src/org/netbeans/modules/java/navigation/resources/filterHideStatic.png
 d017509d15bd2aa99940a85dccc05a28550818a951c6dd8e60c0201c1bd72033  java/jshell.support/src/org/netbeans/modules/jshell/resources/history_statement.png
-d018f93bb88775605ba8b5c3b717c76c49d391f25f49c0a0c7aeaabf917b6057  nb/welcome/src/org/netbeans/modules/welcome/resources/content_banner_dark.png
 d01948a2ab29d25a4dde9406ca551288d4f41c733c8e247820eaf59f7a697224  ide/db.sql.visualeditor/src/org/netbeans/modules/db/sql/visualeditor/resources/query-editor-tab.png
 d08f9b30ee61e619650c0e0d722deca2d936bb18cd9c8c234318b51185fe7c7b  enterprise/web.core/src/org/netbeans/modules/web/core/palette/items/resources/Report16.png
 d0a1d9fd288ec6f6d85e7d146391f3cf2961a1927409c5df1f7d949c59a23ba8  harness/libs.nbi.ant/stub/ext/components/products/helloworld/data/icon.png
@@ -3443,7 +3421,6 @@ d23f5fbcf9b34550dd08aa99e9c5d4e3a603fb5199e661ff94483e13612200ef  cpplite/cpplit
 d2ac0236b4980fd217d86851cc3c2aa9ce649ccbc8ed2ad79aafac715f47784a  ide/lsp.client/src/org/netbeans/modules/lsp/client/bindings/icons/event.png
 d2ac0236b4980fd217d86851cc3c2aa9ce649ccbc8ed2ad79aafac715f47784a  javafx/javafx2.editor/src/org/netbeans/modules/javafx2/editor/resources/event.png
 d2cb93a5f2b59bed968b3dc5775761940f3867b362584cc5bcdf0d26706034c7  ide/editor/src/org/netbeans/modules/editor/resources/override/is-overridden.png
-d2da83f4995f43e982d34a0bdd364f694fbd5a2614621a551cf5fc4e55720c54  nb/welcome/src/org/netbeans/modules/welcome/resources/tab_selected.png
 d2dd1a36ba05299357b37ee63f8e8fa184a6a2e0d3078523794bcdfe930ca8a0  ide/derby/src/org/netbeans/modules/derby/resources/optionsIcon16.png
 d2e80a39a3af9344d322e5c3da973bd9a8eb248ed6c62da9c218f4a3844af27d  enterprise/web.core/src/org/netbeans/modules/web/core/palette/items/resources/UseBean16.png
 d2e80a39a3af9344d322e5c3da973bd9a8eb248ed6c62da9c218f4a3844af27d  java/form/src/org/netbeans/modules/form/resources/palette/choose_bean_16.png
@@ -3572,6 +3549,7 @@ d9ec8f003fa558c9e18b8539ba83af51c5e97e36760ff3ef1789c70b7c074507  profiler/profi
 d9fc68adec79a2425e92db62dc1b7a81488acd978701b448eb234014eb130df1  platform/openide.actions/src/org/openide/resources/actions/find.gif
 da15e5f0f68b83e6792277b9dc14b47a9e172061d2a557f476890c0f26c2f4ea  platform/o.n.core/src/org/netbeans/core/resources/topComponentDragMove.gif
 da15e5f0f68b83e6792277b9dc14b47a9e172061d2a557f476890c0f26c2f4ea  platform/openide.explorer/src/org/openide/explorer/view/cursorsmovesingle.gif
+da2221c251086574a354affc22acee13403dcab00f0c3874ec6d786efeaefd40  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/warning32.png
 da428dc0c25e753556dc3e92c21c98aebaa3acc3b917fd6a855491deb77a4dee  groovy/groovy.support/src/org/netbeans/modules/groovy/support/resources/runSingle.png
 da428dc0c25e753556dc3e92c21c98aebaa3acc3b917fd6a855491deb77a4dee  ide/projectui/src/org/netbeans/modules/project/ui/resources/runSingle.png
 da442e3c950d831fa60e78c6222e4fe0114fe20ba8d0614f93d785186e3c66d4  java/form/src/org/netbeans/modules/form/resources/samewidth.png
@@ -3647,6 +3625,7 @@ dea6a4194380c2d445a2566c49bc94682ea568de6d707d533a5560ddbeee08cc  enterprise/web
 dea6a4194380c2d445a2566c49bc94682ea568de6d707d533a5560ddbeee08cc  javafx/javafx2.editor/src/org/netbeans/modules/javafx2/editor/resources/instruction.png
 dea6a4194380c2d445a2566c49bc94682ea568de6d707d533a5560ddbeee08cc  javafx/javafx2.editor/src/org/netbeans/modules/javafx2/editor/resources/system-property.png
 debf6a5e7d6db40dc7a9b76c5d05f219ff189882fba76dfd6e847efd0d4d3935  platform/openide.loaders/src/org/openide/loaders/doc-files/data_loaders.gif
+dec12459ee886431765b3c4c7d26f4a71c74df70a12ae49eb231413b19c803a3  nb/ide.branding/release/apache-netbeans1024.png
 dec12459ee886431765b3c4c7d26f4a71c74df70a12ae49eb231413b19c803a3  platform/core.startup/src/org/netbeans/core/startup/frame1024.png
 dee85f2e52ae52777dff6f1394c1e98273a138d6933c212eec6e6647b571ac29  java/form/src/org/netbeans/modules/form/beaninfo/awt/scrollpane32.gif
 df4c8f23dd1c7713591456a6639810722db40b24fabbbedf8325c36789c9675b  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/gtk_minimize_pressed.png
@@ -3658,7 +3637,6 @@ dfd45fca24699731900db93ad8842b30e394b424cf316c1ecccd90e8b66bd74d  platform/o.n.s
 dfd9873b789265df501a87dd563175b58b17c5dbe0def8f2f7dd025587ca9d8f  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_restore_pressed_dark.png
 dfdd36e2f28bb30de62b41e596624f42ff2c7b228ad56c4f61e231416e62576c  platform/openide.nodes/src/org/openide/nodes/doc-files/ordering.gif
 e015da37976a84db4c1a74546fa4fc25986a563462fc591b1f14a31b60beb6d9  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/metal_restore_group_pressed.png
-e037db36893c8ee6c0be9ca107089b1c72e913ceb7147415de6bcb7b4c24d948  nb/welcome/src/org/netbeans/modules/welcome/resources/content_banner.png
 e0a2228fe77fc3ce3401c1cd457cc7a9a7714bfe8e8b32fc1b3297f6f5bac2b7  java/performance/actionsframework/src/org/netbeans/actions/examples/icons/paste.gif
 e0a72f64ebcdfe09f0406dd606a35e80fed15c5064801a6c8289533454279385  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/win_popup_rollover.png
 e0c79aa689c748381360ddbbc0d340a810f3bd0bbd585f46bb34719448c2152d  ide/csl.api/src/org/netbeans/modules/csl/source/resources/icons/methodStaticPublic.png
@@ -3828,6 +3806,7 @@ eaac7a1d8ee18c8f33cc88806dc78371d316527db1f57c2f7f08b81bd4dd10dc  java/form/src/
 eabb6b6bb1026fb0b7963a335c5606f9e9f34484a03c69d4687a552175b11e17  java/junit/src/org/netbeans/modules/junit/resources/JUnitSettingsIcon32.gif
 eabdbc4da7785390959caed806fc6472a6ac6de710fcd272a71dd05a0f9baa29  cpplite/cpplite.editor/src/org/netbeans/modules/cpplite/editor/lsp/options/cnd_32.png
 eb04f9b5628968998fa336c7dc309c49ccd0cf7d1a8ed391853094c1a863d412  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/metal_slideright_pressed.png
+eb28a168e67ae16fab40f868922cb5a194939be3e5f361bc8743e2fb08ec3cf9  nb/ide.branding/release/apache-netbeans512.png
 eb28a168e67ae16fab40f868922cb5a194939be3e5f361bc8743e2fb08ec3cf9  platform/core.startup/src/org/netbeans/core/startup/frame512.png
 eb498012c0e7f1d3a3b18702d2593942a6d69fb038f002344ea3a2d2faefcb27  ide/o.openidex.util/src/org/openidex/resources/find.gif
 eb498012c0e7f1d3a3b18702d2593942a6d69fb038f002344ea3a2d2faefcb27  ide/refactoring.api/src/org/netbeans/modules/refactoring/api/resources/query.gif
@@ -3890,7 +3869,6 @@ ee9c53577af390bae16d8470fd1f1facbbfe347524593c8b9754ec5150d8723d  ide/usersguide
 eea383547272d7fdf0612b79ec3f0f3c83c038f44e34889081b51b5ff8e0b6b4  java/form/src/org/netbeans/modules/form/layoutsupport/resources/se.gif
 eea863ff97f12b1bffff6a56f3f4728d6ae7d832f41ed85f881014f44f73e989  ide/editor/src/org/netbeans/modules/editor/resources/last_edit_location_16.png
 eea863ff97f12b1bffff6a56f3f4728d6ae7d832f41ed85f881014f44f73e989  ide/usersguide/javahelp/org/netbeans/modules/usersguide/img/edit_previous.png
-eeebd2f146a8dc5f45ed782312c9c9845d921cac7aa363862e8a09bc9e2ec24b  enterprise/jakarta.web.beans/src/org/netbeans/modules/jakarta/web/beans/resources/delegate.png
 eeebd2f146a8dc5f45ed782312c9c9845d921cac7aa363862e8a09bc9e2ec24b  enterprise/web.beans/src/org/netbeans/modules/web/beans/resources/delegate.png
 eef0a47e0ada451ec79d03b113250bef76578306ef86e0f4f50af46b0e544d4e  enterprise/web.jsf/src/org/netbeans/modules/web/jsf/palette/items/resources/JsfTable16.png
 eef0a47e0ada451ec79d03b113250bef76578306ef86e0f4f50af46b0e544d4e  ide/html/src/org/netbeans/modules/html/palette/items/resources/TABLE16.png
@@ -3971,7 +3949,6 @@ f4bfe90557048ae0b5d4318f21e27b697302a7d4708d16ed584c84b8c82a34b7  platform/o.n.c
 f4cae6f5f55a1578f6f96ac674f90c7389680953c0cfa6b8f0a81b3f4470c571  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_scrollleft_disabled_dark.png
 f4cbe00c15866217c1dea7a33401d8c454ba9df7264b1f3cd5b04990421e0feb  ide/bugtracking/src/org/netbeans/modules/bugtracking/ui/resources/kenai-small.png
 f4d6e806b5be0b7f23c0492c39b6d5d0b44c04cdf8f92773f42ea3484acd9d99  ide/notifications/src/org/netbeans/modules/notifications/resources/notifications.png
-f4ef1481d5138bd4d50511564e3a6c525bc5155c4f332679eef3aa91653b8c18  nb/welcome/release/docs/images/up-right.png
 f4f40b717b9cfa3d4e96fcb84b9afacc0345acbe423479f37322d11f10375cd3  php/languages.neon/src/org/netbeans/modules/languages/neon/resources/neon_file_16.png
 f500e76ce8959b53a155f9d9956854c682b5f6b065c0755131221b019893819a  java/java.source/src/org/netbeans/modules/java/source/resources/icons/provides.png
 f539c723ae7a3ce959725461d625fccf99441d4146d37971d5866f8a9d8cf58e  enterprise/cloud.oracle/src/org/netbeans/modules/cloud/oracle/resources/error.png
@@ -4044,6 +4021,7 @@ f977b4e3d0aed648ed00b88d739606587d3733d0fe2fa6b59bb144fa368627e6  ide/o.n.swing.
 f99aaeb6190d44d2a28ab5f0c118240ab49d345be51b7dda1cb531454419922f  platform/o.n.swing.tabcontrol/src/org/netbeans/swing/tabcontrol/resources/nimbus_restore_pressed.png
 f9a38b9fc242c8d0170a8149d32f20dd6cc8f05f039b7582355e0d8678ddade9  java/form/src/org/netbeans/modules/form/beaninfo/awt/checkbox.gif
 f9f9df10f8e316c56e4e6bbc248798a35335eba1efde1979d97bcc2226ddf1bc  java/beans/src/org/netbeans/modules/beans/resources/eventSetMulticast.gif
+f9fc3f3d6fcb7b796d6b0e0a3e2f5f3d12fe62c998adf53cd3b3260cc85b2848  platform/o.n.swing.laf.flatlaf/src/org/netbeans/swing/laf/flatlaf/resources/folderUp.png
 fa04e46493bc9ac936b949c03bb26f6c2c1370ce92e15b78b2eb7910c6fd0e96  ide/gsf.testrunner/src/org/netbeans/modules/gsf/testrunner/resources/restart_error_16.png
 fa0e3dbd4417c3bead30f7d7e91c3c1a12ccbeeef725af67f32b9b9a3e22ed2b  ide/diff/src/org/netbeans/modules/diff/builtin/visualizer/editable/insert.png
 fa12f50d2dc3b0c9104221a061b37cc441de894d1f9ea975d0f7ea55e7247337  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/breakpointsView/BreakpointHit_broken.gif
