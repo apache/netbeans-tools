@@ -85,6 +85,10 @@ The IconTasks script reads the following files as input:
       icons. IconTasks will also reorder rows to keep mappings for each
       artboard together, and to list ready artboards first.
 
+      In some cases, a new SVG icon may not have a corresponding PNG or GIF
+      icon. In this case the path to the SVG file can be used directly in
+      mappings.tsv.
+
   * icon-scripts/tables/illustrator_exports/icon_*.svg
       If there are SVG files in the illustrator_exports folder, they are assumed
       to have been exported from Illustrator and will be copied into appropriate

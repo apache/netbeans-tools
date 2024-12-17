@@ -24,3 +24,4 @@
 /jsstub-generator/node_modules/
 /jsstub-generator/nbproject/
 /jsstub-generator/out.old/
+.DS_Store

@@ -18,6 +18,10 @@
  */
 package org.netbeans.build.icons;
 
+import com.github.weisj.jsvg.SVGDocument;
+import com.github.weisj.jsvg.geometry.size.FloatSize;
+import com.github.weisj.jsvg.parser.LoaderContext;
+import com.github.weisj.jsvg.parser.SVGLoader;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -29,9 +33,11 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -58,6 +64,7 @@ import org.netbeans.build.icons.TypeTaggedString.Hash;
  */
 public class IconTasks {
     private static final String LICENSE_HEADER = readLicenseHeader();
+    private static final SVGLoader SVG_LOADER = new SVGLoader();
 
     public static void main(String[] args) throws IOException {
         final File ICON_SCRIPTS_DIR = new File(System.getProperty("user.dir"), "../");
@@ -127,7 +134,7 @@ public class IconTasks {
             for (ArtboardName artboard : readyArtboards) {
                 File artboardSVGFile = getIllustratorSVGFile(ILLUSTRATOR_SVGS_DIR, artboard);
                 if (!artboardSVGFile.exists()) {
-                    throw new RuntimeException("File not found: " + artboardSVGFile);
+                    System.out.println("Illustrator export " + artboardSVGFile + " not found; skipping.");
                 }
             }
         }
@@ -139,7 +146,9 @@ public class IconTasks {
         for (Entry<ArtboardName, Hash> entry : hashesByArtboard.entries()) {
             ArtboardName artboard = entry.getKey();
             Hash hash = entry.getValue();
-            for (IconPath ip : filesByHash.get(hash)) {
+            List<IconPath> pathsForThisHash = Lists.newArrayList(filesByHash.get(hash));
+            pathsForThisHash.sort((e1, e2) -> e1.toString().compareTo(e2.toString()));
+            for (IconPath ip : pathsForThisHash) {
                 Util.putChecked(newArtboardByFile, ip, artboard);
             }
         }
@@ -155,11 +164,15 @@ public class IconTasks {
                     unassignedIcons.add(new SimpleEntry(ip, dim));
                 }
             }
-            // Order unassigned icons by width, then by height.
+            /* Order unassigned icons by width, then by height, then by path. (If there are multiple
+            paths, the first path will end up being used for sorting per putIfAbsent below.) */
             unassignedIcons.sort((e1, e2) -> {
                 int ret = Integer.compare(e1.getValue().width, e2.getValue().width);
                 if (ret == 0) {
                     ret = Integer.compare(e1.getValue().height, e2.getValue().height);
+                }
+                if (ret == 0) {
+                    ret = e1.getKey().toString().compareTo(e2.getKey().toString());
                 }
                 return ret;
             });
@@ -175,7 +188,6 @@ public class IconTasks {
         for (ArtboardName artboard : readyArtboards) {
             final String svgContentToWrite;
             if (copySVGfiles) {
-                // Existence was checked earlier.
                 svgContentToWrite = prepareSVGWithInsertedLicense(ILLUSTRATOR_SVGS_DIR, artboard);
             } else {
                 svgContentToWrite = null;
@@ -208,22 +220,41 @@ public class IconTasks {
              PrintWriter htmlPW = createPrintWriter(ICONS_HTML_FILE))
         {
             htmlPW.println(LICENSE_HEADER);
-            htmlPW.println("<html>\n" +
-                    "<head>\n" +
-                    "<title>Icons</title>\n" +
-                    // "<base href='../../'>\n" +
-                    "<style>\n" +
-                    "table td, table td * { vertical-align: top; margin-left: 5px; }\n" +
-                    "thead td { padding-right: 10px; padding-bottom: 10px; }\n" +
-                    "td { padding-right: 10px; }\n" +
-                    "thead { font-weight: bold; }\n" +
-                    "</style>" +
-                    "</head>" +
-                    "<body>");
-            htmlPW.println("<h1>NetBeans Bitmap and SVG Icons</h1>\n" +
-                    "<table border='0' cellpadding='1' cellspacing='0'>\n" +
-                    "<thead><tr><td>Artboard Name<td>SVG<td>Bitmap<td>Dim<td>" +
-                    "Path of Bitmap in Source Repo (no icon image means same as previous)</tr></thead>");
+            htmlPW.println("""
+                <html>
+                <head>
+                <title>NetBeans Icons</title>
+                <!--The the image paths in this file assume that this HTML file is located in the
+                    root of a clone of the NetBeans source repository. To use images from a specific
+                    GitHub branch (e.g. belonging to a pull request), a line like the following can
+                    be included here:
+                  <base href="https://raw.githubusercontent.com/eirikbakke/incubator-netbeans/pr-svgs240612/">
+                -->
+                <style>
+                table td, table td * { vertical-align: top; margin-left: 5px; }
+                thead td { padding-right: 10px; padding-bottom: 10px; }
+                td { padding-right: 10px; }
+                thead { font-weight: bold; }
+                </style></head><body>
+                <h1>NetBeans Bitmap and SVG Icons</h1>
+                <p>This file lists bitmap icon files (GIF and PNG) in the NetBeans repo along with
+                   their mapping to corresponding modernized SVG versions where available. A single
+                   "artboard name" is assigned to icons that are exact or near duplicates, or which
+                   are intended to have the same meaning.
+                <p>This file is generated by the
+                <tt>icon-scripts/hidpi-icons</tt> script in the
+                <a href="https://github.com/apache/netbeans-tools">netbeans-tools</a>
+                repository. Image paths are relative to the root of the NetBeans
+                <a href="https://github.com/apache/netbeans">source repository</a>.
+                <p>See the <a href="https://github.com/apache/netbeans-tools/tree/master/icon-scripts#readme">README</a>,
+                    <a href="https://cwiki.apache.org/confluence/display/NETBEANS/SVG+Icon+Style+Guide+and+Process">Style Guide</a>, and
+                    <a href="https://vimeo.com/667860571">Icon Drawing Video Tutorial</a> for more information.
+                """
+            );
+            htmlPW.println("""
+                <p><table border='0' cellpadding='1' cellspacing='0'>
+                <thead><tr><td>Artboard Name<td>SVG<td>Bitmap<td>Dim<td>Path of Bitmap in
+                  Source Repo (no icon image means same as for previous row)</tr></thead>""");
             int artboardIdx = 0;
             Set<ArtboardName> artboardsInOrder = Sets.newLinkedHashSet();
             artboardsInOrder.addAll(Sets.filter(filesByArtboard.keySet(), a -> readyArtboards.contains(a)));
@@ -245,7 +276,7 @@ public class IconTasks {
                 for (IconPath ip : ips) {
                     Hash hash = Util.getChecked(iconHashesByFile, ip);
                     if (!UNASSIGNED_ARTBOARD.equals(artboard)) {
-                        mappingsPW.println(artboard + "\t" + ip);
+                        mappingsPW.println(artboard + "  " + ip);
                     }
 
                     htmlPW.print(artboardIdx % 2 == 0 ? "<tr>" :
@@ -327,9 +358,6 @@ public class IconTasks {
                 if (parts.length == 2) {
                     String artboard = parts[0].trim();
                     String filePath = parts[1].trim();
-                    if (filePath.endsWith(".svg")) {
-                        throw new RuntimeException("File mapping cannot be to an SVG file.");
-                    }
                     File actualFile = new File(nbsrcDir, filePath);
                     if (!actualFile.exists()) {
                         throw new RuntimeException("File does not exist: " + actualFile);
@@ -390,6 +418,9 @@ public class IconTasks {
     private static String prepareSVGWithInsertedLicense(File illustratorSVGsDir, ArtboardName artboard) throws IOException {
         StringBuilder ret = new StringBuilder();
         File srcFile = getIllustratorSVGFile(illustratorSVGsDir, artboard);
+        if (!srcFile.exists()) {
+            return null;
+        }
         try (BufferedReader br = new BufferedReader(new FileReader(srcFile))) {
             String line;
             boolean firstLine = true;
@@ -426,6 +457,17 @@ public class IconTasks {
     }
 
     private static @Nullable Dimension readImageDimension(File file) throws IOException {
+        if (file.getName().endsWith(".svg")) {
+            SVGDocument svgDocument = SVG_LOADER.load(new BufferedInputStream(
+                    new FileInputStream(file)), null, LoaderContext.builder().build());
+            if (svgDocument == null) {
+                throw new IOException("Failed to load SVG file " + file);
+            }
+            FloatSize floatSize = svgDocument.size();
+            return new Dimension(
+                    (int) Math.ceil(floatSize.getWidth()),
+                    (int) Math.ceil(floatSize.getHeight()));
+        }
         BufferedImage image = ImageIO.read(file);
         if (image == null)
           throw new IOException("ImageIO.read returned null for " + file);
