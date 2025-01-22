@@ -59,20 +59,30 @@
     </div>
   </div>
 </div>
-<br/><br/>
-<form class="form-inline" method="get" action="">
+<form  method="get" action="" id="searchForm">
+  <input type="hidden" name="page" value="1">
+</form>
+<form  method="get" action="" id="resetForm">
+  <input type="hidden" name="search" value="">
+  <input type="hidden" name="cat" value="">
+  <input type="hidden" name="nbv" value="">
+  <input type="hidden" name="page" value="1">
+</form>
+<div class="form-inline" style="margin-top: 1em; margin-bottom: 1em">
   <div class="form-group">
     <label for="search">Search</label>
-    <input type="text" class="form-control" name="search" id="search" 
-    placeholder="Name, description, author, category, license..." style="width: 350px;" value="<?= htmlentities($this->search) ?>">
+    <input type="text" class="form-control" name="search" id="search"
+    placeholder="Name, description, author, category, license..." style="width: 350px;"
+    value="<?= htmlentities($this->search) ?>"
+    form="searchForm">
   </div>
   <div class="form-group">
        <label for="nbvsel">&nbsp; NetBeans version</label>
-       <select id="nbvsel" name="nbv" class="form-control">
+       <select id="nbvsel" name="nbv" class="form-control" form="searchForm">
           <option value="">Any</option>
           <?php
           foreach($this->versions as $version) {
-              $sel = (array_key_exists('nbv', $_GET) && $_GET['nbv'] == $version->getVersion()) ? 'selected' : '';
+              $sel = ($this->nbv == $version->getVersion()) ? 'selected' : '';
               echo '<option value="'.$version->getVersion().'" '.$sel.'>'.$version->getVersion().'</option>';
           }
           ?>
@@ -80,19 +90,21 @@
   </div>
   <div class="form-group">
        <label for="catsel">&nbsp; Category</label>
-       <select id="catsel" name="cat" class="form-control">
+       <select id="catsel" name="cat" class="form-control" form="searchForm">
           <option value="">Any</option>
           <?php
           foreach($this->categories as $cat) {
-              $sel = (array_key_exists('cat', $_GET) && $_GET['cat'] == $cat->getName()) ? 'selected' : '';
+              $sel = ($this->cat == $cat->getName()) ? 'selected' : '';
               echo '<option value="'.$cat->getName().'" '.$sel.'>'.$cat->getName().'</option>';
           }
           ?>
        </select>
   </div>
-  <button type="submit" class="btn btn-primary">Go!</button>
-</form>
-<br/>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary" style="margin-top: 1ex; margin-bottom: 1ex;" form="searchForm">Go!</button>
+    <button type="submit" class="btn btn-default" style="margin-top: 1ex; margin-bottom: 1ex;" form="resetForm">Reset</button>
+  </div>
+</div>
 <hr/>
 <p class="text-info">Found <?= number_format($this->paginator->getTotalItemCount())?> plugins.</p>
 <table class="table table-striped">

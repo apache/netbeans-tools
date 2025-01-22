@@ -48,18 +48,43 @@ class IndexController extends BaseController {
 
         $pageLimit = 10;
 
-        $page = $this->params()->fromQuery('page') ? $this->params()->fromQuery('page') : 1;
+        $page = $this->params()->fromQuery('page');
         $cat = $this->params()->fromQuery('cat');
         $nbv = $this->params()->fromQuery('nbv');
-        $qb = $this->_pluginRepository->getPublicPluginsByNameQB($this->params()->fromQuery('search'), $cat, $nbv);
-        $adapter = new DoctrineAdapter(new ORMPaginator($qb->getQuery(), true));        
+        $search = $this->params()->fromQuery('search');
+
+        if ($page !== null) {
+            $_SESSION["IndexController"]["page"] = $page;
+        } else if (isset($_SESSION["IndexController"]["page"])) {
+            $page = $_SESSION["IndexController"]["page"];
+        }
+        if ($cat !== null) {
+            $_SESSION["IndexController"]["cat"] = $cat;
+        } else if (isset($_SESSION["IndexController"]["cat"])) {
+            $cat = $_SESSION["IndexController"]["cat"];
+        }
+        if ($nbv !== null) {
+            $_SESSION["IndexController"]["nbv"] = $nbv;
+        } else if (isset($_SESSION["IndexController"]["nbv"])) {
+            $nbv = $_SESSION["IndexController"]["nbv"];
+        }
+        if ($search !== null) {
+            $_SESSION["IndexController"]["search"] = $search;
+        } else if (isset($_SESSION["IndexController"]["search"])) {
+            $search = $_SESSION["IndexController"]["search"];
+        }
+
+        $qb = $this->_pluginRepository->getPublicPluginsByNameQB($search, $cat, $nbv);
+        $adapter = new DoctrineAdapter(new ORMPaginator($qb->getQuery(), true));
         $paginator = new Paginator($adapter);
-        $paginator->setDefaultItemCountPerPage($pageLimit);        
+        $paginator->setDefaultItemCountPerPage($pageLimit);
         $paginator->setCurrentPageNumber($page);
 
         return new ViewModel([
             'paginator' => $paginator,
-            'search' => $this->params()->fromQuery('search'),
+            'search' => $search,
+            'cat' => $cat,
+            'nbv' => $nbv,
             'categories' => $this->_categoryRepository->getAllCategoriesSortByName(),
             'versions' => $this->_nbVersionRepository->findAll(),
             'best' => $this->_pluginRepository->getTopNDownloadedPublic(5),

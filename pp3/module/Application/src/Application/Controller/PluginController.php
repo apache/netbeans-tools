@@ -435,7 +435,9 @@ P.S.: This is an automatic email. DO NOT REPLY to this email. ');
         foreach($this->_userRepository->findAdmins() as $verifier) {
             $mail->addBcc($verifier->getEmail());
         }
-        $transport->send($mail);
+        if($mail->getBcc()->count() > 0) {
+            $transport->send($mail);
+        }
     }
 
 
