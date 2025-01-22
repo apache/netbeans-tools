@@ -30,11 +30,11 @@
     <div class="form-group">
         <label for="relnotes">Release notes <span class="text-primary"></span></label>
         <textarea class="form-control" id="relnotes" name="relnotes" rows="5"
-        placeholder="Release notes"><?= $this->pluginVersion->getRelnotes() ?></textarea>                
+        placeholder="Release notes"><?= $this->pluginVersion->getRelnotes() ?></textarea>
     </div>
     <div class="form-group">
         <label for="url">NetBeans version</label>
-        <?= $this->partial('partials/_nbVersion-select.phtml', 
-                array('nbVersions' => $this->nbVersions, 'pluginVersion' =>$this->pluginVersion, 'verifiedNbVersionIds'=>$this->verifiedNbVersionIds)); ?>
+        <?= $this->partial('partials/_nbVersion-select.phtml',
+                array('nbVersions' => $this->nbVersions, 'pluginVersion' =>$this->pluginVersion, 'verifiedNbVersionIds'=>$this->verifiedNbVersionIds, "verificationPendingNbVersionIds" => $this->verificationPendingNbVersionIds)); ?>
     </div>
     <?php } ?>
