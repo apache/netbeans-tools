@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# If the user has a custom netbeans.conf. Disable Java Security Manager as of NetBeans 25
+if [ -f "$SNAP_USER_DATA/etc/netbeans.conf" ]; then
+    if ! grep -q '^netbeans_default_options=".*-J-Djava.lang.Runtime.level=' $SNAP_USER_DATA/etc/netbeans.conf ; then
+        sed -i 's/netbeans_default_options="/netbeans_default_options="-J-Djava.lang.Runtime.level=FINE /' $SNAP_USER_DATA/etc/netbeans.conf
+    fi
+    if ! grep -q '^netbeans_default_options=".*-J-DTopSecurityManager.disable=' $SNAP_USER_DATA/etc/netbeans.conf ; then
+        sed -i 's/netbeans_default_options="/netbeans_default_options="-J-DTopSecurityManager.disable=true /' $SNAP_USER_DATA/etc/netbeans.conf
+    fi
+fi
+
+exec $@

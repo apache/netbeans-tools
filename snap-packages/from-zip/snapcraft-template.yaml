@@ -71,5 +71,6 @@ apps:
   netbeans:
     command-chain:
       - launchers/userdir-cleanup
+      - launchers/patch-netbeans-conf
     command: netbeans/bin/netbeans
 
