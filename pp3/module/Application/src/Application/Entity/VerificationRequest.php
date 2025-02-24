@@ -56,7 +56,7 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.';
         $mail->addTo($this->getVerifier()->getEmail());
         $mail->setSubject('Verification request for NetBeans plugin: '.$plugin->getName());
         $transport = new Mail\Transport\Sendmail();
-        
+
         $transport->send($mail);
     }
 
@@ -76,4 +76,12 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.';
             return 'badge-green';
         }
     }
+
+    /**
+     * @return Verification
+     */
+    public function getVerification() {
+        return parent::getVerification();
+    }
+
 }

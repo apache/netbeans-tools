@@ -22,13 +22,38 @@ namespace Application\Controller;
 
 use Zend\View\Model\ViewModel;
 use Application\Entity\NbVersionPluginVersion;
-use Application\Pp\Catalog;
+use Application\Repository\PluginRepository;
+use Application\Repository\PluginVersionRepository;
+use Application\Repository\NbVersionRepository;
+use Application\Repository\NbVersionPluginVersionRepository;
+use Application\Repository\VerificationRepository;
 use HTMLPurifier;
 use HTMLPurifier_Config;
 
 define('PLUGIN_SESSION_NAMESPACE', 'pp3_plugin_session');
 
 class PluginVersionController extends AuthenticatedController {
+
+    /**
+     * @var PluginRepository
+     */
+    private $_pluginRepository;
+    /**
+     * @var PluginVersionRepository
+     */
+    private $_pluginVersionRepository;
+    /**
+     * @var NbVersionRepository
+     */
+    private $_nbVersionRepository;
+    /**
+     * @var NbVersionPluginVersionRepository
+     */
+    private $_nbVersionPluginVersionRepository;
+    /**
+     * @var VerificationRepository
+     */
+    private $_verificationRepository;
 
     public function __construct($pluginRepo, $pvRepo, $nbvRepo, $nbVersionPluginVersionRepo, $config, $verificationRepo) {
         parent::__construct($config);
@@ -74,7 +99,7 @@ class PluginVersionController extends AuthenticatedController {
                     } else {
                         $assignedNbVersions[] = $nbvPv->getNbVersionId();
                     }
-                }                                
+                }
                 // and add newly selected
                 foreach($selectedNbVersionIds as $selectedNbVersionId) {
                     if (!in_array($selectedNbVersionId, $assignedNbVersions)) {
@@ -88,23 +113,23 @@ class PluginVersionController extends AuthenticatedController {
                 $this->_pluginVersionRepository->persist($pluginVersion);
             } else {
                 // remove all
-                foreach($pluginVersion->getNbVersionsPluginVersions() as $nbvPv) {                
+                foreach($pluginVersion->getNbVersionsPluginVersions() as $nbvPv) {
                     $this->_nbVersionPluginVersionRepository->remove($nbvPv);
                     $showFlash = true;
                 }
             }
 
             $this->rebuildAllCatalogs();
-            
+
             if ($showFlash) {
                 $plugin = $pluginVersion->getPlugin();
                 $plugin->setLastUpdatedAt(new \DateTime('now'));
                 $this->_pluginRepository->persist($plugin);
                 $this->flashMessenger()->setNamespace('success')->addMessage('Plugin version updated');
-                return $this->redirect()->toUrl('./edit?id='.$pluginVersion->getId());                
+                return $this->redirect()->toUrl('./edit?id='.$pluginVersion->getId());
             }
         }
-        
+
         // droping verification
         $verificationId = $this->params()->fromQuery('verifId');
         if ($verificationId) {
@@ -114,16 +139,22 @@ class PluginVersionController extends AuthenticatedController {
                 $nbvPv = $verification->getNbVersionPluginVersion();
                 $nbvPv->setVerification(null);
                 $this->_nbVersionPluginVersionRepository->persist($nbvPv);
+                $this->rebuildAllCatalogs();
                 $this->flashMessenger()->setNamespace('success')->addMessage('Verification dropped');
                 return $this->redirect()->toUrl('./edit?id='.$pluginVersion->getId());
             }
         }
-        
-        
+
+
         $verifiedNbVersions = $this->_nbVersionRepository->getVerifiedNbVersionIdsForPlugin($pluginVersion->getPlugin()->getId());
         $verifiedNbVersionIds = array();
         foreach($verifiedNbVersions as $v) {
             $verifiedNbVersionIds[]=$v['id'];
+        }
+        $verificationPendingNbVersions = $this->_nbVersionRepository->getVerificationPendingNbVersionIdsForPlugin($pluginVersion->getPlugin()->getId());
+        $verificationPendingNbVersionIds = array();
+        foreach($verificationPendingNbVersions as $v) {
+            $verificationPendingNbVersionIds[]=$v['id'];
         }
 
         if ($this->isAdmin() && !empty($search)) {
@@ -131,23 +162,24 @@ class PluginVersionController extends AuthenticatedController {
         } else {
             $backUrl = $this->url()->fromRoute('plugin', array('action' => 'list'));
         }
-        
+
         return new ViewModel([
             'pluginVersion' => $pluginVersion,
             'nbVersions' => $this->_nbVersionRepository->findAll(),
             'verifiedNbVersionIds' => $verifiedNbVersionIds,
-            'return' => $backUrl, 
+            'verificationPendingNbVersionIds' => $verificationPendingNbVersionIds,
+            'return' => $backUrl,
         ]);
     }
 
     public function deleteAction() {
         $pId = $this->params()->fromQuery('id');
-        $pluginVersion = $this->_pluginVersionRepository->find($pId);        
+        $pluginVersion = $this->_pluginVersionRepository->find($pId);
         if ((!$pluginVersion || empty($pId) || !$pluginVersion->getPlugin()->isOwnedBy($this->getAuthenticatedUserId())) && !$this->isAdmin()) {
             return $this->redirect()->toRoute('plugin', array(
                 'action' => 'list'
             ));
-        };        
+        };
         $this->flashMessenger()->setNamespace('success')->addMessage('Plugin version '.$pluginVersion->getVersion().' deleted');
         $this->_pluginVersionRepository->remove($pluginVersion);
         $this->rebuildAllCatalogs();

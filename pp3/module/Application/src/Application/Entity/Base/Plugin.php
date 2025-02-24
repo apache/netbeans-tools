@@ -34,7 +34,7 @@ class Plugin {
 
     /** @ORM\Column(type="string", length=255) */
     protected $name;
-    
+
     /** @ORM\Column(type="string", length=255) */
     protected $artifactid;
 
@@ -43,7 +43,7 @@ class Plugin {
 
     /** @ORM\Column(type="text") */
     protected $description;
-    
+
     /** @ORM\Column(type="text") */
     protected $short_description;
 
@@ -70,10 +70,10 @@ class Plugin {
 
     /** @ORM\Column(type="integer") */
     protected $status;
-    
+
     /** @ORM\Column(type="string", length=255) */
     protected $latest_version;
-    
+
     /** @ORM\Column(type="string", length=255) */
     protected $release_version;
 
@@ -85,13 +85,13 @@ class Plugin {
 
     /** @ORM\Column(type="integer") */
     protected $downloads;
-    
+
     /**
      * @ORM\OneToMany(targetEntity="PluginVersion", mappedBy="plugin", cascade={"persist", "remove"})
      */
     protected $versions;
-    
-    /** 
+
+    /**
     * @ORM\ManyToMany(targetEntity="Category", inversedBy="plugins")
     * @ORM\JoinTable(name="plugin_category")
     */
@@ -107,7 +107,7 @@ class Plugin {
     public function getLatestVersion() {
         return $this->latest_version;
     }
-    
+
     public function setLatestVersion($ltv) {
         $this->latest_version = $ltv;
     }
@@ -115,7 +115,7 @@ class Plugin {
     public function getReleaseVersion() {
         return $this->release_version;
     }
-    
+
     public function setReleaseVersion($rv) {
         $this->release_version = $rv;
     }
@@ -143,7 +143,7 @@ class Plugin {
     public function setDescription($description) {
         $this->description = $description;
     }
-    
+
     public function getShortDescription() {
         return $this->short_description;
     }
@@ -182,7 +182,7 @@ class Plugin {
     public function setLastUpdatedAt($lupat) {
         $this->last_updated_at = $lupat;
     }
-    
+
     public function getUrl() {
         return $this->url;
     }
@@ -198,11 +198,11 @@ class Plugin {
     public function setStatus($status) {
         $this->status = $status;
     }
-    
+
     public function getArtifactId() {
         return $this->artifactid;
     }
-    
+
     public function setArtifactId($aid) {
         $this->artifactid = $aid;
     }
@@ -210,11 +210,14 @@ class Plugin {
     public function getGroupId() {
         return $this->groupid;
     }
-    
+
     public function setGroupId($gid) {
         $this->groupid = $gid;
     }
 
+    /**
+     * @return PluginVersion[]
+     */
     public function getVersions() {
         return $this->versions;
     }

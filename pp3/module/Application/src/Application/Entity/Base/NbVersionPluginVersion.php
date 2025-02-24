@@ -81,26 +81,35 @@ class NbVersionPluginVersion {
     }
 
 
+    /**
+     * @return PluginVersion
+     */
     public function getPluginVersion() {
         return $this->pluginVersion;
     }
 
     public function setPluginVersion($pluginVersion) {
         $this->pluginVersion = $pluginVersion;
-    }    
+    }
 
+    /**
+     * @return NbVersion
+     */
     public function getNbVersion() {
         return $this->nbVersion;
     }
 
     public function setNbVersion($nbVersion) {
         $this->nbVersion = $nbVersion;
-    }   
-    
+    }
+
     public function getVerificationId() {
         return $this->verification_id;
     }
 
+    /**
+     * @return Verification
+     */
     public function getVerification() {
         return $this->verification;
     }
