@@ -303,7 +303,22 @@ class VerificationController extends AuthenticatedController {
 
             $this->_verificationRepository->persist($verification);
 
+            // Remove all other verifications for this plugin version
+            foreach ($plugin->getVersions() as $pv) {
+                foreach ($pv->getNbVersionsPluginVersions() as $nvpv) {
+                    if ($verification->getNbVersionPluginVersion()->getNbVersionId() == $nvpv->getNbVersionId()
+                        && $nvpv->getVerification() != null
+                        && $nvpv->getVerification()->getNbVersionPluginVersion()->getId() != $nbvPvId) {
+                        $this->_verificationRepository->remove($nvpv->getVerification());
+                        $nvpv->setVerification(null);
+                        $this->_nbVersionPluginVersionRepository->persist($nvpv);
+                    }
+                }
+            }
+
             $this->flashMessenger()->setNamespace('success')->addMessage('Verification done based on previous verification.');
+
+            $this->rebuildAllCatalogs();
         }
         return $this->redirect()->toUrl('../plugin-version/edit?id=' . $nbVersionPluginVersion->getPluginVersion()->getId());
     }
@@ -388,5 +403,13 @@ P.S.: This is an automatic email. DO NOT REPLY to this email.');
             return false;
         }
         return true;
+    }
+
+    private function rebuildAllCatalogs() {
+        $versions = $this->_nbVersionRepository->getEntityRepository()->findAll();
+        foreach ($versions as $v) {
+            $v->requestCatalogRebuild();
+            $this->_nbVersionRepository->persist($v);
+        }
     }
 }

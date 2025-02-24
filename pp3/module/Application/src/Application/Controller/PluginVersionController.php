@@ -139,6 +139,7 @@ class PluginVersionController extends AuthenticatedController {
                 $nbvPv = $verification->getNbVersionPluginVersion();
                 $nbvPv->setVerification(null);
                 $this->_nbVersionPluginVersionRepository->persist($nbvPv);
+                $this->rebuildAllCatalogs();
                 $this->flashMessenger()->setNamespace('success')->addMessage('Verification dropped');
                 return $this->redirect()->toUrl('./edit?id='.$pluginVersion->getId());
             }
