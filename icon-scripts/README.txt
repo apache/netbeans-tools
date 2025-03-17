@@ -145,9 +145,7 @@ Process for Exporting SVG Files from Adobe Illustrator
      Save as type: SVG
      Use artboards: Check and select "All".
 
-5) In the SVG export options dialog that shows up, enter the following settings,
-   which have been tested and are known to work with NetBeans' SVG loader
-   implementation:
+5) In the SVG export options dialog that shows up, enter the following settings:
 
      SVG Profiles: SVG 1.1
      Type: Convert to outline
@@ -156,6 +154,13 @@ Process for Exporting SVG Files from Adobe Illustrator
      Decimal Places: 3
      Encoding: UTF-8
      Responsive: Disabled
+
+   The settings above have been tested and are known to work with NetBeans' SVG
+   loader implementation, which is used by ImageUtilities.loadIcon and friends.
+
+   (The settings above worked both with the old loader which used the Batik SVG
+   library, and the current loader which replaced Batik with JSVG. See
+   https://github.com/apache/netbeans/pull/7941 )
 
 6) Run the IconTasks script. It will copy the SVG files to the various
    required locations in the NetBeans repo, with an Apache License header
