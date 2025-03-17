@@ -63,6 +63,12 @@ import org.netbeans.build.icons.TypeTaggedString.Hash;
  * the default when running this file from the NetBeans IDE).
  */
 public class IconTasks {
+    /* Constants relating to artboard positioning in the generated add_illustrator_exports.jsx
+    script. All values are in pixels. */
+    private static final int ARTBOARD_MAX_X = 288;
+    private static final int ARTBOARD_GRID = 12;
+    private static final int ARTBOARD_MIN_SPACING = 2;
+
     private static final String LICENSE_HEADER = readLicenseHeader();
     private static final SVGLoader SVG_LOADER = new SVGLoader();
 
@@ -85,13 +91,13 @@ public class IconTasks {
             System.err.println("Path " + args[0] + " (in command-line argument) is not a cloned NetBeans repository");
             System.exit(-1);
         }
-        final File ILLUSTRATOR_SVGS_DIR =
-                new File(ICON_SCRIPTS_DIR, "illustrator_exports/");
+        final File ILLUSTRATOR_SVGS_DIR = new File(ICON_SCRIPTS_DIR, "illustrator_exports/");
         final File TABLES_DIR = new File(ICON_SCRIPTS_DIR, "tables/");
         final File ICON_HASHES_FILE = new File(TABLES_DIR, "icon-hashes.txt");
         final File MAPPINGS_FILE = new File(TABLES_DIR, "mappings.tsv");
         final File READY_ARTBOARDS_FILE = new File(TABLES_DIR, "ready-artboards.txt");
         final File ICONS_HTML_FILE = new File(NBSRC_DIR, "icons.html");
+        final File ILLUSTRATOR_ARTBOARD_SCRIPT_FILE = new File(ICON_SCRIPTS_DIR, "add_illustrator_artboards.jsx");
         boolean copySVGfiles =
                 ILLUSTRATOR_SVGS_DIR.listFiles(f-> f.toString().endsWith(".svg")).length > 0;
         System.out.println("Using icon hashes file     : " + ICON_HASHES_FILE);
@@ -214,11 +220,35 @@ public class IconTasks {
             }
         }
 
+        int artboardX = 0;
+        int artboardY = 0;
+        int currentArtboardRowTallestIcon = 0;
+
         /* The mappings file is assumed to be in a git repo so that the user of the script can
         see what changed from run to run. */
         try (PrintWriter mappingsPW = createPrintWriter(MAPPINGS_FILE);
-             PrintWriter htmlPW = createPrintWriter(ICONS_HTML_FILE))
+             PrintWriter htmlPW = createPrintWriter(ICONS_HTML_FILE);
+             PrintWriter scriptPW = createPrintWriter(ILLUSTRATOR_ARTBOARD_SCRIPT_FILE))
         {
+            scriptPW.println("/* This generated Adobe Illustrator script places newly mapped artboards in the");
+            scriptPW.println("existing nb_vector_icons.ai file, with old PNG or GIF icons placed, embedded,");
+            scriptPW.println("and locked in the \"Old Bitmaps\" layer.\n");
+            scriptPW.println("To use this script, first open nb_vector_icons.ai in Adobe Illustrator. Then ");
+            scriptPW.println("click File->Scripts->Other Script, and browse to this file. */\n");
+            scriptPW.println("var doc = app.activeDocument;");
+            scriptPW.println("var targetLayer = doc.layers.getByName(\"Old Bitmaps\");");
+            scriptPW.println("var left, top, right, bottom, placedItem, embeddedItem, scaleX, scaleY;\n");
+
+            scriptPW.println("var firstColumnX = 0;");
+            scriptPW.println("for (var i = 0; i < doc.artboards.length; i++) {");
+            scriptPW.println("  var abRect = doc.artboards[i].artboardRect;");
+            scriptPW.println("  var rightX = abRect[2]; // right side of this artboard");
+            scriptPW.println("  if (rightX > firstColumnX) {");
+            scriptPW.println("    firstColumnX = rightX;");
+            scriptPW.println("  }");
+            scriptPW.println("}");
+            scriptPW.println("firstColumnX += 32;\n");
+
             htmlPW.println(LICENSE_HEADER);
             htmlPW.println("""
                 <html>
@@ -282,7 +312,9 @@ public class IconTasks {
                     htmlPW.print(artboardIdx % 2 == 0 ? "<tr>" :
                             "<tr style='background: #eee'>");
                     if (subRowIdx == 0) {
-                        htmlPW.print("<td rowspan='" + ips.size() + "'>" + artboard);
+                        /* Add an invisible "^" to make it possible to search for artboard names
+                        with Ctrl+F (e.g. "^ok") without getting matches in the path column. */
+                        htmlPW.print("<td rowspan='" + ips.size() + "'><span style=\"color: #00000000\">^</span>" + artboard);
                         htmlPW.print("<td rowspan='" + ips.size() + "'>");
                         if (readyArtboards.contains(artboard)) {
                             htmlPW.print("<img src='" + getSVGIconPath(ip) + "'>");
@@ -302,6 +334,50 @@ public class IconTasks {
                     previousHash = hash;
                     subRowIdx++;
                 }
+
+                if (copySVGfiles && !UNASSIGNED_ARTBOARD.equals(artboard) &&
+                    /* We assume that _all_ existing artboards, ready or not, have been exported
+                    to ILLUSTRATOR_SVGS_DIR. That way we can use the presence of an SVG file there
+                    to determine if the Illustrator file already contains a given artboard or
+                    not. */
+                    !getIllustratorSVGFile(ILLUSTRATOR_SVGS_DIR, artboard).exists())
+                {
+                    IconPath ip = ips.get(0);
+                    Hash hash = Util.getChecked(iconHashesByFile, ip);
+                    Dimension dim = Util.getChecked(dimensionsByHash, hash);
+
+                    if (artboardX + dim.width > ARTBOARD_MAX_X) {
+                        artboardX = 0;
+                        artboardY -= getArtboardAdvance(-artboardY, currentArtboardRowTallestIcon);
+                        currentArtboardRowTallestIcon = 0;
+                    }
+                    File file = new File(NBSRC_DIR, ip.toString());
+                    if (!file.exists()) {
+                        throw new AssertionError("File existence should have been checked earlier");
+                    }
+                    scriptPW.println("left   = " + artboardX + " + firstColumnX;");
+                    scriptPW.println("top    = " + artboardY + ";");
+                    scriptPW.println("right  = left + " + dim.width + ";");
+                    scriptPW.println("bottom = top  - " + dim.height + ";"); // Minus appears correct here.
+                    scriptPW.println("newArtboard = doc.artboards.add([left, top, right, bottom]);");
+                    scriptPW.println("newArtboard.name = \"" + artboard + "\";");
+                    scriptPW.println("placedItem = targetLayer.placedItems.add();");
+                    scriptPW.println("placedItem.file = new File(\"" + file.toString() + "\");");
+                    /* PNGs may have embedded DPI values, which should be disregarded. Resize to get a
+                    1:1 pixel mapping. */
+                    scriptPW.println("scaleX = " + dim.width  + " / placedItem.width;");
+                    scriptPW.println("scaleY = " + dim.height + " / placedItem.height;");
+                    scriptPW.println("placedItem.resize(scaleX * 100, scaleY * 100);");
+                    scriptPW.println("placedItem.left   = left;");
+                    scriptPW.println("placedItem.top    = top;");
+                    scriptPW.println("placedItem.locked = true;");
+                    scriptPW.println("placedItem.embed();");
+                    scriptPW.println();
+
+                    currentArtboardRowTallestIcon = Math.max(currentArtboardRowTallestIcon, dim.height);
+                    artboardX += getArtboardAdvance(artboardX, dim.width);
+                }
+
                 artboardIdx++;
             }
             htmlPW.println("</table>");
@@ -311,6 +387,12 @@ public class IconTasks {
         System.out.println(
                 "A summary of bitmap icons, SVG icons, and artboard name mappings was generated here:");
         System.out.println(ICONS_HTML_FILE);
+    }
+
+    private static int getArtboardAdvance(int currentPosition, int iconSize) {
+      int minAdvance = iconSize + ARTBOARD_MIN_SPACING;
+      int nextGridPosition = Math.ceilDiv(currentPosition + minAdvance, ARTBOARD_GRID) * ARTBOARD_GRID;
+      return nextGridPosition - currentPosition;
     }
 
     private static PrintWriter createPrintWriter(File file) throws IOException {
@@ -354,6 +436,8 @@ public class IconTasks {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty())
+                  continue;
                 String[] parts = line.split("\\s+", 2);
                 if (parts.length == 2) {
                     String artboard = parts[0].trim();
