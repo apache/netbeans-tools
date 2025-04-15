@@ -1262,10 +1262,10 @@ selfSamplerPause24  platform/masterfs.ui/src/org/netbeans/modules/masterfs/ui/su
 options32  platform/core.ui/src/org/netbeans/core/ui/options/general/generalOptions.png
 colors32  ide/options.editor/src/org/netbeans/modules/options/colors/colors.png
 java32  extide/options.java/src/org/netbeans/modules/options/java/resources/java_logo.png
+appearance32  platform/core.windows/src/org/netbeans/core/windows/options/appearance32.png
 html32  webcommon/web.clientproject.api/src/org/netbeans/modules/web/clientproject/ui/resources/html5-options.png
 php32  php/php.project/src/org/netbeans/modules/php/project/ui/resources/php-options-icon.png
 cpp32  cpplite/cpplite.editor/src/org/netbeans/modules/cpplite/editor/lsp/options/cnd_32.png
-appearance32  platform/core.windows/src/org/netbeans/core/windows/options/appearance32.png
 showSearchDetails  platform/api.search/src/org/netbeans/modules/search/res/search.gif
 artifactBadge  extide/gradle/src/org/netbeans/modules/gradle/resources/module-artifact.png
 artifactBadge  java/maven.hints/src/org/netbeans/modules/maven/hints/ArtifactBadge.png

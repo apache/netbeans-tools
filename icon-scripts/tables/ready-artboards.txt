@@ -318,7 +318,4 @@ openProject24
 appearance32
 java32
 options32
-html32
-php32
-cpp32
 colors32
