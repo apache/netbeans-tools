@@ -28,8 +28,6 @@ folderClosed  ide/utilities/src/org/netbeans/modules/openfile/folder.gif
 folderClosed  java/form/src/org/netbeans/modules/form/resources/emptyInspector.gif
 folderClosed  ide/xml/src/org/netbeans/modules/xml/wizard/impl/folder_closed.png
 folderClosed  java/jshell.support/src/org/netbeans/modules/jshell/resources/folder.png
-folderClosed  nbi/infra/server/modules/war-admin/web/img/default-icon.png
-folderClosed  nbi/infra/server/modules/war-client/web/img/default-icon.png
 folderClosed  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/folder.png
 folderClosed  java/java.lsp.server/nbcode/integration/src/org/netbeans/modules/nbcode/integration/resources/uidefaults/Tree.closedIcon.png
 folderClosed  java/java.lsp.server/nbcode/integration/src/org/netbeans/modules/nbcode/integration/resources/uidefaults/Tree.leafIcon.png
@@ -177,7 +175,6 @@ warning  platform/openide.dialogs/src/org/netbeans/modules/dialogs/warning.gif
 warning  webcommon/extbrowser.chrome/src/org/netbeans/modules/extbrowser/chrome/resources/warning.png
 warning  ide/projectui/src/org/netbeans/modules/project/ui/resources/broken-reference.gif
 warning  java/java.project.ui/src/org/netbeans/modules/java/project/ui/resources/broken-reference.gif
-warning  nbi/engine/src/org/netbeans/installer/wizard/components/panels/warning.png
 warning  java/java.hints/src/org/netbeans/modules/java/hints/resources/half-match.png
 warning  java/javadoc/src/org/netbeans/modules/javadoc/comments/resources/error.gif
 refresh  ide/bugtracking/src/org/netbeans/modules/bugtracking/tasks/resources/refresh.png
@@ -326,7 +323,6 @@ error  apisupport/apisupport.project/src/org/netbeans/modules/apisupport/project
 error  ide/gsf.testrunner/src/org/netbeans/modules/gsf/testrunner/resources/error_16.png
 error  ide/lsp.client/src/org/netbeans/modules/lsp/client/resources/error_16.png
 error  java/junit/src/org/netbeans/modules/junit/output/res/error_16.png
-error  nbi/engine/src/org/netbeans/installer/wizard/components/panels/error.png
 error  platform/api.search/src/org/netbeans/modules/search/res/error.gif
 error  platform/core.ui/src/org/netbeans/core/ui/options/general/error_16.png
 error  platform/core.ui/src/org/netbeans/core/ui/resources/error.gif
@@ -417,7 +413,6 @@ info  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/debuggingV
 info  ide/spi.debugger.ui/src/org/netbeans/modules/debugger/resources/evaluator/eval_history.png
 info  nb/autoupdate.pluginimporter/src/org/netbeans/modules/autoupdate/pluginimporter/resources/info_icon.png
 info  platform/autoupdate.ui/src/org/netbeans/modules/autoupdate/ui/resources/info_icon.png
-info  nbi/engine/src/org/netbeans/installer/wizard/components/panels/info.png
 info  php/php.project/src/org/netbeans/modules/php/project/ui/resources/info_icon.png
 info  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/infoIcon.png
 info  profiler/profiler/src/org/netbeans/modules/profiler/impl/icons/infoTab.png
@@ -1738,8 +1733,6 @@ keymap32  platform/options.keymap/src/org/netbeans/modules/options/keymap/keymap
 team32  ide/team.commons/src/org/netbeans/modules/team/commons/resources/team.png
 advanced32  platform/options.api/src/org/netbeans/modules/options/resources/advanced.png
 netbeansBadge  ide/web.browser.api/src/org/netbeans/modules/web/browser/ui/resources/nb-badge.png
-netbeans  harness/libs.nbi.ant/stub/ext/components/products/helloworld/data/icon.png
-netbeans  harness/libs.nbi.ant/stub/ext/engine/src/org/mycompany/installer/wizard/wizard-icon.png
 netbeans  nbbuild/installer/components/groups/nb-ide-group/data/icon.png
 netbeans  nbbuild/installer/components/products/jdk/data/icon.png
 netbeans  nbbuild/installer/components/products/nb-all/data/icon.png
@@ -1750,7 +1743,6 @@ netbeans  nbbuild/installer/components/products/nb-javase/data/icon.png
 netbeans  nbbuild/installer/components/products/nb-php/data/icon.png
 netbeans  nbbuild/installer/components/products/nb-webcommon/data/icon.png
 netbeans  nbbuild/installer/engine/src/org/netbeans/installer/wizard/wizard-icon.png
-netbeans  nbi/engine/src/org/netbeans/installer/utils/helper/swing/frame-icon.png
 netbeans  platform/autoupdate.services/src/org/netbeans/modules/autoupdate/services/resources/icon-standard.png
 netbeans  webcommon/extbrowser.chrome/plugins/chrome/img/netbeans16.png
 netbeans  nb/ide.branding/core.startup/src/org/netbeans/core/startup/frame_dark_nb.gif

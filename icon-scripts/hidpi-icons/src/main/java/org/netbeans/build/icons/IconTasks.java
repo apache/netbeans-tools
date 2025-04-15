@@ -18,10 +18,6 @@
  */
 package org.netbeans.build.icons;
 
-import com.github.weisj.jsvg.SVGDocument;
-import com.github.weisj.jsvg.geometry.size.FloatSize;
-import com.github.weisj.jsvg.parser.LoaderContext;
-import com.github.weisj.jsvg.parser.SVGLoader;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -33,11 +29,9 @@ import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -49,8 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
 import org.netbeans.build.icons.TypeTaggedString.ArtboardName;
 import org.netbeans.build.icons.TypeTaggedString.IconPath;
 import org.netbeans.build.icons.TypeTaggedString.Hash;
@@ -70,7 +62,6 @@ public class IconTasks {
     private static final int ARTBOARD_MIN_SPACING = 2;
 
     private static final String LICENSE_HEADER = readLicenseHeader();
-    private static final SVGLoader SVG_LOADER = new SVGLoader();
 
     public static void main(String[] args) throws IOException {
         final File ICON_SCRIPTS_DIR = new File(System.getProperty("user.dir"), "../");
@@ -198,6 +189,8 @@ public class IconTasks {
             } else {
                 svgContentToWrite = null;
             }
+            BufferedImage srcImage = (svgContentToWrite == null) ? null :
+                    ImageUtil.renderSVGImageFromXMLString(svgContentToWrite);
             for (IconPath ip : filesByArtboard.get(artboard)) {
                 if (shouldIgnoreFile(ip)) {
                     continue;
@@ -206,10 +199,16 @@ public class IconTasks {
                 // System.out.println(srcSVGFile + "\t" + destSVG);
                 File destSVGFile = new File(NBSRC_DIR, destSVG.toString());
                 if (svgContentToWrite != null) {
-                    try (PrintWriter pw = createPrintWriter(destSVGFile)) {
-                        pw.print(svgContentToWrite);
+                    BufferedImage destImage = destSVGFile.exists() ? ImageUtil.renderSVGImage(destSVGFile) : null;
+                    if (destImage != null && ImageUtil.imagesAreEqual(srcImage, destImage)) {
+                        System.out.println(
+                                "Target SVG file is pixel-identical when rendered; skipping copy (" + destSVGFile + ")");
+                    } else {
+                        try (PrintWriter pw = createPrintWriter(destSVGFile)) {
+                            pw.print(svgContentToWrite);
+                        }
+                        System.out.println("Copied SVG file to " + destSVGFile);
                     }
-                    System.out.println("Copied SVG file to " + destSVGFile);
                 } else {
                     if (!destSVGFile.exists()) {
                         throw new RuntimeException(destSVGFile + " does not exist, and no " +
@@ -521,7 +520,11 @@ public class IconTasks {
                 firstLine = false;
             }
         }
-        return ret.toString();
+        return ret.toString()
+                /* Illustrator keeps generating this useless/incorrect metadata element, and I can't
+                find a way to get rid of it. Just remove it here if it's present. (Though it didn't
+                really do any harm in any case.) */
+                .replace("  <description>Apache NetBeans Logo\n  </description>", "");
     }
 
     private static String readLicenseHeader() {
@@ -540,26 +543,6 @@ public class IconTasks {
         return ret.toString();
     }
 
-    private static @Nullable Dimension readImageDimension(File file) throws IOException {
-        if (file.getName().endsWith(".svg")) {
-            SVGDocument svgDocument = SVG_LOADER.load(new BufferedInputStream(
-                    new FileInputStream(file)), null, LoaderContext.builder().build());
-            if (svgDocument == null) {
-                throw new IOException("Failed to load SVG file " + file);
-            }
-            FloatSize floatSize = svgDocument.size();
-            return new Dimension(
-                    (int) Math.ceil(floatSize.getWidth()),
-                    (int) Math.ceil(floatSize.getHeight()));
-        }
-        BufferedImage image = ImageIO.read(file);
-        if (image == null)
-          throw new IOException("ImageIO.read returned null for " + file);
-        int width = image.getWidth();
-        int height = image.getHeight();
-        return new Dimension(width, height);
-    }
-
     private static ImmutableMap<Hash, Dimension> readImageDimensions(
             File nbsrcDir, ImmutableSetMultimap<Hash, IconPath> filesByHash)
             throws IOException
@@ -572,7 +555,7 @@ public class IconTasks {
                 continue;
             }
             File file = new File(nbsrcDir, ip.toString());
-            Dimension dim = readImageDimension(file);
+            Dimension dim = ImageUtil.readImageDimension(file);
             Util.putChecked(ret, hash, dim);
         }
         return ImmutableMap.copyOf(ret);
