@@ -17,7 +17,7 @@
 [Desktop Entry]
 Type=Application
 Encoding=UTF-8
-Name=Apache NetBeans @DESKTOP_VERSION@
+Name=@DESKTOP_APP_NAME@
 Comment=Apache NetBeans, The Smarter Way to Code
 Exec=@DESKTOP_EXEC@ %F
 Categories=Development;IDE

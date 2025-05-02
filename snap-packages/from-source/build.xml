@@ -74,7 +74,8 @@
         <copy file="netbeans-template.desktop" tofile="${dev.dir}/snap/gui/netbeans.desktop" overwrite="true">
             <filterchain>
                 <replacetokens>
-                    <token key="DESKTOP_VERSION" value="(development)"/>
+                    <token key="DESKTOP_APP_NAME" value="Apache NetBeans (dev)"/>
+                    <token key="DESKTOP_VERSION" value="DEV ${build.date}"/>
                     <token key="DESKTOP_EXEC" value="netbeans-dev.netbeans"/>
                 </replacetokens>
             </filterchain>
@@ -112,6 +113,7 @@
         <copy file="netbeans-template.desktop" tofile="${rel.dir}/snap/gui/netbeans.desktop" overwrite="true">
             <filterchain>
                 <replacetokens>
+                    <token key="DESKTOP_APP_NAME" value="Apache NetBeans"/>
                     <token key="DESKTOP_VERSION" value="${release.version}"/>
                     <token key="DESKTOP_EXEC" value="netbeans"/>
                 </replacetokens>
