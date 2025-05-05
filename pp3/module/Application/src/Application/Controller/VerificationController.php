@@ -135,7 +135,11 @@ class VerificationController extends AuthenticatedController {
         }
 
         $req->setVote($vote);
-        $req->setVotedAt(new \DateTime('now'));
+        if ($vote == \Application\Entity\VerificationRequest::VOTE_UNDECIDED) {
+            $req->setVotedAt(null);
+        } else {
+            $req->setVotedAt(new \DateTime('now'));
+        }
         $comment = $this->params()->fromPost('comment');
         if (!empty($comment)) {
             $config = HTMLPurifier_Config::createDefault();
@@ -224,6 +228,7 @@ class VerificationController extends AuthenticatedController {
                 }
             }
         }
+
         $this->flashMessenger()->setNamespace('success')->addMessage('Master vote cast');
         return $this->redirect()->toRoute('verification', array(
             'action' => 'list'
