@@ -12,7 +12,7 @@ if ($this->verification) {
             echo '<tr>
             <td>['.date_format($vRq->getVotedAt(), 'Y-m-d H:i').']</td>
             <td>'.$txt.'</td>
-            <td>'.$this->escapeHtml($vRq->getComment()).'</td>
+            <td>'.$this->escapeHtml($vRq->getComment()).($vRq->isCopy() ? ' (Verification was done for a different NetBeans version)' : '').'</td>
             </tr>';
         }
     }
