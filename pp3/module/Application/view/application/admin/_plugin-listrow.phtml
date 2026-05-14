@@ -77,7 +77,7 @@ echo '</p>
         </thead>
         <tbody>';
 
-foreach ($plugin->getVersions() as $version) {
+foreach ($plugin->getVersionsSorted() as $version) {
     /* @var $version Application\Entity\PluginVersion */
     printf('<tr>
         <td><span class="badge %s">%s%s</span></td>

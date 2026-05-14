@@ -63,7 +63,7 @@ if ($plugin) {
         </thead>
         <tbody>
         ';
-        foreach ($plugin->getVersions() as $version) {
+        foreach ($plugin->getVersionsSorted() as $version) {
             echo '<tr><td><span class="badge">'.$version->getVersion().'</span></td><td>';
             foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
                 $downloadUrl = './download/'.$version->getId().'/'.htmlspecialchars($version->getArtifactFilename());

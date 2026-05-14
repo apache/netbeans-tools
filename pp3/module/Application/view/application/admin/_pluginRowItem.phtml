@@ -20,7 +20,7 @@
 ?>
 <?php
 $versionBadges = array();
-foreach ($plugin->getVersions() as $version) {
+foreach ($plugin->getVersionsSorted() as $version) {
     $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
 }
 
