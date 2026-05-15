@@ -75,4 +75,36 @@ class PluginVersion extends Base\PluginVersion {
         }
         throw new \Exception('Nbm nor jar binary found on '.$baseUrl);
     }
+
+    /**
+     * @param PluginVersion $a
+     * @param PluginVersion $b
+     * @return int
+     */
+    static function compare($a, $b) {
+        $sA = [0];
+        $sB = [0];
+        $matchesA = null;
+        if (preg_match("/^(\\d+\\.)*(\\d+)/", $a->getVersion(), $matchesA)) {
+            $versionString = $matchesA[0];
+            $sA = array_map(function ($v) {
+                return (int) $v;
+            }, explode(".", $versionString));
+        }
+        $matchesB = null;
+        if (preg_match("/^(\\d+\\.)*(\\d+)/", $b->getVersion(), $matchesB)) {
+            $versionString = $matchesB[0];
+            $sB = array_map(function ($v) {
+                return (int) $v;
+            }, explode(".", $versionString));
+        }
+        $compLength = min(count($sA), count($sB));
+        for ($i = 0; $i < $compLength; $i++) {
+            $res = $sA[$i] - $sB[$i];
+            if ($res != 0) {
+                return $res;
+            }
+        }
+        return strcmp($a->getVersion(), $b->getVersion());
+    }
 }

@@ -125,7 +125,7 @@
         }
 
         $versionBadges = array();
-        foreach ($plugin->getVersions() as $version) {
+        foreach ($plugin->getVersionsSorted() as $version) {
           foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
             $verif = $nbvPv->getVerification();
             if ($verif && $verif->isVerified()) {

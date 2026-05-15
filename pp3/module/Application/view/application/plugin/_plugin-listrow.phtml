@@ -19,7 +19,7 @@
  */
 ?>
 <?php
-$pluugin = $this->plugin;
+/* @var $plugin Application\Entity\Plugin */
 echo '<tr>
 <td style="text-align: center;"><h4><i class="fas '.$plugin->getStatusIconClass().'" title="'.$plugin->getStatusTitle().'"></i></h4></td>
 <td>
@@ -66,7 +66,7 @@ echo '</p>
         </thead>
         <tbody>';
 
-foreach ($plugin->getVersions() as $version) {
+foreach ($plugin->getVersionsSorted() as $version) {
     /* @var $version Application\Entity\PluginVersion */
     printf('<tr>
         <td><span class="badge %s">%s%s</span></td>

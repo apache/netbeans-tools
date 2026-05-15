@@ -34,8 +34,9 @@
     <tbody>
 <?php
     foreach ($this->plugins as $plugin) {
+        /* @var $plugin Application\Entity\Plugin */
         $versionBadges = array();
-        foreach ($plugin->getVersions() as $version) {
+        foreach ($plugin->getVersionsSorted() as $version) {
             $versionBadges[]='<span class="badge">'.$version->getVersion().'</span>';
         }
         echo '<tr>

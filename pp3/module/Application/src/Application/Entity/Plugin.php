@@ -203,4 +203,17 @@ class Plugin extends Base\Plugin {
         return $url;
     }
 
+    public function getVersionsSorted($desc = true) {
+        $result = [];
+        foreach($this->getVersions() as $version) {
+            $result[] = $version;
+        }
+
+        if($desc) {
+            usort($result, fn($a, $b) => -1 * PluginVersion::compare($a, $b));
+        } else {
+            usort($result, fn($a, $b) => PluginVersion::compare($a, $b));
+        }
+        return $result;
+    }
 }
