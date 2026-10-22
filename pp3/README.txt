@@ -4,7 +4,7 @@ license agreements; and to You under the Apache License, Version 2.0.
 
 Local Setup Instructions:
 
-0) required software: php >= 7.2 cli, web server with php >= 7.2 (apache, nginx...), mysql >=5.7, composer
+0) required software: php >= 8.X cli, web server with php >= 8.X (apache, nginx...), mysql >=8.X, composer
 1) run pear install Console_GetoptPlus
 2) clone project
 3) in root folder run $ composer install
@@ -18,9 +18,9 @@ Local Setup Instructions:
 
 Nodes for work with docker:
 
-  - docker run -it --publish 8080:80 -v <basepath_to_netbeans-tools_checkout>/pp3:/mnt ubuntu:focal
+  - docker run -it --publish 8080:80 -v <basepath_to_netbeans-tools_checkout>/pp3:/mnt ubuntu:resolute
   - apt update
-  - apt install libapache2-mod-php mysql-server vim php-mysql php-simplexml openjdk-21-jdk-headless postfix
+  - apt install libapache2-mod-php mysql-server vim php-mysql php-simplexml openjdk-21-jdk-headless postfix php-zip
   - Modify /etc/apache2/sites-enabled/000-default.conf:
 
     DocumentRoot should point to /mnt/public
@@ -34,9 +34,9 @@ Nodes for work with docker:
      </Directory>
 
   - Enable mode rewrite: ln -s /etc/apache2/mods-available/rewrite.load /etc/apache2/mods-enabled/
-  - Start apachectl start
-  - Start mysql /etc/init.d/mysql start
-  - Start postfix /etc/init.d/postfix start
+  - Apache: apachectl start
+  - MySQL: /usr/bin/mysqld_safe
+  - Postfix: postfix start
   - Create Database: echo "CREATE DATABASE pp3; CREATE USER pp3@'%' IDENTIFIED BY 'pp3'; GRANT ALL on pp3.* TO pp3@'%'" | mysql; mysql pp3 < /mnt/config/pp3.sql
   - In PP3: Create NB Versions in (Admin -> NetBeans versions)
   - Comment out the http -> https redirects in public/.htaccess

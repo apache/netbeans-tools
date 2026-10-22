@@ -23,7 +23,6 @@
 .idea
 .project
 .settings
-composer.lock
 vendor/*
 composer.phar
 public/data/*

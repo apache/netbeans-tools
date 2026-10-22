@@ -90,7 +90,10 @@ foreach ($plugin->getVersionsSorted() as $version) {
            $version->getErrorMessage() ? 'badge-red' : '',
            $version->getVersion(),
            $version->getErrorMessage() ? ' <i class="fas fa-exclamation-triangle"></i>' : '',
-           $this->url('plugin-version',array('action'=>'edit'),array('query' => array('id'=>$version->getId(), 'search'=>$_GET['search'])))
+           $this->url('plugin-version',array('action'=>'edit'),array('query' => array(
+               'id'=>$version->getId(),
+               'search'=> array_key_exists('search', $GET) ? $_GET['search'] : ''
+        )))
     );
     foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
             echo '<span class="badge badge-brown">NB '.$nbvPv->getNbVersion()->getVersion().'</span>&nbsp; ';

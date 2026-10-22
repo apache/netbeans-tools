@@ -15,8 +15,8 @@
         "php": ">=5.5",
         "zendframework/zendframework": "~2.5",
         "zendframework/zend-developer-tools": "dev-master",
-        "doctrine/doctrine-orm-module": "^0.9.1",
-        "ezyang/htmlpurifier": "^4.10",
+        "doctrine/doctrine-orm-module": "^1.1.8",
+        "ezyang/htmlpurifier": "^4.14",
         "knplabs/knp-paginator-bundle": "^3.0"
     }
 }
