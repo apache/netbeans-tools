@@ -92,7 +92,7 @@ foreach ($plugin->getVersionsSorted() as $version) {
            $version->getErrorMessage() ? ' <i class="fas fa-exclamation-triangle"></i>' : '',
            $this->url('plugin-version',array('action'=>'edit'),array('query' => array(
                'id'=>$version->getId(),
-               'search'=> array_key_exists('search', $GET) ? $_GET['search'] : ''
+               'search'=> array_key_exists('search', $_GET) ? $_GET['search'] : ''
         )))
     );
     foreach ($version->getNbVersionsPluginVersions() as $nbvPv) {
